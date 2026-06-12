@@ -16,7 +16,7 @@ models:
 # =========================
 # Ollama 连接配置
 # =========================
-ollama_host: ''  # 空字符串 = 自动检测 Windows 宿主机 IP（从 /etc/resolv.conf 读取）
+ollama_host: 'http://127.0.0.1:11434'  # Linux 本地 Ollama
 
 # =========================
 # 默认推理参数

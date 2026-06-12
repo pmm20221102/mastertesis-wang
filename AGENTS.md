@@ -37,11 +37,18 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 ```
 
-### Ollama (Windows side) / Ollama（Windows 端）
+### Ollama (Linux local) / Ollama（Linux 本地）
 
-- Install Ollama, pull `mistral` and `gemma4:e4b` / 安装 Ollama，拉取模型
-- Set env vars / 设置环境变量: `OLLAMA_HOST=0.0.0.0:11434`, `OLLAMA_KEEP_ALIVE=0`
-- WSL2 auto-detects Windows host IP (`ollama_host: ''` in config) / WSL2 自动检测 Windows 主机 IP
+```bash
+# Install / 安装
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull models / 拉取模型
+ollama pull mistral
+ollama pull gemma4:e4b
+```
+
+- Config `ollama_host: 'http://127.0.0.1:11434'` in config.yaml / 配置文件中设置本地地址
 
 ## Run Commands / 运行命令
 
@@ -134,7 +141,7 @@ ROS2 wrappers / ROS2 封装: `khronos_ros`, `hydra_ros`, `kimera_pgmo_ros`, `sem
 
 ## Common Issues / 常见问题
 
-- **Ollama connection failed** / Ollama 连接失败: Check Windows env var `OLLAMA_HOST=0.0.0.0:11434`
+- **Ollama connection failed** / Ollama 连接失败: Check `ollama_host: 'http://127.0.0.1:11434'` in config.yaml
 - **Khronos build failed** / Khronos 构建失败: Ensure `source install/setup.bash` was run
 - **dsg.json too large** / dsg.json 太大: Must preprocess with RAG module, cannot feed directly to LLM
 - **LLM output unstable** / LLM 输出不稳定: Lower `temperature`, keep `seed: 42`
