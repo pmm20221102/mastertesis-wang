@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/Users/nenlian/.claude/**)",
+      "Read(//home/nenlian/.claude/**)",
+      "Bash(grep -i conda ~/.bashrc 2>/dev/null || true)",
+      "Read(//home/nenlian/**)",
+      "Read(//home/nenlian/miniconda3/bin/**)",
+      "Read(//home/nenlian/anaconda3/bin/**)",
+      "Read(//opt/conda/bin/**)",
+      "Bash(~/miniconda3/bin/conda init *)",
+      "Bash(curl -fsSL https://ollama.com/install.sh)",
+      "Bash(sh)",
+      "Bash(mkdir -p ~/.local/bin)",
+      "Bash(curl -fsSL https://ollama.com/download/ollama-linux-amd64 -o ~/.local/bin/ollama)",
+      "Bash(chmod +x ~/.local/bin/ollama)",
+      "Bash(curl -fsSL https://api.github.com/repos/ollama/ollama/releases/latest)",
+      "Bash(python3 -c \"import sys,json; r=json.load\\(sys.stdin\\); [print\\(a['browser_download_url']\\) for a in r.get\\('assets',[]\\) if 'linux' in a['name'].lower\\(\\) and 'amd64' in a['name'].lower\\(\\)]\")",
+      "Read(//tmp/**)",
+      "Bash(curl -fsSL -o ollama.tar.zst \"https://github.com/ollama/ollama/releases/download/v0.24.0/ollama-linux-amd64.tar.zst\")",
+      "Bash(mkdir -p ollama_extract)",
+      "Bash(tar --use-compress-program=unzstd -xf ollama.tar.zst -C ollama_extract)",
+      "Bash(cp /tmp/ollama_extract/bin/ollama ~/.local/bin/ollama)",
+      "Bash(~/.local/bin/ollama --version)",
+      "Bash(mkdir -p ~/miniconda3/envs/llm-task-planner/etc/conda/activate.d)",
+      "Bash(mkdir -p ~/miniconda3/envs/llm-task-planner/etc/conda/deactivate.d)"
+    ]
+  }
+}

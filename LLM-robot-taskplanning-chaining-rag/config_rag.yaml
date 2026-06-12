@@ -1,0 +1,35 @@
+# RAG-Enhanced Task Planner Configuration
+# RAG 增强版任务规划器配置
+
+# Ollama connection / Ollama 连接
+ollama_host: 'http://127.0.0.1:11434'
+
+# Input command / 输入指令（直接在这里修改，然后运行 python main_rag.py）
+input_command: "First, take me to Mr. Wang. He's probably in his office, where there are most desks and computers. Then take him to the entrance. Hmm, we should be in the hallway now."
+
+# Available models
+models:
+  mistral:
+    name: "mistral"
+    description: "Mistral 7B - strong general reasoning"
+    default: true
+  gemma4e4b:
+    name: "gemma4:e4b"
+    description: "Gemma 4 4B - lightweight and fast"
+    default: false
+
+# Inference parameters
+options:
+  temperature: 0.1
+  top_p: 0.9
+  top_k: 40
+  num_ctx: 8192
+  num_predict: 2048
+  repeat_penalty: 1.1
+  seed: 42
+
+# RAG configuration
+rag:
+  db_dir: "/home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/vector_db"
+  top_k: 20
+  use_llm_keywords: true

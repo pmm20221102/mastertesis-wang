@@ -1,0 +1,60 @@
+# Build artifacts / 构建产物
+build/
+install/
+log/
+**/build/
+**/install/
+**/log/
+
+# ROS2 artifacts / ROS2 产物
+**/.colcon/
+**/log/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+*.egg
+
+# Large data files / 大数据文件
+*.bag
+snapshots/
+data/
+
+# Model weights / 模型权重
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS / 操作系统
+.DS_Store
+Thumbs.db
+
+# Conda / 虚拟环境
+.conda/
+.venv/
+venv/
+
+# Output files / 输出文件
+task_plan_output*.json
+rag_documents.jsonl
+vector_db/
+
+# Scene graph snapshots / 场景图快照
+*.4dmap
+*.sparkdsg
+*.dgrf
+dsg.json
+shared_dsg.json
+mesh.ply
