@@ -141,6 +141,13 @@ def _parse_spark_dsg(data: dict) -> SceneGraph:
             if isinstance(pos, list) and len(pos) >= 3:
                 position = [float(x) for x in pos[:3]]
 
+        first_seen = attrs.get("first_observed_ns")
+        if isinstance(first_seen, list):
+            first_seen = first_seen[0] if first_seen else None
+        last_seen = attrs.get("last_observed_ns")
+        if isinstance(last_seen, list):
+            last_seen = last_seen[0] if last_seen else None
+
         sn = SceneNode(
             node_id=raw_id,
             layer=layer,
@@ -152,8 +159,8 @@ def _parse_spark_dsg(data: dict) -> SceneGraph:
             bbox=bbox,
             color=attrs.get("color") if isinstance(attrs.get("color"), dict) else None,
             is_active=attrs.get("is_active") if isinstance(attrs.get("is_active"), bool) else None,
-            first_seen_ns=attrs.get("first_observed_ns"),
-            last_seen_ns=attrs.get("last_observed_ns"),
+            first_seen_ns=first_seen,
+            last_seen_ns=last_seen,
             raw_attrs=attrs,
         )
         graph.nodes.append(sn)

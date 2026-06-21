@@ -1,14 +1,20 @@
 """Convert parsed SceneGraph into RAG document chunks.
 
 Generates four types of chunks:
-  1. Entity chunks — one per node
+  1. Entity chunks — one per node (with graph-aware metadata)
   2. Region chunks — aggregated per room/place/building
   3. Relation chunks — one per edge / spatial relationship
   4. Alias chunks — keyword expansion from config
+
+Graph-Aware Enhancements:
+  - parent_ids, child_ids, neighbor_ids in metadata
+  - depth (hierarchy level) in metadata
+  - pre-materialized relation paths for fast traversal
 """
 
 from __future__ import annotations
 
+import json
 import logging
 from collections import defaultdict
 from typing import Any
@@ -19,6 +25,14 @@ logger = logging.getLogger(__name__)
 
 # Types that act as "containers" (region/room/place/building)
 CONTAINER_TYPES = {"room", "rooms", "place", "places", "building", "buildings", "region", "floor"}
+
+# Layer -> depth mapping
+LAYER_DEPTH: dict[int, int] = {
+    5: 0,  # building
+    4: 1,  # room
+    3: 2,  # place
+    2: 3,  # object
+}
 
 
 def _fmt_pos(position: list[float]) -> str:
@@ -45,8 +59,64 @@ def _ns_to_s(ns: int | list | None) -> str:
     return f"{ns / 1e9:.1f}s"
 
 
-def build_entity_chunks(graph: SceneGraph) -> list[RagDocument]:
-    """One document per node."""
+def _build_graph_index(graph: SceneGraph) -> dict[str, dict[str, list[str]]]:
+    """Build adjacency index: node_id -> {"parents": [...], "children": [...], "neighbors": [...]}."""
+    index: dict[str, dict[str, list[str]]] = {}
+    for node in graph.nodes:
+        index[node.node_id] = {"parents": [], "children": [], "neighbors": []}
+
+    for edge in graph.edges:
+        src = graph.node_index.get(edge.source_id)
+        tgt = graph.node_index.get(edge.target_id)
+        if not src or not tgt:
+            continue
+
+        if src.node_id in index and tgt.node_id in index:
+            if src.layer > tgt.layer:
+                index[src.node_id]["children"].append(tgt.node_id)
+                index[tgt.node_id]["parents"].append(src.node_id)
+            elif tgt.layer > src.layer:
+                index[tgt.node_id]["children"].append(src.node_id)
+                index[src.node_id]["parents"].append(tgt.node_id)
+            else:
+                index[src.node_id]["neighbors"].append(tgt.node_id)
+                index[tgt.node_id]["neighbors"].append(src.node_id)
+
+    return index
+
+
+def _build_relation_materialization(graph: SceneGraph) -> dict[str, list[str]]:
+    """Pre-materialize common relation paths for fast traversal."""
+    materialized: dict[str, list[str]] = {}
+
+    # Group children by parent
+    parent_children: dict[str, list[str]] = defaultdict(list)
+    for edge in graph.edges:
+        src = graph.node_index.get(edge.source_id)
+        tgt = graph.node_index.get(edge.target_id)
+        if src and tgt:
+            if src.layer > tgt.layer:
+                parent_children[tgt.node_id].append(src.node_id)
+            elif tgt.layer > src.layer:
+                parent_children[src.node_id].append(tgt.node_id)
+
+    # Store as JSON-serializable format
+    for parent_id, children_ids in parent_children.items():
+        materialized[f"{parent_id}_contains"] = children_ids
+
+    return materialized
+
+
+def build_entity_chunks(
+    graph: SceneGraph,
+    dataset: str = "",
+    source_file: str = "",
+    graph_index: dict[str, dict[str, list[str]]] | None = None,
+) -> list[RagDocument]:
+    """One document per node with graph-aware metadata."""
+    if graph_index is None:
+        graph_index = _build_graph_index(graph)
+
     docs = []
     for node in graph.nodes:
         parts: list[str] = []
@@ -82,17 +152,18 @@ def build_entity_chunks(graph: SceneGraph) -> list[RagDocument]:
                 time_str += f" to {t_last}"
             parts.append(time_str + ".")
 
-        # Find which container this node belongs to (from edges)
-        containers = _find_containers(node, graph)
-        if containers:
-            container_str = ", ".join(containers[:3])
-            parts.append(f"Located in {container_str}.")
+        # Graph-aware: parents, children, neighbors
+        node_index = graph_index.get(node.node_id, {"parents": [], "children": [], "neighbors": []})
+        parents = node_index["parents"]
+        children = node_index["children"]
+        neighbors = node_index["neighbors"]
 
-        # Find nearby nodes (edges from this node)
-        nearby = _find_neighbors(node, graph, exclude=containers)
-        if nearby:
-            nearby_str = ", ".join(nearby[:5])
-            parts.append(f"Connected to: {nearby_str}.")
+        if parents:
+            parts.append(f"Parent: {', '.join(parents[:3])}.")
+        if children:
+            parts.append(f"Contains: {', '.join(children[:5])}.")
+        if neighbors:
+            parts.append(f"Connected to: {', '.join(neighbors[:5])}.")
 
         text = " ".join(parts)
 
@@ -104,51 +175,37 @@ def build_entity_chunks(graph: SceneGraph) -> list[RagDocument]:
                 "node_id": node.node_id,
                 "node_type": node.node_type,
                 "label": node.label,
-                "room": containers[0] if containers else "",
-                "related_nodes": nearby[:5],
+                "room": parents[0] if parents else "",
+                "related_nodes": neighbors[:5],
+                # Graph-aware metadata
+                "parent_ids": parents[:5],
+                "child_ids": children[:10],
+                "neighbor_ids": neighbors[:10],
+                "depth": LAYER_DEPTH.get(node.layer, -1),
+                # Existing metadata
+                "object_symbol": node.name if node.name else "",
+                "bounding_box_center": node.bbox.center if node.bbox else [],
+                "bounding_box_dimensions": node.bbox.dimensions if node.bbox else [],
+                "first_observed_ns": node.first_seen_ns if node.first_seen_ns else 0,
+                "last_observed_ns": node.last_seen_ns if node.last_seen_ns else 0,
+                "is_active": node.is_active if node.is_active is not None else False,
+                "layer": node.layer,
+                "dataset": dataset,
+                "source_file": source_file,
             },
         ))
 
     return docs
 
 
-def _find_containers(node: SceneNode, graph: SceneGraph) -> list[str]:
-    """Find room/place/building that contains this node (direct parent only).
-
-    DSG edge direction: parent → child (Building → Room → Place → Object).
-    We only look for edges where source layer > target layer (hierarchy, not adjacency).
-    """
-    containers = []
-    for edge in graph.edges:
-        if edge.target_id == node.node_id:
-            source = graph.node_index.get(edge.source_id)
-            if source and source.node_type in CONTAINER_TYPES:
-                # Only accept if source layer is strictly higher (parent, not sibling)
-                if source.layer > node.layer:
-                    containers.append(source.node_id)
-    return containers
-
-
-def _find_neighbors(node: SceneNode, graph: SceneGraph, exclude: list[str] | None = None) -> list[str]:
-    """Find nodes connected by edges."""
-    exclude_set = set(exclude or [])
-    exclude_set.add(node.node_id)
-    neighbors = []
-    for edge in graph.edges:
-        other_id = None
-        if edge.source_id == node.node_id:
-            other_id = edge.target_id
-        elif edge.target_id == node.node_id:
-            other_id = edge.source_id
-        if other_id and other_id not in exclude_set:
-            other = graph.node_index.get(other_id)
-            if other:
-                neighbors.append(other_id)
-    return neighbors
-
-
-def build_region_chunks(graph: SceneGraph) -> list[RagDocument]:
+def build_region_chunks(
+    graph: SceneGraph,
+    graph_index: dict[str, dict[str, list[str]]] | None = None,
+) -> list[RagDocument]:
     """Aggregate documents for container nodes (rooms, places, buildings)."""
+    if graph_index is None:
+        graph_index = _build_graph_index(graph)
+
     docs = []
 
     # Group children by parent container
@@ -191,6 +248,9 @@ def build_region_chunks(graph: SceneGraph) -> list[RagDocument]:
 
         text = " ".join(parts)
 
+        # Get parent info
+        node_index = graph_index.get(container_id, {"parents": [], "children": [], "neighbors": []})
+
         docs.append(RagDocument(
             doc_id=f"region_{container_id}",
             text=text,
@@ -201,6 +261,10 @@ def build_region_chunks(graph: SceneGraph) -> list[RagDocument]:
                 "label": container.label,
                 "child_count": len(children_ids),
                 "children": children_ids[:20],
+                "child_ids": children_ids[:20],
+                "parent_ids": node_index["parents"][:5],
+                "neighbor_ids": node_index["neighbors"][:10],
+                "depth": LAYER_DEPTH.get(container.layer, -1),
             },
         ))
 
@@ -248,6 +312,34 @@ def build_relation_chunks(graph: SceneGraph) -> list[RagDocument]:
     return docs
 
 
+def build_materialized_relation_chunks(
+    materialized: dict[str, list[str]],
+) -> list[RagDocument]:
+    """Generate chunks for pre-materialized relation paths."""
+    docs = []
+    for key, node_ids in materialized.items():
+        if not node_ids:
+            continue
+        parts = key.split("_", 1)
+        if len(parts) == 2:
+            parent_id, relation = parts
+            text = f"{parent_id} {relation} {', '.join(node_ids[:10])}."
+        else:
+            text = f"Relation {key}: {', '.join(node_ids[:10])}."
+
+        docs.append(RagDocument(
+            doc_id=f"mat_{key}",
+            text=text,
+            metadata={
+                "chunk_type": "materialized_relation",
+                "key": key,
+                "node_ids": node_ids[:20],
+                "count": len(node_ids),
+            },
+        ))
+    return docs
+
+
 def build_alias_chunks(aliases: dict[str, list[str]]) -> list[RagDocument]:
     """Generate alias expansion documents from config."""
     docs = []
@@ -270,13 +362,19 @@ def build_alias_chunks(aliases: dict[str, list[str]]) -> list[RagDocument]:
 def build_all_documents(
     graph: SceneGraph,
     aliases: dict[str, list[str]] | None = None,
+    dataset: str = "",
+    source_file: str = "",
 ) -> list[RagDocument]:
     """Generate all RAG documents from a parsed scene graph."""
+    graph_index = _build_graph_index(graph)
+    materialized = _build_relation_materialization(graph)
+
     docs = []
-    docs.extend(build_entity_chunks(graph))
-    docs.extend(build_region_chunks(graph))
+    docs.extend(build_entity_chunks(graph, dataset=dataset, source_file=source_file, graph_index=graph_index))
+    docs.extend(build_region_chunks(graph, graph_index=graph_index))
     docs.extend(build_relation_chunks(graph))
+    docs.extend(build_materialized_relation_chunks(materialized))
     if aliases:
         docs.extend(build_alias_chunks(aliases))
-    logger.info(f"Generated {len(docs)} RAG documents")
+    logger.info(f"Generated {len(docs)} RAG documents (with graph-aware metadata)")
     return docs

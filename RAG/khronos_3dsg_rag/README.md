@@ -1,147 +1,218 @@
-# Khronos 3DSG RAG
+# Khronos 3D Scene Graph RAG
 
-将 Khronos 输出的 3D Dynamic Scene Graph (DSG) JSON 转换为本地 RAG 知识库，支持自然语言检索场景上下文。
+基于 Khronos 3D 动态场景图的 RAG（检索增强生成）向量库构建工具。
 
-## 流程
+Khronos 3D Dynamic Scene Graph RAG (Retrieval-Augmented Generation) vector database builder.
 
-```
-3DSG JSON → 解析节点/边 → 生成语义 chunks → 建立 ChromaDB 向量库 → 自然语言查询
-```
+---
 
-## 环境
+## 概述 / Overview
 
-本项目与 `LLM-robot-taskplanning-chaining` 共用同一个 conda 环境，不单独创建 venv。
+将 Khronos SLAM 输出的结构化场景图（DSG JSON）转换为可检索的向量数据库，支持自然语言查询场景中的物体、房间和空间关系。
 
-```bash
-# 激活环境（每次开终端执行一次）
-conda activate llm-task-planner
-```
+Converts structured scene graphs (DSG JSON) from Khronos SLAM into a searchable vector database, supporting natural language queries for objects, rooms, and spatial relationships.
 
-依赖已预装，如需手动安装：
+---
 
-```bash
-pip install ollama pydantic pyyaml chromadb sentence-transformers
-```
+## 功能特性 / Features
 
-首次运行会自动下载 embedding 模型 (~120MB)。
+- **Graph-Aware Metadata**: 每个 chunk 包含 parent/child/neighbor 关系，支持图遍历检索 / **图感知 Metadata**：每个 chunk 包含 parent/child/neighbor 关系，支持图遍历检索
+- **Multi-Type Chunks**: Entity / Region / Relation / Materialized Relation / Alias / **多类型文档**：Entity / Region / Relation / Materialized Relation / Alias
+- **Hierarchical Query**: 支持 "room 201 里的物体" 类型的层级查询 / **层级查询**：支持 "room 201 里的物体" 类型的层级查询
+- **Multilingual Support**: 使用 paraphrase-multilingual-MiniLM-L12-v2 embedding / **多语言支持**：使用 paraphrase-multilingual-MiniLM-L12-v2 embedding
+- **Graph Traversal Expansion**: 检索后自动扩展图邻居 / **图遍历扩展**：检索后自动扩展图邻居
 
-## 使用
+---
 
-### 构建 RAG
-
-编辑 `config.yaml` 配置数据源：
-
-```yaml
-dsg_sources:
-  khronos_office: "/path/to/office/dsg.json"
-  khronos_apartment: "/path/to/apartment/dsg.json"
-```
-
-```bash
-# 并行构建所有数据源（每个生成独立数据库）
-python src/main.py build --all
-
-# 单独构建一个
-python src/main.py build --input data/3DSG.json -o outputs/mock_office
-```
-
-输出结构：
-```
-outputs/
-├── khronos_office/
-│   ├── rag_documents.jsonl
-│   └── vector_db/
-├── khronos_apartment/
-│   ├── rag_documents.jsonl
-│   └── vector_db/
-└── mock_office/
-    ├── rag_documents.jsonl
-    └── vector_db/
-```
-
-### 查询
-
-```bash
-# 查看有哪些可用数据库
-python src/main.py query --list
-
-# 查指定数据库（按名称或路径）
-python src/main.py query --db khronos_office -q "chair near table"
-python src/main.py query --db outputs/mock_office -q "走廊附近有什么"
-
-# 跨所有数据库搜索，按相关度排序
-python src/main.py query --all -q "navigate to room 201" --top-k 10
-```
-
-### Python API（供 LLM task planner 调用）
-
-```python
-from src.query_rag import retrieve_scene_context
-
-# 搜默认数据库
-results = retrieve_scene_context("find a chair in room 201", top_k=5)
-
-# 搜指定数据库
-from src.query_rag import query_rag
-results = query_rag("chair near table", "outputs/khronos_office/vector_db", top_k=5)
-```
-
-## 项目结构
+## 项目结构 / Project Structure
 
 ```
 khronos_3dsg_rag/
 ├── README.md
 ├── requirements.txt
-├── config.yaml              # 别名配置
+├── config.yaml                  # 配置文件（数据源、别名、embedding 模型）
 ├── data/
-│   └── 3DSG.json            # mock 测试数据
+│   ├── 3DSG.json               # 示例数据
+│   └── dsg.json                 # Khronos SLAM 输出
 ├── outputs/
-│   ├── rag_documents.jsonl  # 生成的文档 chunks
-│   └── vector_db/           # ChromaDB 持久化
+│   ├── rag_documents.jsonl      # 生成的 RAG 文档
+│   └── vector_db/               # ChromaDB 向量数据库
 └── src/
-    ├── main.py              # CLI 入口
-    ├── parse_3dsg.py        # DSG JSON 解析器
-    ├── build_documents.py   # 语义 chunks 生成
-    ├── build_vector_db.py   # ChromaDB 向量库构建
-    ├── query_rag.py         # 检索接口
-    └── schemas.py           # 数据模型
+    ├── main.py                  # CLI 入口
+    ├── parse_3dsg.py            # DSG JSON 解析器
+    ├── build_documents.py       # RAG 文档生成器（含图感知增强）
+    ├── build_vector_db.py       # ChromaDB 向量索引
+    ├── query_rag.py             # RAG 查询接口
+    └── schemas.py               # 数据模型
 ```
 
-## 支持的输入格式
+---
 
-1. **SPARK-DSG 格式**（Khronos / Hydra 原生格式）：`nodes` 列表 + `edges` 列表，节点带 `layer` 和 `attributes`
-2. **Flat 格式**（task planner 风格）：`entities` + `relations` 列表
-
-解析器自动检测格式，无需手动配置。
-
-## 配置
-
-`config.yaml` 中可以配置别名映射，用于查询扩展：
-
-```yaml
-aliases:
-  chair: ["seat"]
-  door: ["entrance", "exit"]
-zh_aliases:
-  椅子: ["chair", "seat"]
-  门: ["door", "entrance"]
-```
-
-## 与 LLM Task Planner 集成
-
-两个项目共用 miniconda base 环境，RAG 模块可作为 LLM task planner 的场景图检索前端：
+## 安装 / Installation
 
 ```bash
-# 1. 用 Khronos 真实输出构建 RAG
-cd /home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag
-python src/main.py build --input /path/to/snapshots/00000/frontend/dsg.json --output outputs/
-
-# 2. 在 LLM 项目中调用 RAG 检索
-cd /home/nenlian/Masterthesis-wang/LLM-robot-taskplanning-chaining
-python -c "
-from query_rag import retrieve_scene_context
-ctx = retrieve_scene_context('navigate to room 201')
-for r in ctx:
-    print(r['node_id'], r['text'])
-"
+conda activate llm-task-planner
+pip install chromadb sentence-transformers pyyaml
 ```
+
+---
+
+## 使用方法 / Usage
+
+### 构建向量库 / Build Vector Database
+
+```bash
+cd RAG/khronos_3dsg_rag
+
+# 构建所有数据源（并行）
+python src/main.py build --all
+
+# 构建单个数据源
+python src/main.py build --input data/3DSG.json -o outputs/
+```
+
+### 查询 / Query
+
+```bash
+# 查询单个数据库
+python src/main.py query --db outputs/mock_office -q "chair near table" --top-k 5
+
+# 查询所有数据库
+python src/main.py query --all -q "navigate to room 201" --top-k 10
+
+# 列出可用数据库
+python src/main.py query --list
+```
+
+### Python API / Python 接口
+
+```python
+from query_rag import query_rag
+
+results = query_rag("chair near table", "outputs/vector_db", top_k=5)
+for r in results:
+    print(f"[{r['rank']}] score={r['score']:.4f} node={r['node_id']}")
+    print(f"  {r['text']}")
+```
+
+---
+
+## 文档类型 / Document Types
+
+### 1. Entity Chunk
+每个节点一个文档，包含位置、尺寸、观测时间等信息。
+
+One document per node with position, size, observation time, etc.
+
+### 2. Region Chunk
+聚合容器节点（room/place/building）的子节点信息。
+
+Aggregated information for container nodes (room/place/building).
+
+### 3. Relation Chunk
+每条边一个文档，描述节点间关系。
+
+One document per edge describing relationships between nodes.
+
+### 4. Materialized Relation Chunk
+预物化的关系路径，支持快速层级查询。
+
+Pre-materialized relation paths for fast hierarchical queries.
+
+### 5. Alias Chunk
+关键词别名扩展，提升查询效果。
+
+Keyword alias expansion for improved query matching.
+
+---
+
+## Graph-Aware Metadata / 图感知元数据
+
+每个 entity chunk 包含以下图结构信息：
+
+Each entity chunk contains the following graph structure information:
+
+| 字段 / Field | 类型 / Type | 说明 / Description |
+|-------------|------------|-------------------|
+| `parent_ids` | `list[str]` | 父节点 ID / Parent node IDs |
+| `child_ids` | `list[str]` | 子节点 ID / Child node IDs |
+| `neighbor_ids` | `list[str]` | 邻居节点 ID / Neighbor node IDs |
+| `depth` | `int` | 层级深度 (0=building, 3=object) / Hierarchy depth |
+| `bounding_box_center` | `list[float]` | 位置坐标 / Position coordinates |
+| `bounding_box_dimensions` | `list[float]` | 尺寸 / Dimensions |
+
+---
+
+## 查询示例 / Query Examples
+
+```text
+# 物体查询 / Object queries
+"chair"                           → 返回所有椅子 / Returns all chairs
+"small_office_objects"            → 返回小办公物体 / Returns small office objects
+
+# 层级查询 / Hierarchical queries
+"objects in room 201"             → 返回 room 201 的子节点 / Returns children of room 201
+"rooms in building"               → 返回所有房间 / Returns all rooms
+
+# 空间查询 / Spatial queries
+"chair near table"                → 返回位置相近的椅子和桌子 / Returns chairs near tables
+"objects at position x=-15 y=22"  → 返回指定位置的物体 / Returns objects at position
+
+# 关系查询 / Relation queries
+"connected rooms"                 → 返回有连接关系的房间 / Returns connected rooms
+```
+
+---
+
+## 配置 / Configuration
+
+`config.yaml`:
+
+```yaml
+# 数据源 / Data sources
+dsg_sources:
+  mock_office: "data/3DSG.json"
+  khronos_office: "/path/to/dsg.json"
+
+# Embedding 模型 / Embedding model
+embed_model: "paraphrase-multilingual-MiniLM-L12-v2"
+
+# 关键词别名 / Keyword aliases
+aliases:
+  door: ["entrance", "exit", "gate"]
+  corridor: ["hallway", "passage"]
+  chair: ["seat"]
+  table: ["desk"]
+
+# 中文别名 / Chinese aliases
+zh_aliases:
+  门: ["door", "entrance"]
+  走廊: ["corridor", "hallway"]
+  椅子: ["chair", "seat"]
+```
+
+---
+
+## 数据流 / Data Flow
+
+```
+Khronos SLAM
+    ↓
+dsg.json (SPARK-DSG format)
+    ↓ parse_3dsg.py
+SceneGraph (nodes + edges)
+    ↓ build_documents.py
+RAG Documents (entity/region/relation/alias)
+    ↓ build_vector_db.py
+ChromaDB Vector Database
+    ↓ query_rag.py
+Retrieved Chunks (with graph expansion)
+```
+
+---
+
+## 依赖 / Dependencies
+
+- `chromadb` - 向量数据库 / Vector database
+- `sentence-transformers` - Embedding 模型 / Embedding model
+- `pyyaml` - 配置解析 / Config parsing

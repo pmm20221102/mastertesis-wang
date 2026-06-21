@@ -38,7 +38,7 @@ def load_config(config_path: str | Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
-def _build_one(input_path: str, output_dir: str, aliases: dict) -> dict:
+def _build_one(input_path: str, output_dir: str, aliases: dict, dataset: str = "") -> dict:
     """Build a single RAG database. Runs in a subprocess for parallelism."""
     input_path = Path(input_path)
     output_dir = Path(output_dir)
@@ -47,7 +47,7 @@ def _build_one(input_path: str, output_dir: str, aliases: dict) -> dict:
         return {"status": "error", "name": output_dir.name, "error": f"File not found: {input_path}"}
 
     graph = parse_3dsg(input_path)
-    docs = build_all_documents(graph, aliases=aliases)
+    docs = build_all_documents(graph, aliases=aliases, dataset=dataset or output_dir.name, source_file=input_path.name)
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -95,13 +95,13 @@ def cmd_build(args: argparse.Namespace) -> None:
         tasks = []
         for name, dsg_path in sources.items():
             out = output_root / name
-            tasks.append((dsg_path, str(out), aliases))
+            tasks.append((dsg_path, str(out), aliases, name))
 
         print(f"Building {len(tasks)} databases in parallel ...\n")
         t0 = time.time()
 
         with ProcessPoolExecutor(max_workers=min(len(tasks), 4)) as pool:
-            futures = {pool.submit(_build_one, inp, out, al): name for inp, out, al in tasks}
+            futures = {pool.submit(_build_one, inp, out, al, ds): ds for inp, out, al, ds in tasks}
             for future in as_completed(futures):
                 result = future.result()
                 if result["status"] == "ok":
@@ -118,7 +118,7 @@ def cmd_build(args: argparse.Namespace) -> None:
         output_dir = args.output or config.get("output_dir", "outputs")
 
         print(f"Building from {input_path} ...\n")
-        result = _build_one(input_path, output_dir, aliases)
+        result = _build_one(input_path, output_dir, aliases, dataset=Path(input_path).stem)
 
         if result["status"] == "ok":
             print(f"[1/2] Parsed: {result['nodes']} nodes, {result['edges']} edges")
