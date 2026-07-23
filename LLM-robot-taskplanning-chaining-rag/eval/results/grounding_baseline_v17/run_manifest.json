@@ -1,0 +1,23 @@
+{
+  "experiment_id": "grounding_baseline_v17",
+  "timestamp": "2026-07-15T00:00:00Z",
+  "git_commit": "def12453ce2b06dd178cf17e86fc01e9768dca82",
+  "canonical_graph_hash": "afcd378fb04f09d3",
+  "canonical_graph_path": "RAG/khronos_3dsg_rag/outputs/khronos_office_new/canonical_graph_v2.json",
+  "benchmark_hash": "25407e21069e4d71",
+  "benchmark_path": "eval/cases/grounding_benchmark_100_v3.jsonl",
+  "benchmark_status": "ready",
+  "benchmark_case_count": 100,
+  "mode": "oracle_intent",
+  "model": "N/A (oracle intent)",
+  "repeats": 1,
+  "db_dir": "/home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/khronos_office_new/vector_db",
+  "results_dir": "eval/results/grounding_baseline_v17/",
+  "metrics": {
+    "pipeline_status_accuracy": 1.0,
+    "grounding_exact_success_rate": 1.0,
+    "case_failure_count": 0,
+    "set_exact_match_rate": 1.0,
+    "spatial_target_id_accuracy": 1.0
+  }
+}

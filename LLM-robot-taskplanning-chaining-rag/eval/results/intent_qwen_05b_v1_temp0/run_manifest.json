@@ -1,0 +1,10 @@
+{
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "temperature": 0.0,
+  "benchmark": "eval/cases/intent_benchmark_100_v1.jsonl",
+  "benchmark_hash": "934b51f191b92f43",
+  "total_cases": 100,
+  "total_evaluations": 100,
+  "output_dir": "eval/results/intent_qwen_05b_v1_temp0"
+}

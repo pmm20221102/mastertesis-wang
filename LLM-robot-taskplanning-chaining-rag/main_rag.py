@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import Any
 
 import yaml
-from ollama import Client
 from pydantic import ValidationError
 
 from schema import TaskPlan, TaskStep, PlanDraft, Constraints
@@ -344,6 +343,7 @@ def get_default_model(config: dict[str, Any]) -> str:
 
 def run_llm_once(model: str, prompt: str, config: dict[str, Any]) -> str:
     """Send a prompt to LLM and return raw text response."""
+    from ollama import Client
     host_url = get_ollama_host(config)
     client = Client(host=host_url, timeout=300)
     options = config.get("options", {"temperature": 0.1, "num_ctx": 8192, "num_predict": 2048})
@@ -813,6 +813,7 @@ OUTPUT:
 }}
 """
 
+    from ollama import Client
     client = Client(host=get_ollama_host(config), timeout=120)
     options = config.get("options", {"temperature": 0.1, "num_ctx": 4096, "num_predict": 2048})
 
@@ -1015,6 +1016,7 @@ RULES:
 Output valid JSON only.
 """
 
+    from ollama import Client
     client = Client(host=get_ollama_host(config), timeout=120)
     options = config.get("options", {"temperature": 0.1, "num_ctx": 4096, "num_predict": 2048})
 

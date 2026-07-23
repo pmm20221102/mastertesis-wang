@@ -1,0 +1,7 @@
+conda run -n llm-task-planner env PYTHONPATH="" python -m eval.run_pipeline_eval \
+    --db /home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/khronos_office_new/vector_db \
+    --grounding-cases eval/cases/grounding_benchmark_100_v3.jsonl \
+    --mode oracle_intent \
+    --repeats 1 \
+    --output eval/results/grounding_baseline_v17/ \
+    --allow-blocked

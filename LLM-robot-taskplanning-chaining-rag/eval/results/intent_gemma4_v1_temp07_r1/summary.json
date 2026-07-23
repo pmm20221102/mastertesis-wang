@@ -1,0 +1,78 @@
+{
+  "total_cases": 100,
+  "schema_validity_rate": 1.0,
+  "action_accuracy": 0.69,
+  "role_presence_precision": 1.0,
+  "role_presence_recall": 1.0,
+  "role_presence_f1": 1.0,
+  "spurious_role_rate": 0.0,
+  "location_f1": 0.0,
+  "relation_f1": 0.0,
+  "quantifier_accuracy": 0.66,
+  "aggregate_accuracy": 0.9,
+  "multi_step_exact_rate": null,
+  "multi_step_case_count": 0,
+  "strict_exact_match_rate": 0.44,
+  "strict_exact_match_count": 44,
+  "failure_breakdown": {
+    "wrong_node_type": 24,
+    "wrong_label": 1,
+    "wrong_action": 31
+  },
+  "category_breakdown": {
+    "ambiguous": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.6
+    },
+    "complex": {
+      "total": 10,
+      "action_accuracy": 0.6,
+      "strict_exact_rate": 0.0
+    },
+    "exact_id": {
+      "total": 5,
+      "action_accuracy": 0.6,
+      "strict_exact_rate": 0.6
+    },
+    "not_found": {
+      "total": 10,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 1.0
+    },
+    "object_navigation": {
+      "total": 10,
+      "action_accuracy": 0.5,
+      "strict_exact_rate": 0.3
+    },
+    "place_constraint": {
+      "total": 15,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.5333333333333333
+    },
+    "relation": {
+      "total": 15,
+      "action_accuracy": 0.2,
+      "strict_exact_rate": 0.0
+    },
+    "room_constraint": {
+      "total": 10,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.5
+    },
+    "set_query": {
+      "total": 10,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 1.0
+    },
+    "spatial": {
+      "total": 10,
+      "action_accuracy": 0.2,
+      "strict_exact_rate": 0.2
+    }
+  },
+  "avg_latency_ms": 4893.034627437592,
+  "model": "gemma4:e2b-it-qat",
+  "repeats": 1,
+  "temperature": 0.7
+}

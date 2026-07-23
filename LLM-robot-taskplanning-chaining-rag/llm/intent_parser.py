@@ -19,8 +19,6 @@ from typing import Any
 # Add parent directory to path for local schemas import
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from ollama import Client
-
 from planner_schemas.intent import EntityReference, TaskIntent, TaskConstraint
 
 logger = logging.getLogger(__name__)
@@ -49,7 +47,7 @@ Convert natural language robot instructions into structured TaskIntent JSON.
 
 RULES:
 1. Extract the action and entity references from the instruction.
-2. Do NOT invent or output node IDs (long numeric identifiers).
+2. Do NOT invent or output node IDs (long numeric identifiers like 5692549928996306945).
 3. PRESERVE room numbers, floor numbers, door numbers explicitly provided by the user (e.g., "Room 201").
 4. Use natural language descriptions for entities (e.g., "the chair near the desk").
 5. For manipulation tasks (pick, grasp, carry, place), set action to "unsupported".
@@ -62,24 +60,41 @@ ROLE RULES:
 - escort/guide instructions: Set "actor" (person being escorted) AND "destination".
 - Only create roles that are explicitly mentioned or clearly implied.
 
-Output format:
+SCHEMA:
 {
   "action": "navigate|escort|guide|avoid|locate|wait|ask_clarification|unsupported",
-  "actor": {"text": "...", "label": "...", "node_type": "...", "room": "..."} or null,
-  "target": {"text": "...", "label": "...", "node_type": "...", "room": "...", "relations": [...], "quantifier": "one|all|nearest|any"} or null,
-  "source": {"text": "...", "label": "...", "node_type": "..."} or null,
-  "destination": {"text": "...", "label": "...", "node_type": "..."} or null,
-  "constraints": [{"type": "avoid|prefer|condition", "description": "...", "target_text": "...", "target_label": "..."}],
-  "description": "brief description of the task"
+  "actor": EntityReference or null,
+  "target": EntityReference or null,
+  "source": EntityReference or null,
+  "destination": EntityReference or null,
+  "constraints": [TaskConstraint],
+  "description": "brief description",
+  "steps": [IntentStep] or null  // only for multi-step instructions
 }
+
+EntityReference:
+{
+  "text": "natural language description",
+  "label": "canonical label (e.g., chairs, places, rooms)",
+  "node_type": "objects|places|rooms|agents",
+  "room": "room number or ID if mentioned",
+  "locations": [LocationConstraint],  // for Place + Room intersection
+  "relations": [RelationConstraint],  // for near, inside, connected_to
+  "quantifier": "one|all|nearest|any",
+  "aggregate": AggregateConstraint or null
+}
+
+LocationConstraint: {"text": "...", "node_type": "place|room"}
+RelationConstraint: {"relation": "inside|contains|near|connected_to", "target_text": "...", "target_label": "..."}
+AggregateConstraint: {"operation": "count_in_location|max_count|min_count", "target_labels": [...], "location": LocationConstraint}
 
 FEW-SHOT EXAMPLES:
 
 1. "Navigate to the chair"
 → {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}}
 
-2. "Find the chair in room 8070450532247930074"
-→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "room": "8070450532247930074"}}
+2. "Find the chair in room 201"
+→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "room": "201"}}
 
 3. "Find all chairs"
 → {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all"}}
@@ -87,13 +102,28 @@ FEW-SHOT EXAMPLES:
 4. "Find the chair near the desk"
 → {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "relations": [{"relation": "near", "target_text": "desk", "target_label": "desks"}]}}
 
-5. "Escort the person to the entrance"
-→ {"action": "escort", "actor": {"text": "person", "node_type": "agents"}, "destination": {"text": "entrance", "label": "entrance", "node_type": "places"}}
+5. "Navigate to the chair in Place A inside Room 201"
+→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "locations": [{"text": "Place A", "node_type": "place"}, {"text": "Room 201", "node_type": "room"}]}}
 
-6. "Navigate from the office to the kitchen"
+6. "Find the small_office_object inside place 928841"
+→ {"action": "locate", "target": {"text": "small_office_object", "label": "small_office_objects", "node_type": "objects", "relations": [{"relation": "inside", "target_text": "place 928841"}]}}
+
+7. "How many chairs are in Room 201?"
+→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all", "aggregate": {"operation": "count_in_location", "target_labels": ["chairs"], "location": {"text": "Room 201", "node_type": "room"}}}}
+
+8. "Which room has the most chairs?"
+→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all", "aggregate": {"operation": "max_count", "target_labels": ["chairs"]}}}
+
+9. "Escort the person to the entrance"
+→ {"action": "escort", "actor": {"text": "person", "node_type": "agents"}, "destination": {"text": "entrance", "node_type": "places"}}
+
+10. "Navigate from the office to the kitchen"
 → {"action": "navigate", "source": {"text": "office", "node_type": "rooms"}, "destination": {"text": "kitchen", "node_type": "rooms"}}
 
-7. "Pick up the chair"
+11. "First find the chair, then navigate to the office"
+→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}, "destination": {"text": "office", "node_type": "rooms"}, "steps": [{"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}}, {"action": "navigate", "destination": {"text": "office", "node_type": "rooms"}}]}
+
+12. "Pick up the chair"
 → {"action": "unsupported"}
 """
 
@@ -270,6 +300,7 @@ def parse_intent_with_llm(
     2. LLM structured parser
     3. Intent semantic validation/canonicalization
     """
+    from ollama import Client
     from main_rag import get_ollama_host, load_config, CONFIG_PATH
 
     if config is None:
@@ -353,52 +384,9 @@ def _parse_constraint(data: dict) -> TaskConstraint:
 
 
 def intent_to_dict(intent: TaskIntent) -> dict[str, Any]:
-    """Convert TaskIntent to dictionary for serialization."""
-    return {
-        "action": intent.action,
-        "actor": _entity_ref_to_dict(intent.actor) if intent.actor else None,
-        "target": _entity_ref_to_dict(intent.target) if intent.target else None,
-        "source": _entity_ref_to_dict(intent.source) if intent.source else None,
-        "destination": _entity_ref_to_dict(intent.destination) if intent.destination else None,
-        "constraints": [
-            {
-                "type": c.type,
-                "description": c.description,
-                "target_text": c.target_text,
-                "target_label": c.target_label,
-            }
-            for c in intent.constraints
-        ],
-        "description": intent.description,
-    }
+    """Convert TaskIntent to dictionary for serialization.
 
-
-def _entity_ref_to_dict(ref: EntityReference) -> dict[str, Any]:
-    """Convert EntityReference to dictionary."""
-    result = {
-        "text": ref.text,
-        "node_type": ref.node_type,
-        "label": ref.label,
-        "name": ref.name,
-        "room": ref.room,
-        "attributes": ref.attributes,
-        "position": ref.position,
-        "quantifier": ref.quantifier,
-    }
-    if ref.relations:
-        result["relations"] = [
-            {
-                "relation": r.relation,
-                "target_text": r.target_text,
-                "target_label": r.target_label,
-                "target_node_type": r.target_node_type,
-            }
-            for r in ref.relations
-        ]
-    if ref.aggregate:
-        result["aggregate"] = {
-            "operation": ref.aggregate.operation,
-            "target_labels": ref.aggregate.target_labels,
-            "value": ref.aggregate.value,
-        }
-    return result
+    Uses Pydantic model_dump to preserve ALL fields including:
+    locations, relations.target_node_id, aggregate.location, steps, etc.
+    """
+    return intent.model_dump(mode="json")
