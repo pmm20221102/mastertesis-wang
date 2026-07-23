@@ -82,26 +82,38 @@ Natural Language Instruction
 - 其他: 46 passed
 ```
 
-### Intent Evaluation Results (Controlled, temp=0, 1 repeat)
+### Intent Evaluation Results (Controlled, temp=0, 3 repeats)
 
-| 指标 | qwen2.5:0.5b | gemma4:e2b |
-|------|-------------|-----------|
+| 指标 | qwen2.5:0.5b | gemma4:e2b | qwen3.5:4b |
+|------|-------------|-----------|------------|
+| Schema validity | 100% | 100% | 59% |
+| Action accuracy | 67% | **69%** | 52% |
+| Role presence F1 | 97.7% | **100%** | 57.8% |
+| Spurious role rate | 6.5% | **0%** | - |
+| Quantifier accuracy | 66% | 62% | 70% |
+| Aggregate accuracy | 83% | **87%** | 95% |
+| Strict exact match | 4% | **44%** | 37% |
+| Avg latency | **750ms** | 4.7s | 41s |
+| Deterministic (temp=0) | - | **100%** | - |
+
+### Paraphrase Benchmark (gemma4, 289/300 cases)
+
+| 指标 | Controlled (100) | Paraphrase (289) |
+|------|-----------------|------------------|
 | Schema validity | 100% | 100% |
-| Action accuracy | 67% | 69% |
-| Role presence P/R/F1 | 96.5/100/97.7% | 100/100/100% |
-| Spurious role rate | 6.5% | 0% |
-| Quantifier accuracy | 66% | 62% |
-| Aggregate accuracy | 83% | 87% |
-| Strict exact match | 4% | 44% |
-| Avg latency | 750ms | 4.7s |
+| Action accuracy | 69% | **74%** |
+| Strict exact match | 44% | **45.7%** |
 
-### Temperature Stability (gemma4)
+Per-style: colloquial 48.5%, standard 45.8%, rephrased 42.7%
+
+### Temperature Stability (gemma4, 3 repeats)
 | 指标 | temp=0 | temp=0.7 |
 |------|--------|----------|
 | Action accuracy | 69% | 69% |
 | Strict exact match | 44% | 44% |
 | Quantifier | 62% | 66% |
 | Aggregate | 87% | 90% |
+| Deterministic | **100%** | ~96% |
 
 ## 5. Error Taxonomy
 
@@ -115,13 +127,22 @@ Natural Language Instruction
 ### gemma4:e2b 失败分布
 | 类别 | 数量 | 说明 |
 |------|------|------|
-| wrong_action | 31 | action 分类错误 |
-| wrong_node_type | 24 | node_type 输出不匹配 |
-| wrong_label | 1 | label 映射错误 |
+| wrong_action | 93 | action 分类错误（3 repeats 累计） |
+| wrong_node_type | 72 | node_type 输出不匹配 |
+| wrong_label | 3 | label 映射错误 |
+
+### qwen3.5:4b 失败分布（83 cases）
+| 类别 | 数量 | 说明 |
+|------|------|------|
+| schema_error | 34 | JSON 结构不符合 schema（41%） |
+| wrong_node_type | 7 | node_type 不匹配 |
+| wrong_action | 6 | action 分类错误 |
+| wrong_label | 5 | label 映射错误 |
 
 ### 共同瓶颈
-1. **node_type 不匹配**：模型输出 `object` 而非 `objects`（复数形式）
+1. **node_type 不匹配**：模型输出 `object` 而非 `objects`（复数形式）— 三个模型都有此问题
 2. **action 分类**：`navigate` vs `locate` 混淆（尤其 spatial/relation 类别）
+3. **qwen3.5 thinking 问题**：41% schema_error，thinking token 消耗大量预算导致 JSON 输出不完整
 
 ## 6. 尚未解决的问题
 
