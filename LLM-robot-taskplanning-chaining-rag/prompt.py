@@ -79,12 +79,13 @@ Output valid JSON only. No explanations, no markdown, no comments.
 
 ## Grounding Rules (Critical)
 
-1. target_id MUST be copied exactly from the scene context entity IDs.
-2. Never invent or hallucinate IDs. Use only IDs present in the provided entities.
-3. If a target entity is missing from the scene context, set status to "target_not_found".
-4. If multiple targets match and the instruction is ambiguous, set status to "ambiguous".
-5. constraints.avoid and constraints.prefer should also use exact entity IDs when referring to scene graph nodes.
-6. Do not use placeholder IDs like "room_201" or "R105" — use the actual numeric IDs from the scene context.
+1. Use target_ref to reference grounded entities. The system will resolve it to the actual node_id.
+2. Valid target_ref values: "actor", "target", "source", "destination", "constraint_avoid_0", "constraint_avoid_1", etc.
+3. Never invent or hallucinate IDs. The system deterministically fills target_id from target_ref.
+4. If a target entity is missing from the scene context, set status to "target_not_found".
+5. If multiple targets match and the instruction is ambiguous, set status to "ambiguous".
+6. constraints.avoid should use constraint reference names (e.g., "constraint_avoid_0").
+7. Do not output raw numeric node IDs — use role references only.
 
 ## Task Decomposition Rules
 
@@ -112,7 +113,8 @@ When the instruction references a room by its contents (e.g. "the room with chai
       "step": 1,
       "action": "<action>",
       "target_type": "<type>",
-      "target_id": "<exact_entity_id>",
+      "target_ref": "<role_reference>",
+      "target_id": null,
       "description": "<short description>",
       "executor": "<executor>",
       "constraints": {
@@ -131,9 +133,9 @@ When the instruction references a room by its contents (e.g. "the room with chai
 
 Instruction: "Navigate to the room with chairs and avoid the kitchen."
 
-Scene context contains:
-- Room A (id: 111) — contains chairs
-- Room B (id: 222) — kitchen area
+Grounded task contains:
+- target: room with chairs (node_id: 111)
+- constraint_avoid_0: kitchen (node_id: 222)
 
 Expected output:
 {
@@ -143,7 +145,8 @@ Expected output:
       "step": 1,
       "action": "locate_entity",
       "target_type": "room",
-      "target_id": "111",
+      "target_ref": "target",
+      "target_id": null,
       "description": "Locate the room containing chairs.",
       "executor": "scene_graph",
       "constraints": {"avoid": [], "prefer": [], "conditions": []}
@@ -152,15 +155,16 @@ Expected output:
       "step": 2,
       "action": "navigate_to",
       "target_type": "room",
-      "target_id": "111",
+      "target_ref": "target",
+      "target_id": null,
       "description": "Navigate to the room with chairs.",
       "executor": "nav2",
-      "constraints": {"avoid": ["222"], "prefer": [], "conditions": ["room_111_located"]}
+      "constraints": {"avoid": ["constraint_avoid_0"], "prefer": [], "conditions": ["room_111_located"]}
     }
   ],
   "clarification_request": null,
   "target_not_found": null,
-  "notes": ["Room 222 (kitchen) avoided as requested."]
+  "notes": ["Kitchen (222) avoided as requested."]
 }
 
 ## Bad Behavior

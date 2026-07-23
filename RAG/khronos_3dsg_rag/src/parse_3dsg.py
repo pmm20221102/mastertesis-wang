@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from pathlib import Path
 from typing import Any
 
@@ -83,6 +84,23 @@ def _parse_bbox(attrs: dict) -> BBox | None:
                 dimensions=[float(x) for x in dims[:3]])
 
 
+def _bbox_is_valid(bbox: BBox | None) -> bool:
+    """Check if bounding box has non-zero dimensions (not invalid placeholder)."""
+    if bbox is None:
+        return False
+    return any(abs(v) > 1e-9 for v in bbox.dimensions)
+
+
+def _valid_position(pos) -> bool:
+    """Check if position is a valid non-zero 3D coordinate."""
+    if not isinstance(pos, list) or len(pos) < 3:
+        return False
+    try:
+        return all(math.isfinite(v) for v in pos[:3]) and any(abs(v) > 1e-6 for v in pos[:3])
+    except (TypeError, ValueError):
+        return False
+
+
 def _determine_type(attrs: dict, layer: int, partition: int) -> str:
     """Determine human-readable node type from attributes and layer."""
     # Check explicit type field in attributes
@@ -133,13 +151,16 @@ def _parse_spark_dsg(data: dict) -> SceneGraph:
         elif isinstance(sem_label_num, str):
             label = sem_label_num
 
-        # Position: prefer bounding_box center, fallback to position field
+        # Position: raw position > valid bbox center > empty
+        # Raw position is authoritative; invalid bbox [0,0,0] should not override it
         bbox = _parse_bbox(attrs)
-        position = bbox.center if bbox else []
-        if not position:
-            pos = attrs.get("position")
-            if isinstance(pos, list) and len(pos) >= 3:
-                position = [float(x) for x in pos[:3]]
+        raw_pos = attrs.get("position")
+        if _valid_position(raw_pos):
+            position = [float(x) for x in raw_pos[:3]]
+        elif _bbox_is_valid(bbox):
+            position = bbox.center
+        else:
+            position = []
 
         first_seen = attrs.get("first_observed_ns")
         if isinstance(first_seen, list):

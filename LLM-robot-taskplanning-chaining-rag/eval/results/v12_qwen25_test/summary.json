@@ -1,0 +1,42 @@
+{
+  "mode": "oracle_grounding",
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 6,
+    "pipeline_status_accuracy": 0.8333333333333334,
+    "role_status_accuracy": 0.5,
+    "role_entity_id_accuracy": 0.5,
+    "role_status_evaluated_count": 2,
+    "role_id_evaluated_count": 2,
+    "spurious_role_count": 4,
+    "spurious_role_rate": 0.6666666666666666,
+    "error_rate": 0.0,
+    "avg_latency_ms": 2178.630510965983
+  },
+  "planning": {
+    "total_cases": 7,
+    "planner_invoked_count": 4,
+    "pre_set_status_count": 3,
+    "pipeline_status_accuracy": 0.8571428571428571,
+    "planner_status_accuracy": 0.75,
+    "planner_actions_accuracy": 1.0,
+    "planner_actions_exact_sequence": 0.75,
+    "planner_actions_ordered": 1.0,
+    "planner_steps_compliance": 1.0,
+    "planner_validation_pass_rate": 0.75,
+    "target_ids_accuracy": 1.0,
+    "target_ids_evaluated_count": 3,
+    "target_ids_na_count": 4,
+    "hallucinated_id_rate": 0.0,
+    "ungrounded_id_rate": 0.0,
+    "wrong_role_id_rate": 0.0,
+    "total_emitted_ids": 5,
+    "total_hallucinated_ids": 0,
+    "total_ungrounded_ids": 0,
+    "total_wrong_role_ids": 0,
+    "error_rate": 0.0,
+    "avg_latency_ms": 369.42573956080844,
+    "avg_planner_latency_ms": 646.487295627594
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "source_file": "../RAG/khronos_3dsg_rag/outputs/khronos_office_new/canonical_graph_v2.json",
+  "schema_version": 2,
+  "total_nodes": 1858,
+  "node_type_counts": {
+    "object": 191,
+    "place": 1262,
+    "room": 10,
+    "building": 1,
+    "agent": 394
+  },
+  "total_hierarchy_edges": 1867,
+  "total_neighbor_edges": 4338,
+  "hierarchy_validity_pct": 100.0,
+  "object_place_coverage_pct": 100.0,
+  "object_room_coverage_pct": 97.4,
+  "place_room_coverage_pct": 98.9,
+  "position_coverage_pct": 100.0
+}

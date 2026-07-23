@@ -1,0 +1,24 @@
+{
+  "object_parent_coverage": {
+    "total_objects": 585,
+    "objects_with_parent": 0,
+    "coverage_percent": 0.0,
+    "threshold": 95.0,
+    "status": "FAIL"
+  },
+  "place_parent_coverage": {
+    "total_places": 1262,
+    "places_with_parent": 272,
+    "coverage_percent": 21.6,
+    "threshold": 95.0,
+    "status": "FAIL"
+  },
+  "room_labels": {
+    "total_rooms": 10,
+    "rooms_with_label": 0,
+    "unknown_labels": 10,
+    "threshold": 0,
+    "status": "FAIL"
+  },
+  "notes": "Object hierarchy coverage is 0% because canonical graph only has same-layer neighbor edges. Place hierarchy coverage is 21.6% because most places don't have explicit parent edges in the canonical graph."
+}

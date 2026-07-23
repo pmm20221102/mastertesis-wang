@@ -1,0 +1,17 @@
+{
+  "mode": "oracle_intent",
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 28,
+    "pipeline_status_accuracy": 0.75,
+    "role_status_accuracy": 0.75,
+    "role_entity_id_accuracy": 0.5882352941176471,
+    "role_status_evaluated_count": 28,
+    "role_id_evaluated_count": 17,
+    "spurious_role_count": 0,
+    "spurious_role_rate": 0.0,
+    "error_rate": 0.0,
+    "avg_latency_ms": 298.0776003428868
+  }
+}

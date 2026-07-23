@@ -1,0 +1,28 @@
+{
+  "source_file": "../RAG/khronos_3dsg_rag/data/dsg.json",
+  "total_nodes": 1858,
+  "total_edges": 6205,
+  "node_types": {
+    "objects": 191,
+    "places": 1262,
+    "rooms": 10,
+    "buildings": 1,
+    "agent": 394
+  },
+  "layer_counts": {
+    "2": 585,
+    "3": 1262,
+    "4": 10,
+    "5": 1
+  },
+  "position_coverage_pct": 100.0,
+  "object_count": 191,
+  "agent_count": 394,
+  "place_count": 1262,
+  "object_place_parent_count": 191,
+  "object_place_coverage_pct": 100.0,
+  "agent_place_parent_count": 394,
+  "agent_place_coverage_pct": 100.0,
+  "place_room_parent_count": 1248,
+  "place_room_coverage_pct": 98.9
+}

@@ -9,13 +9,17 @@ input_command: "First, take me to Mr. Wang. He's probably in his office, where t
 
 # Available models
 models:
-  mistral:
-    name: "mistral"
-    description: "Mistral 7B - strong general reasoning"
+  qwen25_05b:
+    name: "qwen2.5:0.5b"
+    description: "Qwen 2.5 0.5B - fast and accurate (recommended)"
     default: true
-  gemma4e4b:
-    name: "gemma4:e4b"
-    description: "Gemma 4 4B - lightweight and fast"
+  qwen35_4b:
+    name: "qwen3.5:4b"
+    description: "Qwen 3.5 4B - stronger but slower"
+    default: false
+  gemma4e2b:
+    name: "gemma4:e2b-it-qat"
+    description: "Gemma 4 2B - lightweight"
     default: false
 
 # Inference parameters
@@ -24,12 +28,11 @@ options:
   top_p: 0.9
   top_k: 40
   num_ctx: 8192
-  num_predict: 2048
   repeat_penalty: 1.1
   seed: 42
 
 # RAG configuration
 rag:
-  db_dir: "/home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/vector_db"
+  db_dir: "/home/nenlian/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/khronos_office_new/vector_db"
   top_k: 20
   use_llm_keywords: true

@@ -1,0 +1,27 @@
+{
+  "mode": "oracle_grounding",
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 6,
+    "pipeline_status_accuracy": 0.5,
+    "node_ids_accuracy": 1.0,
+    "error_rate": 0.0,
+    "avg_latency_ms": 1114.2076253890991
+  },
+  "planning": {
+    "total_cases": 7,
+    "status_accuracy": 1.0,
+    "actions_accuracy": 1.0,
+    "actions_exact_sequence": 0.8571428571428571,
+    "actions_ordered_subsequence": 1.0,
+    "steps_compliance": 1.0,
+    "target_ids_accuracy": 1.0,
+    "target_ids_na_count": 4,
+    "error_rate": 0.0,
+    "avg_latency_ms": 400.80533708844865,
+    "hallucinated_id_rate": 0.0,
+    "total_emitted_ids": 4,
+    "total_hallucinated_ids": 0
+  }
+}

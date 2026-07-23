@@ -1,0 +1,16 @@
+{
+  "case_count": {
+    "value": 100,
+    "expected": 100,
+    "pass": true
+  },
+  "unique_case_ids": {
+    "value": 100,
+    "pass": true
+  },
+  "no_duplicate_queries": {
+    "value": 0,
+    "pass": true
+  },
+  "overall": "PASS"
+}

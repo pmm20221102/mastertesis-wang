@@ -1,0 +1,31 @@
+{
+  "benchmark_name": "khronos_grounding_100_v1",
+  "benchmark_status": "blocked",
+  "blocking_reasons": [
+    "canonical hierarchy corruption from RAG chunk metadata (fixed in v2)",
+    "LocationConstraint schema confuses Place and Room (fixed in scene_graph_api.py v2)",
+    "Spatial cases have invalid reference definitions (no reference_position)",
+    "Semantic duplicate queries disguised by #2/#3",
+    "Generator reads RAG metadata instead of validated canonical graph"
+  ],
+  "superseded_by": "grounding_benchmark_100_v2",
+  "case_count": 100,
+  "random_seed": 42,
+  "dataset_name": "khronos_office",
+  "source_dsg_hash": "27a21bd8f590bfde",
+  "canonical_graph_hash": "bdd63e39fcd99a06",
+  "schema_version": 1,
+  "category_counts": {
+    "ambiguous": 15,
+    "room_constraint": 25,
+    "set_query": 10,
+    "not_found": 10,
+    "spatial": 10,
+    "exact_id": 5,
+    "obj_nav": 15,
+    "complex": 10
+  },
+  "created_at": "2026-07-16",
+  "deprecated_at": "2026-07-17",
+  "deprecation_reason": "Replaced by v2 after canonical graph v2 export and LocationConstraint fix"
+}

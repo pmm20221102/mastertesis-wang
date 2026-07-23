@@ -1,0 +1,12 @@
+{
+  "mode": "oracle_intent",
+  "model": "qwen3.5:4b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 7,
+    "status_accuracy": 0.14285714285714285,
+    "node_ids_accuracy": 0.8571428571428571,
+    "error_rate": 0.0,
+    "avg_latency_ms": 480.6694984436035
+  }
+}

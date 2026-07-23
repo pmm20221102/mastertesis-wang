@@ -1,0 +1,115 @@
+{
+  "case_count": {
+    "value": 100,
+    "expected": 100,
+    "pass": true
+  },
+  "unique_case_ids": {
+    "value": 100,
+    "pass": true
+  },
+  "no_semantic_duplicates": {
+    "value": 0,
+    "pass": true,
+    "duplicates": []
+  },
+  "no_exact_duplicates": {
+    "value": 0,
+    "pass": true
+  },
+  "no_blank_labels": {
+    "value": 0,
+    "pass": true,
+    "cases": []
+  },
+  "node_id_validation": {
+    "checked_count": 222,
+    "invalid_count": 0,
+    "pass": true,
+    "invalid": []
+  },
+  "spatial_position_quality": {
+    "total_spatial": 10,
+    "valid_reference_position": 10,
+    "pass": true
+  },
+  "category_checks": {
+    "ambiguous": {
+      "total": 5,
+      "valid": 5,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "obj_nav": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "place_constraint": {
+      "total": 15,
+      "valid": 15,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "room_constraint": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "set_query": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "not_found": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "spatial": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "exact_id": {
+      "total": 5,
+      "valid": 5,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "complex": {
+      "total": 10,
+      "valid": 10,
+      "invalid_cases": [],
+      "pass": true
+    },
+    "relation": {
+      "total": 15,
+      "valid": 15,
+      "invalid_cases": [],
+      "pass": true
+    }
+  },
+  "category_distribution": {
+    "pass": true,
+    "mismatches": [],
+    "actual": {
+      "ambiguous": 5,
+      "obj_nav": 10,
+      "place_constraint": 15,
+      "room_constraint": 10,
+      "set_query": 10,
+      "not_found": 10,
+      "spatial": 10,
+      "exact_id": 5,
+      "complex": 10,
+      "relation": 15
+    }
+  },
+  "overall": true
+}

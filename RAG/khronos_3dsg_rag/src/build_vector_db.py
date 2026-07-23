@@ -20,6 +20,36 @@ DEFAULT_EMBED_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
 COLLECTION_NAME = "scene_graph"
 
 
+class SentenceTransformerEmbeddingFunction(chromadb.EmbeddingFunction):
+    """Custom embedding function using sentence-transformers."""
+
+    def __init__(self, model_name: str = DEFAULT_EMBED_MODEL):
+        self.model_name = model_name
+        self._model = None
+
+    def _load_model(self):
+        if self._model is None:
+            try:
+                from sentence_transformers import SentenceTransformer
+                self._model = SentenceTransformer(self.model_name)
+                logger.info(f"Loaded embedding model: {self.model_name}")
+            except ImportError:
+                logger.warning(
+                    f"sentence-transformers not installed, using default embeddings. "
+                    f"Install with: pip install sentence-transformers"
+                )
+                return False
+        return True
+
+    def __call__(self, input: list[str]) -> list[list[float]]:
+        if not self._load_model():
+            # Fallback: return empty list to use ChromaDB default
+            return []
+
+        embeddings = self._model.encode(input, show_progress_bar=False)
+        return embeddings.tolist()
+
+
 def build_vector_db(
     documents: list[RagDocument],
     output_dir: str | Path,
@@ -51,9 +81,13 @@ def build_vector_db(
     except Exception:
         pass
 
+    # Create embedding function
+    embedding_fn = SentenceTransformerEmbeddingFunction(embed_model)
+
     # Create collection with sentence-transformers embedding
     collection = client.create_collection(
         name=COLLECTION_NAME,
+        embedding_function=embedding_fn,
         metadata={"hnsw:space": "cosine"},
     )
 
@@ -108,4 +142,8 @@ def load_vector_db(
         path=str(db_dir),
         settings=Settings(anonymized_telemetry=False),
     )
-    return client.get_collection(COLLECTION_NAME)
+
+    # Create embedding function for queries
+    embedding_fn = SentenceTransformerEmbeddingFunction(embed_model)
+
+    return client.get_collection(COLLECTION_NAME, embedding_function=embedding_fn)

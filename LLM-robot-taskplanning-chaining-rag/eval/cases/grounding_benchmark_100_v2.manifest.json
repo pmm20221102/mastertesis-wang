@@ -1,0 +1,34 @@
+{
+  "benchmark_name": "khronos_grounding_100_v2",
+  "benchmark_status": "development",
+  "supersedes": "grounding_benchmark_100_v1",
+  "supersedes_reason": [
+    "canonical hierarchy corruption from RAG chunk metadata",
+    "LocationConstraint schema confuses Place and Room",
+    "Spatial cases have invalid reference definitions",
+    "Semantic duplicate queries"
+  ],
+  "case_count": 100,
+  "random_seed": 42,
+  "dataset_name": "khronos_office",
+  "source_dsg_hash": "27a21bd8f590bfde",
+  "canonical_graph_hash": "afcd378fb04f09d3",
+  "canonical_graph_version": 2,
+  "benchmark_file_hash": "4ec00076551b942f",
+  "generator_code_hash": "5980d99a2c46b474",
+  "schema_version": 2,
+  "category_counts": {
+    "ambiguous": 5,
+    "obj_nav": 10,
+    "place_constraint": 15,
+    "room_constraint": 10,
+    "set_query": 10,
+    "not_found": 10,
+    "spatial": 10,
+    "exact_id": 5,
+    "complex": 10,
+    "relation": 15
+  },
+  "created_at": "2026-07-17",
+  "generator": "generate_grounding_benchmark_v2.py"
+}

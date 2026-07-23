@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -6,7 +6,8 @@ AllowedStatus = Literal[
     "valid",
     "ambiguous",
     "target_not_found",
-    "unsupported"
+    "unsupported",
+    "system_error",
 ]
 
 AllowedAction = Literal[
@@ -42,6 +43,41 @@ ExecutorType = Literal[
     "none"
 ]
 
+# Valid target_ref values for role-specific validation
+VALID_TARGET_REFS = {"actor", "target", "source", "destination"}
+# Valid constraint_ref pattern
+CONSTRAINT_REF_PATTERN = r"^constraint_(avoid|prefer)_(\d+)$"
+
+# Action -> required executor mapping
+ACTION_EXECUTOR_MAP = {
+    "locate_entity": "scene_graph",
+    "navigate_to": "nav2",
+    "escort_to": "nav2",
+    "guide_to": "nav2",
+    "avoid_area": "nav2",
+    "wait": "none",
+    "ask_clarification": "llm",
+    "handover_to_staff": "human_staff",
+    "trigger_workflow": "external_workflow",
+    "perform_screening": "external_workflow",
+    "return_to_base": "nav2",
+}
+
+# Action -> valid target_ref types
+ACTION_TARGET_REFS = {
+    "locate_entity": {"target", "actor"},
+    "navigate_to": {"target", "destination", "source"},
+    "escort_to": {"actor", "destination"},
+    "guide_to": {"actor", "destination"},
+    "avoid_area": set(),  # uses constraint refs only
+    "wait": set(),
+    "ask_clarification": set(),
+    "handover_to_staff": {"actor"},
+    "trigger_workflow": set(),
+    "perform_screening": {"target"},
+    "return_to_base": set(),
+}
+
 
 class Constraints(BaseModel):
     """Per-step constraints controlling robot navigation and behavior.
@@ -58,6 +94,79 @@ class Constraints(BaseModel):
     conditions: list[str] = Field(default_factory=list)
 
 
+class PlanDraftStep(BaseModel):
+    """LLM output step - no target_id allowed.
+
+    This is what the LLM should output. The system deterministically
+    compiles target_ref to actual target_id.
+
+    Valid target_ref values:
+    - Top-level roles: "actor", "target", "source", "destination"
+    - Step-specific: "step_N_target", "step_N_source", "step_N_destination"
+    - Constraints: "constraint_avoid_X", "constraint_prefer_X"
+    - No-ref actions: "" (only for wait, ask_clarification, return_to_base)
+    """
+
+    step: int
+    action: AllowedAction
+    target_type: TargetType
+    target_ref: str = ""  # Required for executable actions; "" only for no-ref actions
+    description: str
+    executor: ExecutorType
+    constraints: Constraints = Field(default_factory=Constraints)
+
+    def model_post_init(self, __context: Any) -> None:
+        """Validate target_ref after initialization.
+
+        Rules:
+        - No-ref actions (wait, ask_clarification, return_to_base): target_ref must be ""
+        - All other actions: target_ref is REQUIRED, empty or invalid raises ValueError
+        - Valid refs: actor/target/source/destination, step_N_*, constraint_*
+        """
+        import re
+        valid_refs = {"actor", "target", "source", "destination"}
+        step_pattern = r"^step_(\d+)_(target|source|destination|actor)$"
+        constraint_pattern = r"^constraint_(avoid|prefer)_\d+$"
+
+        # Actions that don't need target_ref
+        no_ref_actions = {"wait", "ask_clarification", "return_to_base"}
+
+        if self.action in no_ref_actions:
+            # These actions must NOT have a target_ref
+            if self.target_ref and self.target_ref != "":
+                self.target_ref = ""  # Force empty for no-ref actions
+            return
+
+        # All other actions REQUIRE a valid target_ref
+        if not self.target_ref:
+            raise ValueError(
+                f"target_ref is required for action '{self.action}'. "
+                f"Use one of: actor, target, source, destination, step_N_*, constraint_*"
+            )
+
+        # Validate target_ref format
+        is_valid = (
+            self.target_ref in valid_refs
+            or bool(re.match(step_pattern, self.target_ref))
+            or bool(re.match(constraint_pattern, self.target_ref))
+        )
+        if not is_valid:
+            raise ValueError(
+                f"Invalid target_ref '{self.target_ref}' for action '{self.action}'. "
+                f"Must be: actor/target/source/destination, step_N_*, or constraint_*"
+            )
+
+
+class PlanDraft(BaseModel):
+    """LLM output plan - no target_id allowed."""
+
+    status: AllowedStatus
+    task_chain: list[PlanDraftStep]
+    clarification_request: Optional[str] = None
+    target_not_found: Optional[str] = None
+    notes: list[str] = Field(default_factory=list)
+
+
 class TaskStep(BaseModel):
     """A single atomic step in the robot's task chain.
 
@@ -65,8 +174,12 @@ class TaskStep(BaseModel):
         step: 1-based sequential step number.
         action: The high-level action the robot must perform.
         target_type: Category of the target entity.
+        target_ref: Role reference from grounded task (e.g., "actor", "target",
+            "destination", "constraint_avoid_0"). The system deterministically
+            resolves this to the actual node_id.
         target_id: Exact scene graph node ID or workflow ID; ``None`` for
-            actions that do not target a specific entity.
+            actions that do not target a specific entity. Populated by the
+            system from target_ref, not by the LLM directly.
         description: Short human-readable description of this step.
         executor: The subsystem responsible for executing this step.
         constraints: Navigation and behavioral constraints for this step.
@@ -75,6 +188,7 @@ class TaskStep(BaseModel):
     step: int
     action: AllowedAction
     target_type: TargetType
+    target_ref: Optional[str] = None
     target_id: Optional[str] = None
     description: str
     executor: ExecutorType
@@ -99,3 +213,19 @@ class TaskPlan(BaseModel):
     clarification_request: Optional[str] = None
     target_not_found: Optional[str] = None
     notes: list[str] = Field(default_factory=list)
+
+
+class PipelineResult(BaseModel):
+    """Unified result from structured pipeline - success and failure.
+
+    This is the canonical return type for run_structured_task_planner().
+    """
+
+    status: AllowedStatus
+    intent: Optional[dict] = None
+    grounding: Optional[dict] = None
+    grounded_task: Optional[dict] = None
+    task_plan: Optional[dict] = None
+    validation_errors: list[str] = Field(default_factory=list)
+    latency_ms: dict[str, float] = Field(default_factory=dict)
+    error: Optional[str] = None

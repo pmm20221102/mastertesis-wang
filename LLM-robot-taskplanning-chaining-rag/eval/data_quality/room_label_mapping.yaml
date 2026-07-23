@@ -1,0 +1,48 @@
+# Room Label Mapping
+# All rooms currently have unknown labels (semantic_label=0)
+# Room labels should come from official dataset or scene configuration
+
+rooms:
+  5908722711110090752:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090753:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090754:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090755:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090756:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090757:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090758:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090759:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090760:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+  5908722711110090761:
+    label: unknown
+    source: dsg_semantic_label
+    confidence: 0.0
+
+# Note: Room labels need to be verified from official dataset
+# Currently all rooms have semantic_label=0 (unknown)

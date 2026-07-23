@@ -39,7 +39,9 @@ def retrieve_scene_context(
     # Stage 1: RAG retrieval (gets relation chunks that mention relevant entities)
     results = query_rag(user_command, db_dir, top_k=top_k)
 
-    # Stage 2: Extract entity IDs from relation chunks
+    # Stage 2: Extract entity IDs from chunks
+    # Keep entity, context, and region chunks (context chunks have valuable hierarchy info)
+    NODE_CHUNK_TYPES = {"entity", "context", "region"}
     entity_ids: set[str] = set()
     for r in results:
         nid = r.get("node_id", "")
@@ -51,7 +53,7 @@ def retrieve_scene_context(
                 if len(parts) == 2:
                     entity_ids.add(parts[0])
                     entity_ids.add(parts[1])
-        elif meta.get("chunk_type") in ("entity", "region") and nid:
+        elif meta.get("chunk_type") in NODE_CHUNK_TYPES and nid:
             entity_ids.add(nid)
 
     # Stage 3: Load full entity data from JSONL
@@ -222,11 +224,13 @@ def retrieve_with_keywords(
             all_results.append(r)
 
     # Secondary retrieval with extracted keywords
-    for category, terms in keywords.items():
-        if not terms:
+    # Only iterate over list-type categories (target_object, target_room, target_person)
+    for category in ("target_object", "target_room", "target_person"):
+        terms = keywords.get(category, [])
+        if not terms or not isinstance(terms, list):
             continue
         for term in terms:
-            if len(all_results) >= top_k * 2:
+            if not isinstance(term, str) or len(all_results) >= top_k * 2:
                 break
             extra = query_rag(term, db_dir, top_k=5)
             for r in extra:
@@ -236,6 +240,8 @@ def retrieve_with_keywords(
                     all_results.append(r)
 
     # Build scene graph context: extract entity IDs from all results
+    # Keep entity, context, and region chunks (context chunks have valuable hierarchy info)
+    NODE_CHUNK_TYPES = {"entity", "context", "region"}
     entity_ids: set[str] = set()
     for r in all_results:
         nid = r.get("node_id", "")
@@ -245,7 +251,7 @@ def retrieve_with_keywords(
             if len(parts) == 2:
                 entity_ids.add(parts[0])
                 entity_ids.add(parts[1])
-        elif meta.get("chunk_type") in ("entity", "region") and nid:
+        elif meta.get("chunk_type") in NODE_CHUNK_TYPES and nid:
             entity_ids.add(nid)
     # Limit to top_k entities to keep prompt manageable
     entity_ids = set(list(entity_ids)[:top_k])

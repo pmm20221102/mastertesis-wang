@@ -1,0 +1,14 @@
+{
+  "source_file": "../RAG/khronos_3dsg_rag/outputs/khronos_office_new/rag_documents.jsonl",
+  "total_chunks": 3727,
+  "chunk_types": {
+    "entity": 1858,
+    "context": 585,
+    "region": 1266,
+    "alias": 18
+  },
+  "total_entities": 1858,
+  "entities_with_room": 1833,
+  "entities_with_room_pct": 98.7,
+  "blank_labels": 1660
+}

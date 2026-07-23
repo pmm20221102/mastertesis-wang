@@ -1,0 +1,24 @@
+[project]
+name = "llm-robot-taskplanning"
+version = "0.5.0"
+description = "LLM Task Planning with Khronos 3DSG RAG"
+requires-python = ">=3.10"
+dependencies = [
+    "ollama>=0.3.0",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: requires external services (Ollama, ChromaDB)",
+    "requires_ollama: requires running Ollama server",
+    "requires_chromadb: requires ChromaDB with data",
+]

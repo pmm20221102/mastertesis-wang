@@ -1,0 +1,19 @@
+{
+  "mode": "oracle_grounding",
+  "model": "qwen3.5:4b",
+  "repeats": 1,
+  "planning": {
+    "total_cases": 7,
+    "status_accuracy": 0.2857142857142857,
+    "actions_accuracy": 0.42857142857142855,
+    "actions_exact_sequence": 0.42857142857142855,
+    "actions_ordered_subsequence": 0.42857142857142855,
+    "steps_compliance": 0.5714285714285714,
+    "target_ids_accuracy": 0.5714285714285714,
+    "error_rate": 0.42857142857142855,
+    "avg_latency_ms": 35878.278732299805,
+    "hallucinated_id_rate": 0,
+    "total_emitted_ids": 0,
+    "hallucinated_ids": 0
+  }
+}

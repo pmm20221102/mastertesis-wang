@@ -1,0 +1,83 @@
+{
+  "mode": "oracle_intent",
+  "model": "mistral",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 100,
+    "pipeline_status_accuracy": 1.0,
+    "role_status_accuracy": 1.0,
+    "role_entity_id_accuracy": 0.8076923076923077,
+    "role_status_evaluated_count": 100,
+    "role_id_evaluated_count": 52,
+    "spurious_role_count": 0,
+    "spurious_role_rate": 0.0,
+    "error_rate": 0.0,
+    "avg_latency_ms": 367.3011112213135,
+    "category_breakdown": {
+      "ambiguous": {
+        "total": 5,
+        "correct": 5,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "complex": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "exact_id": {
+        "total": 5,
+        "correct": 5,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "not_found": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "obj_nav": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "place_constraint": {
+        "total": 15,
+        "correct": 15,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "relation": {
+        "total": 15,
+        "correct": 15,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "room_constraint": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "set_query": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "spatial": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      }
+    },
+    "exact_id_accuracy": 1.0,
+    "exact_id_count": 5,
+    "natural_language_accuracy": 1.0,
+    "natural_language_count": 85
+  }
+}
