@@ -256,12 +256,37 @@ def evaluate_intent_case(
     start_time = time.time()
 
     try:
-        predicted_intent = parse_intent_with_llm(instruction, model=model, config=config)
-        predicted = intent_to_dict(predicted_intent)
+        # Parse with eval_mode to get raw + canonicalized
+        result = parse_intent_with_llm(instruction, model=model, config=config, eval_mode=True)
+
+        if isinstance(result, dict):
+            raw_json = result["raw_lmm_output"]
+            predicted = intent_to_dict(result["canonicalized_intent"])
+            thinking_text = result.get("thinking_text")
+        else:
+            # Fallback for fast path (no LLM call)
+            raw_json = intent_to_dict(result)
+            predicted = raw_json
+            thinking_text = None
+
         schema_valid = True
-        raw_output = json.dumps(predicted, ensure_ascii=False)
+
+        # Detect which rules were applied
+        rules_applied = []
+        if raw_json and raw_json.get("action") != predicted.get("action"):
+            rules_applied.append("action_override")
+        if raw_json and raw_json.get("target", {}).get("quantifier") != predicted.get("target", {}).get("quantifier"):
+            rules_applied.append("quantifier_fix")
+        # Check for removed spurious roles
+        for role in ["source", "destination", "actor"]:
+            if raw_json and raw_json.get(role) and not predicted.get(role):
+                rules_applied.append(f"removed_spurious_{role}")
+
     except Exception as e:
         predicted = {}
+        raw_json = None
+        thinking_text = None
+        rules_applied = []
         schema_valid = False
         raw_output = str(e)
 
@@ -324,10 +349,17 @@ def evaluate_intent_case(
         step_actions_correct = pred_step_actions == exp_step_actions
         multi_step_exact = step_count_correct and step_actions_correct
 
-    # Strict exact match
+    # Strict exact match — includes all role fields (label, node_type, room)
+    all_role_fields_correct = all(
+        rfm.get("match", True)
+        for rfm in role_field_metrics.values()
+    )
+
     strict_exact = (
-        action_correct
+        schema_valid
+        and action_correct
         and role_metrics["f1"] == 1.0
+        and all_role_fields_correct
         and (location_metrics is None or location_metrics["exact_match"])
         and (relation_metrics is None or relation_metrics["exact_match"])
         and quantifier_correct
@@ -372,8 +404,13 @@ def evaluate_intent_case(
         "strict_exact_match": strict_exact,
         # Failure
         "failure_category": failure_category,
-        # Raw
-        "raw_output": raw_output,
+        # Raw vs canonicalized trace
+        "raw_json": raw_json,
+        "thinking_text": thinking_text[:500] if thinking_text else None,
+        "canonicalized_intent": predicted,
+        "rules_applied": rules_applied,
+        "rules_applied_count": len(rules_applied),
+        "raw_output": json.dumps(raw_json, ensure_ascii=False) if raw_json else None,
         "parsed_intent": predicted,
         "oracle_intent": oracle,
         "latency_ms": elapsed_ms,
@@ -412,11 +449,22 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     relation_cases = [r for r in results if r["relation_metrics"] is not None]
     rel_f1 = sum(r["relation_metrics"]["f1"] for r in relation_cases) / len(relation_cases) if relation_cases else None
 
-    # Quantifier
+    # Quantifier — separate default-one vs non-default
     quant_correct = sum(1 for r in results if r["quantifier_correct"])
+    # Non-default quantifier cases (oracle has all/nearest/any)
+    non_default_quant_cases = [r for r in results if (r.get("oracle_intent", {}).get("target") or {}).get("quantifier", "one") != "one"]
+    non_default_quant_correct = sum(1 for r in non_default_quant_cases if r["quantifier_correct"])
+    # Spurious quantifier: predicted non-default but oracle is "one"
+    spurious_quant = sum(1 for r in results if r.get("quantifier_correct") is False
+                         and (r.get("oracle_intent", {}).get("target") or {}).get("quantifier", "one") == "one"
+                         and (r.get("parsed_intent", {}).get("target") or {}).get("quantifier", "one") != "one")
 
-    # Aggregate
-    agg_correct = sum(1 for r in results if r["aggregate_correct"])
+    # Aggregate — positive-case accuracy only
+    oracle_has_agg = [r for r in results if (r.get("oracle_intent", {}).get("target") or {}).get("aggregate") is not None]
+    agg_positive_correct = sum(1 for r in oracle_has_agg if r["aggregate_correct"])
+    spurious_agg = sum(1 for r in results if r.get("aggregate_correct") is False
+                       and (r.get("oracle_intent", {}).get("target") or {}).get("aggregate") is None
+                       and (r.get("parsed_intent", {}).get("target") or {}).get("aggregate") is not None)
 
     # Multi-step
     multi_step_cases = [r for r in results if r.get("oracle_intent", {}).get("steps") is not None]
@@ -455,10 +503,23 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     # Latency
     avg_latency = sum(r["latency_ms"] for r in results) / total
 
+    # Canonicalization metrics
+    total_rules_applied = sum(r.get("rules_applied_count", 0) for r in results)
+    cases_with_rules = sum(1 for r in results if r.get("rules_applied_count", 0) > 0)
+
+    # Raw action accuracy (before canonicalization)
+    raw_action_correct = sum(1 for r in results
+                             if r.get("raw_json") and r["raw_json"].get("action") == r.get("oracle_intent", {}).get("action"))
+    raw_json_count = sum(1 for r in results if r.get("raw_json") and "_raw_text" not in r["raw_json"])
+
     return {
         "total_cases": total,
         "schema_validity_rate": schema_valid_count / total,
         "action_accuracy": action_correct / total,
+        "raw_action_accuracy": raw_action_correct / raw_json_count if raw_json_count > 0 else None,
+        "raw_json_success_rate": raw_json_count / total,
+        "canonicalization_rate": cases_with_rules / total,
+        "avg_rules_per_case": total_rules_applied / total,
         "role_presence_precision": sum(role_precisions) / len(role_precisions),
         "role_presence_recall": sum(role_recalls) / len(role_recalls),
         "role_presence_f1": sum(role_f1s) / len(role_f1s),
@@ -466,7 +527,12 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
         "location_f1": loc_f1,
         "relation_f1": rel_f1,
         "quantifier_accuracy": quant_correct / total,
-        "aggregate_accuracy": agg_correct / total,
+        "non_default_quantifier_accuracy": non_default_quant_correct / len(non_default_quant_cases) if non_default_quant_cases else None,
+        "non_default_quantifier_count": len(non_default_quant_cases),
+        "spurious_quantifier_count": spurious_quant,
+        "aggregate_positive_accuracy": agg_positive_correct / len(oracle_has_agg) if oracle_has_agg else None,
+        "aggregate_positive_count": len(oracle_has_agg),
+        "spurious_aggregate_count": spurious_agg,
         "multi_step_exact_rate": multi_step_exact / len(multi_step_cases) if multi_step_cases else None,
         "multi_step_case_count": len(multi_step_cases),
         "strict_exact_match_rate": strict_exact / total,
@@ -490,15 +556,30 @@ def write_intent_summary_md(summary: dict, path: Path) -> None:
         "",
         f"- **Total cases**: {summary['total_cases']}",
         f"- **Schema validity**: {summary['schema_validity_rate']:.4f}",
-        f"- **Action accuracy**: {summary['action_accuracy']:.4f}",
+        f"- **Action accuracy (post-canonicalization)**: {summary['action_accuracy']:.4f}",
+    ]
+
+    if summary.get("raw_action_accuracy") is not None:
+        lines.append(f"- **Action accuracy (raw LLM)**: {summary['raw_action_accuracy']:.4f}")
+    if summary.get("canonicalization_rate") is not None:
+        lines.append(f"- **Canonicalization rate**: {summary['canonicalization_rate']:.4f}")
+
+    lines.extend([
         f"- **Role presence P/R/F1**: {summary['role_presence_precision']:.4f} / {summary['role_presence_recall']:.4f} / {summary['role_presence_f1']:.4f}",
         f"- **Spurious role rate**: {summary['spurious_role_rate']:.4f}",
         f"- **Quantifier accuracy**: {summary['quantifier_accuracy']:.4f}",
-        f"- **Aggregate accuracy**: {summary['aggregate_accuracy']:.4f}",
+    ])
+
+    if summary.get("aggregate_positive_accuracy") is not None:
+        lines.append(f"- **Aggregate positive-case accuracy**: {summary['aggregate_positive_accuracy']:.4f} (n={summary['aggregate_positive_count']})")
+    if summary.get("spurious_aggregate_count"):
+        lines.append(f"- **Spurious aggregate count**: {summary['spurious_aggregate_count']}")
+
+    lines.extend([
         f"- **Strict exact match**: {summary['strict_exact_match_rate']:.4f} ({summary['strict_exact_match_count']}/{summary['total_cases']})",
         f"- **Avg latency**: {summary['avg_latency_ms']:.1f}ms",
         "",
-    ]
+    ])
 
     if summary.get("location_f1") is not None:
         lines.append(f"- **Location F1**: {summary['location_f1']:.4f}")
@@ -554,6 +635,9 @@ def run_intent_evaluation(
     out = Path(output_dir) if output_dir else None
     if out:
         out.mkdir(parents=True, exist_ok=True)
+        # Truncate append-only files at start of run
+        for fname in ["per_case_results.jsonl"]:
+            (out / fname).write_text("", encoding="utf-8")
 
     for repeat in range(repeats):
         logger.info(f"Repeat {repeat + 1}/{repeats}")
@@ -566,12 +650,12 @@ def run_intent_evaluation(
             status = "OK" if result["strict_exact_match"] else f"FAIL({result['failure_category']})"
             logger.info(f"  [{repeat}] {case['case_id']}: {status} ({result['latency_ms']:.0f}ms)")
 
-            # Incremental save after each case
+            # Incremental save: append-only JSONL
             if out:
-                with open(out / "per_case_results.jsonl", "w", encoding="utf-8") as f:
-                    for r in all_results:
-                        r_copy = {k: v for k, v in r.items() if k not in ("parsed_intent", "oracle_intent", "raw_output")}
-                        f.write(json.dumps(r_copy, ensure_ascii=False) + "\n")
+                r_copy = {k: v for k, v in result.items()
+                         if k not in ("parsed_intent", "oracle_intent", "thinking_text")}
+                with open(out / "per_case_results.jsonl", "a", encoding="utf-8") as f:
+                    f.write(json.dumps(r_copy, ensure_ascii=False, default=str) + "\n")
 
         # After each repeat: recompute summary and save full outputs
         if out:
@@ -603,6 +687,31 @@ def run_intent_evaluation(
     summary["model"] = model
     summary["repeats"] = repeats
     summary["temperature"] = temperature
+
+    # Repeat stability (if multiple repeats)
+    if repeats > 1:
+        from collections import defaultdict
+        by_case = defaultdict(list)
+        for r in all_results:
+            by_case[r["case_id"]].append(r)
+
+        stable_action = sum(1 for reps in by_case.values()
+                           if len(set(r["action_correct"] for r in reps)) == 1)
+        stable_strict = sum(1 for reps in by_case.values()
+                           if len(set(r["strict_exact_match"] for r in reps)) == 1)
+        total_multi = sum(1 for v in by_case.values() if len(v) >= 2)
+
+        stability = {
+            "unique_case_count": len(by_case),
+            "total_evaluations": len(all_results),
+            "all_repeats_identical_rate": stable_strict / total_multi if total_multi > 0 else None,
+            "action_agreement_rate": stable_action / total_multi if total_multi > 0 else None,
+        }
+        summary["repeat_stability"] = stability
+
+        if output_dir:
+            with open(Path(output_dir) / "repeat_stability.json", "w", encoding="utf-8") as f:
+                json.dump(stability, f, indent=2)
 
     # Final save (run manifest + raw outputs)
     if output_dir:

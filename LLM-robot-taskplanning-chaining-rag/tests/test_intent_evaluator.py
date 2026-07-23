@@ -22,11 +22,11 @@ def test_evaluator_exact_match():
     """Correct prediction should yield 1.0 across all metrics."""
     predicted = {
         "action": "navigate",
-        "target": {"text": "chair", "label": "chairs", "node_type": "objects"},
+        "target": {"text": "chair", "label": "chairs", "node_type": "object"},
     }
     expected = {
         "action": "navigate",
-        "target": {"text": "chair", "label": "chairs", "node_type": "objects"},
+        "target": {"text": "chair", "label": "chairs", "node_type": "object"},
     }
     rm = _compute_role_metrics(predicted, expected)
     assert rm["precision"] == 1.0
@@ -170,8 +170,8 @@ def test_compare_entity_ref():
 
     # Both present, matching
     r = _compare_entity_ref(
-        {"text": "chair", "label": "chairs", "node_type": "objects"},
-        {"text": "chair", "label": "chairs", "node_type": "objects"},
+        {"text": "chair", "label": "chairs", "node_type": "object"},
+        {"text": "chair", "label": "chairs", "node_type": "object"},
     )
     assert r["match"] is True
 

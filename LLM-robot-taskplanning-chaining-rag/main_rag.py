@@ -200,6 +200,36 @@ def _fix_constraints(task_plan: TaskPlan) -> TaskPlan:
     return task_plan
 
 
+def _infer_target_ref(action: str, ref_lookup: dict) -> str:
+    """Infer target_ref from action type when LLM omits it.
+
+    Priority: destination > target > actor > constraint
+    """
+    if action in ("wait", "ask_clarification", "return_to_base"):
+        return ""
+
+    # escort/guide → actor
+    if action in ("escort_to", "guide_to"):
+        return "actor" if "actor" in ref_lookup else "target"
+
+    # locate → target
+    if action == "locate_entity":
+        return "target" if "target" in ref_lookup else ""
+
+    # navigate → destination if available, else target
+    if action == "navigate_to":
+        if "destination" in ref_lookup:
+            return "destination"
+        return "target" if "target" in ref_lookup else ""
+
+    # avoid_area → constraint
+    if action == "avoid_area":
+        return "constraint_avoid_0"
+
+    # Default: try target
+    return "target" if "target" in ref_lookup else ""
+
+
 def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
     """Deterministically resolve target_ref to target_id from grounded task.
 
@@ -218,9 +248,8 @@ def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
             ref_lookup[role] = ref_data["node_id"]
 
     # Build step-specific reference lookup
-    for step_data in grounded_task.get("steps", []):
+    for step_idx, step_data in enumerate(grounded_task.get("steps", [])):
         step_refs = step_data.get("references", {})
-        step_idx = grounded_task.get("steps", []).index(step_data)
         for role, ref_data in step_refs.items():
             if isinstance(ref_data, dict) and ref_data.get("node_id"):
                 ref_lookup[f"step_{step_idx}_{role}"] = ref_data["node_id"]
@@ -235,6 +264,10 @@ def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
     all_lookup = {**ref_lookup, **constraint_lookup}
 
     for step in task_plan.task_chain:
+        # Infer missing target_ref from action type
+        if not step.target_ref:
+            step.target_ref = _infer_target_ref(step.action, all_lookup)
+
         # Resolve target_ref to target_id
         if step.target_ref and step.target_ref in all_lookup:
             step.target_id = all_lookup[step.target_ref]

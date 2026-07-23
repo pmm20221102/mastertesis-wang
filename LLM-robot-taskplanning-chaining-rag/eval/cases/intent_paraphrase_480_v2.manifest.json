@@ -1,0 +1,37 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_version": "v2",
+  "benchmark_file": "intent_paraphrase_480_v2.jsonl",
+  "benchmark_file_hash": "44cd8316d390a14a",
+  "source_benchmark": "intent_benchmark_150_v2.jsonl",
+  "case_count": 298,
+  "paraphrases_per_intent": 3,
+  "language_style_distribution": {
+    "rephrased": 84,
+    "standard": 131,
+    "colloquial": 83
+  },
+  "sentence_type_distribution": {
+    "imperative": 274,
+    "question": 22,
+    "fragment": 2
+  },
+  "categories": {
+    "aggregate": 16,
+    "ambiguous": 14,
+    "avoid_prefer": 19,
+    "escort_guide": 30,
+    "locate_target": 10,
+    "multi_step": 27,
+    "navigate_target": 11,
+    "relation": 60,
+    "room_place_constraint": 60,
+    "source_destination": 14,
+    "set_quantifier": 14,
+    "spatial": 15,
+    "unsupported": 8
+  },
+  "duplicates_skipped": 463,
+  "slot_violations_total": 0,
+  "seed": 42
+}

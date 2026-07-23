@@ -19,7 +19,7 @@ class RelationConstraint(BaseModel):
     target_text: str = ""
     target_node_id: str | None = None
     target_label: str | None = None
-    target_node_type: str | None = None
+    target_node_type: Literal["object", "place", "room", "agent"] | None = None
 
 
 class AggregateConstraint(BaseModel):
@@ -43,7 +43,7 @@ class EntityReference(BaseModel):
     - Aggregate constraints (most desks, etc.)
     """
     text: str
-    node_type: str | None = None
+    node_type: Literal["object", "place", "room", "agent"] | None = None
     label: str | None = None
     name: str | None = None
     room: str | None = None  # backward compatible

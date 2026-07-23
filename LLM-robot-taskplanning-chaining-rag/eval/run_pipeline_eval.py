@@ -399,8 +399,12 @@ def _run_planner_with_oracle_grounding(
 
     # Check if oracle_grounding specifies a pipeline_status (not actual grounding)
     if "pipeline_status" in oracle_grounding:
+        # Map grounding status to AllowedStatus
+        status = oracle_grounding["pipeline_status"]
+        if status == "not_found":
+            status = "target_not_found"
         return PipelineResult(
-            status=oracle_grounding["pipeline_status"],
+            status=status,
             latency_ms={"oracle_ms": (time.time() - t0) * 1000},
         )
 
@@ -664,7 +668,7 @@ def evaluate_planning_case(
             "grounding": grounding_data,
             "grounded_task": grounded_task_data,
             "latency_ms": elapsed_ms,
-            "error": None,
+            "error": result.error,
         }
     except Exception as e:
         elapsed_ms = (time.time() - start_time) * 1000
@@ -705,22 +709,30 @@ def _check_benchmark_status(cases_path: str) -> tuple[bool, str]:
         (allowed, reason) - allowed=True means benchmark can run.
     """
     cases_path = Path(cases_path)
-    # Look for manifest file
-    manifest_candidates = [
-        cases_path.with_suffix("").with_name(cases_path.stem.replace("_v2", "") + "_v2.manifest.json"),
-        cases_path.parent / "grounding_benchmark_100_v2.manifest.json",
-        cases_path.parent / "grounding_benchmark_100_v1.manifest.json",
-    ]
-    for mp in manifest_candidates:
-        if mp.exists():
-            with open(mp, "r") as f:
-                manifest = json.load(f)
-            status = manifest.get("benchmark_status", "unknown")
-            if status == "blocked":
-                reasons = manifest.get("blocking_reasons", [])
-                return False, f"Benchmark BLOCKED: {'; '.join(reasons)}"
-            return True, f"Benchmark status: {status}"
-    return True, "No manifest found, proceeding"
+    # Look for manifest file: same name as cases file, .manifest.json extension
+    manifest_path = cases_path.with_suffix(".manifest.json")
+    if not manifest_path.exists():
+        # Try alternative naming patterns
+        manifest_candidates = [
+            cases_path.parent / f"{cases_path.stem}.manifest.json",
+            cases_path.parent / "grounding_benchmark_100_v3.manifest.json",
+            cases_path.parent / "grounding_benchmark_100_v2.manifest.json",
+            cases_path.parent / "grounding_benchmark_100_v1.manifest.json",
+        ]
+        for mp in manifest_candidates:
+            if mp.exists():
+                manifest_path = mp
+                break
+        else:
+            return True, "No manifest found, proceeding"
+
+    with open(manifest_path, "r") as f:
+        manifest = json.load(f)
+    status = manifest.get("benchmark_status", "unknown")
+    if status == "blocked":
+        reasons = manifest.get("blocking_reasons", [])
+        return False, f"Benchmark BLOCKED: {'; '.join(reasons)}"
+    return True, f"Benchmark status: {status}"
 
 
 def run_evaluation(
@@ -1047,7 +1059,10 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             pi_actions_exact = sum(1 for r in planner_invoked if r.get("actions_exact_sequence", False))
             pi_actions_ordered = sum(1 for r in planner_invoked if r.get("actions_ordered", False))
             pi_steps_ok = sum(1 for r in planner_invoked if r["steps_ok"])
-            pi_validation_ok = sum(1 for r in planner_invoked if not r.get("validation_errors"))
+            pi_validation_ok = sum(1 for r in planner_invoked
+                                    if not r.get("validation_errors")
+                                    and r.get("predicted_status") != "system_error"
+                                    and not r.get("error"))
             pi_latency = sum(r["latency_ms"] for r in planner_invoked) / len(planner_invoked)
         else:
             pi_status_correct = pi_actions_correct = pi_actions_exact = 0

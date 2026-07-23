@@ -1,0 +1,30 @@
+{
+  "mode": "oracle_grounding",
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "planning": {
+    "total_cases": 45,
+    "planner_invoked_count": 25,
+    "pre_set_status_count": 20,
+    "pipeline_status_accuracy": 0.9333333333333333,
+    "planner_status_accuracy": 0.88,
+    "planner_actions_accuracy": 0.36,
+    "planner_actions_exact_sequence": 0.36,
+    "planner_actions_ordered": 0.36,
+    "planner_steps_compliance": 0.88,
+    "planner_validation_pass_rate": 1.0,
+    "target_ids_accuracy": 0.88,
+    "target_ids_evaluated_count": 25,
+    "target_ids_na_count": 20,
+    "hallucinated_id_rate": 0.0,
+    "ungrounded_id_rate": 0.0,
+    "wrong_role_id_rate": 0.0,
+    "total_emitted_ids": 22,
+    "total_hallucinated_ids": 0,
+    "total_ungrounded_ids": 0,
+    "total_wrong_role_ids": 0,
+    "error_rate": 0.0,
+    "avg_latency_ms": 2660.4232523176406,
+    "avg_planner_latency_ms": 4788.750829696655
+  }
+}

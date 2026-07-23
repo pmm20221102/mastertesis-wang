@@ -46,7 +46,7 @@ def test_intent_serialization_preserves_relations():
                     target_text="desk",
                     target_node_id="1234567890123456789",
                     target_label="desks",
-                    target_node_type="objects",
+                    target_node_type="object",
                 ),
             ],
         ),
@@ -94,7 +94,7 @@ def test_intent_serialization_preserves_steps():
             ),
             IntentStep(
                 action="navigate",
-                destination=EntityReference(text="kitchen", node_type="rooms"),
+                destination=EntityReference(text="kitchen", node_type="room"),
                 description="Go to kitchen",
             ),
         ],
@@ -105,7 +105,7 @@ def test_intent_serialization_preserves_steps():
     assert d["steps"][0]["action"] == "locate"
     assert d["steps"][0]["target"]["label"] == "chairs"
     assert d["steps"][1]["action"] == "navigate"
-    assert d["steps"][1]["destination"]["node_type"] == "rooms"
+    assert d["steps"][1]["destination"]["node_type"] == "room"
 
 
 def test_intent_serialization_preserves_constraints():
@@ -139,7 +139,7 @@ def test_intent_serialization_roundtrip():
         action="navigate",
         target=EntityReference(
             text="chair",
-            node_type="objects",
+            node_type="object",
             label="chairs",
             locations=[LocationConstraint(text="Place A", node_type="place")],
             relations=[RelationConstraint(relation="near", target_text="desk")],

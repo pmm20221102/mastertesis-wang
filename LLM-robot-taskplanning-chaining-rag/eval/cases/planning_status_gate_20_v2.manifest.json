@@ -1,0 +1,12 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_version": "v2",
+  "benchmark_file_hash": "3e811ef3a17ca7e4",
+  "case_count": 20,
+  "categories": {
+    "ambiguous": 10,
+    "not_found": 5,
+    "unsupported": 5
+  },
+  "seed": 42
+}

@@ -1,0 +1,104 @@
+{
+  "total_cases": 160,
+  "schema_validity_rate": 0.86875,
+  "action_accuracy": 0.825,
+  "raw_action_accuracy": 0.9496402877697842,
+  "raw_json_success_rate": 0.86875,
+  "canonicalization_rate": 0.75625,
+  "avg_rules_per_case": 0.75625,
+  "role_presence_precision": 0.8375,
+  "role_presence_recall": 0.825,
+  "role_presence_f1": 0.8291666666666666,
+  "spurious_role_rate": 0.07142857142857142,
+  "location_f1": 0.2,
+  "relation_f1": 0.35,
+  "quantifier_accuracy": 0.4875,
+  "non_default_quantifier_accuracy": 0.5714285714285714,
+  "non_default_quantifier_count": 35,
+  "spurious_quantifier_count": 67,
+  "aggregate_positive_accuracy": 0.5,
+  "aggregate_positive_count": 10,
+  "spurious_aggregate_count": 0,
+  "multi_step_exact_rate": 0.2,
+  "multi_step_case_count": 10,
+  "strict_exact_match_rate": 0.0,
+  "strict_exact_match_count": 0,
+  "failure_breakdown": {
+    "wrong_node_type": 111,
+    "wrong_label": 14,
+    "schema_error": 21,
+    "missing_role": 7,
+    "wrong_action": 7
+  },
+  "category_breakdown": {
+    "aggregate": {
+      "total": 10,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "ambiguous": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "avoid_prefer": {
+      "total": 10,
+      "action_accuracy": 0.9,
+      "strict_exact_rate": 0.0
+    },
+    "escort_guide": {
+      "total": 10,
+      "action_accuracy": 0.3,
+      "strict_exact_rate": 0.0
+    },
+    "locate_target": {
+      "total": 15,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "multi_step": {
+      "total": 15,
+      "action_accuracy": 0.6666666666666666,
+      "strict_exact_rate": 0.0
+    },
+    "navigate_target": {
+      "total": 15,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "relation": {
+      "total": 20,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "room_place_constraint": {
+      "total": 20,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "set_quantifier": {
+      "total": 10,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "source_destination": {
+      "total": 10,
+      "action_accuracy": 0.0,
+      "strict_exact_rate": 0.0
+    },
+    "spatial": {
+      "total": 15,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "unsupported": {
+      "total": 5,
+      "action_accuracy": 0.0,
+      "strict_exact_rate": 0.0
+    }
+  },
+  "avg_latency_ms": 5312.796829640865,
+  "model": "gemma4:e2b-it-qat",
+  "repeats": 1,
+  "temperature": 0.0
+}

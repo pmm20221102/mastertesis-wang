@@ -1,0 +1,41 @@
+{
+  "total_cases": 5,
+  "schema_validity_rate": 1.0,
+  "action_accuracy": 0.6,
+  "raw_action_accuracy": 0.6,
+  "raw_json_success_rate": 1.0,
+  "canonicalization_rate": 0.0,
+  "avg_rules_per_case": 0.0,
+  "role_presence_precision": 1.0,
+  "role_presence_recall": 1.0,
+  "role_presence_f1": 1.0,
+  "spurious_role_rate": 0.0,
+  "location_f1": null,
+  "relation_f1": null,
+  "quantifier_accuracy": 1.0,
+  "non_default_quantifier_accuracy": null,
+  "non_default_quantifier_count": 0,
+  "spurious_quantifier_count": 0,
+  "aggregate_positive_accuracy": null,
+  "aggregate_positive_count": 0,
+  "spurious_aggregate_count": 0,
+  "multi_step_exact_rate": null,
+  "multi_step_case_count": 0,
+  "strict_exact_match_rate": 0.0,
+  "strict_exact_match_count": 0,
+  "failure_breakdown": {
+    "wrong_node_type": 3,
+    "wrong_action": 2
+  },
+  "category_breakdown": {
+    "exact_id": {
+      "total": 5,
+      "action_accuracy": 0.6,
+      "strict_exact_rate": 0.0
+    }
+  },
+  "avg_latency_ms": 22.02935218811035,
+  "model": "gemma4:e2b-it-qat",
+  "repeats": 1,
+  "temperature": 0.0
+}

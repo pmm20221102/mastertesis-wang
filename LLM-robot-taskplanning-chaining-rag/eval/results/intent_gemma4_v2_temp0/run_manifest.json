@@ -1,0 +1,10 @@
+{
+  "model": "gemma4:e2b-it-qat",
+  "repeats": 1,
+  "temperature": 0.0,
+  "benchmark": "eval/cases/intent_benchmark_150_v2.jsonl",
+  "benchmark_hash": "01384fbb2001679c",
+  "total_cases": 160,
+  "total_evaluations": 160,
+  "output_dir": "eval/results/intent_gemma4_v2_temp0"
+}

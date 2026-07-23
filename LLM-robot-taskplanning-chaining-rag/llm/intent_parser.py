@@ -50,7 +50,7 @@ RULES:
 2. Do NOT invent or output node IDs (long numeric identifiers like 5692549928996306945).
 3. PRESERVE room numbers, floor numbers, door numbers explicitly provided by the user (e.g., "Room 201").
 4. Use natural language descriptions for entities (e.g., "the chair near the desk").
-5. For manipulation tasks (pick, grasp, carry, place), set action to "unsupported".
+5. For manipulation tasks (pick, grasp, carry), set action to "unsupported".
 6. Return ONLY valid JSON, no explanations.
 
 ROLE RULES:
@@ -76,7 +76,7 @@ EntityReference:
 {
   "text": "natural language description",
   "label": "canonical label (e.g., chairs, places, rooms)",
-  "node_type": "objects|places|rooms|agents",
+  "node_type": "object|place|room|agent",
   "room": "room number or ID if mentioned",
   "locations": [LocationConstraint],  // for Place + Room intersection
   "relations": [RelationConstraint],  // for near, inside, connected_to
@@ -91,37 +91,37 @@ AggregateConstraint: {"operation": "count_in_location|max_count|min_count", "tar
 FEW-SHOT EXAMPLES:
 
 1. "Navigate to the chair"
-→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}}
+→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "object"}}
 
 2. "Find the chair in room 201"
-→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "room": "201"}}
+→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "object", "room": "201"}}
 
 3. "Find all chairs"
-→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all"}}
+→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "object", "quantifier": "all"}}
 
 4. "Find the chair near the desk"
-→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "relations": [{"relation": "near", "target_text": "desk", "target_label": "desks"}]}}
+→ {"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "object", "relations": [{"relation": "near", "target_text": "desk", "target_label": "desks"}]}}
 
 5. "Navigate to the chair in Place A inside Room 201"
-→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects", "locations": [{"text": "Place A", "node_type": "place"}, {"text": "Room 201", "node_type": "room"}]}}
+→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "object", "locations": [{"text": "Place A", "node_type": "place"}, {"text": "Room 201", "node_type": "room"}]}}
 
 6. "Find the small_office_object inside place 928841"
-→ {"action": "locate", "target": {"text": "small_office_object", "label": "small_office_objects", "node_type": "objects", "relations": [{"relation": "inside", "target_text": "place 928841"}]}}
+→ {"action": "locate", "target": {"text": "small_office_object", "label": "small_office_objects", "node_type": "object", "relations": [{"relation": "inside", "target_text": "place 928841"}]}}
 
 7. "How many chairs are in Room 201?"
-→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all", "aggregate": {"operation": "count_in_location", "target_labels": ["chairs"], "location": {"text": "Room 201", "node_type": "room"}}}}
+→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "object", "quantifier": "all", "aggregate": {"operation": "count_in_location", "target_labels": ["chairs"], "location": {"text": "Room 201", "node_type": "room"}}}}
 
 8. "Which room has the most chairs?"
-→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "objects", "quantifier": "all", "aggregate": {"operation": "max_count", "target_labels": ["chairs"]}}}
+→ {"action": "locate", "target": {"text": "chairs", "label": "chairs", "node_type": "object", "quantifier": "all", "aggregate": {"operation": "max_count", "target_labels": ["chairs"]}}}
 
 9. "Escort the person to the entrance"
-→ {"action": "escort", "actor": {"text": "person", "node_type": "agents"}, "destination": {"text": "entrance", "node_type": "places"}}
+→ {"action": "escort", "actor": {"text": "person", "node_type": "agent"}, "destination": {"text": "entrance", "node_type": "place"}}
 
 10. "Navigate from the office to the kitchen"
-→ {"action": "navigate", "source": {"text": "office", "node_type": "rooms"}, "destination": {"text": "kitchen", "node_type": "rooms"}}
+→ {"action": "navigate", "source": {"text": "office", "node_type": "room"}, "destination": {"text": "kitchen", "node_type": "room"}}
 
 11. "First find the chair, then navigate to the office"
-→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}, "destination": {"text": "office", "node_type": "rooms"}, "steps": [{"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "objects"}}, {"action": "navigate", "destination": {"text": "office", "node_type": "rooms"}}]}
+→ {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "object"}, "destination": {"text": "office", "node_type": "room"}, "steps": [{"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "object"}}, {"action": "navigate", "destination": {"text": "office", "node_type": "room"}}]}
 
 12. "Pick up the chair"
 → {"action": "unsupported"}
@@ -156,21 +156,26 @@ def _detect_exact_node_id(text: str) -> str | None:
 
 
 def _detect_action_from_text(text: str) -> str:
-    """Detect action from natural language text."""
+    """Detect action from natural language text using word-boundary regex."""
+    import re
     text_lower = text.lower()
-    if any(w in text_lower for w in ["pick up", "grasp", "carry", "place", "lift"]):
+    # Manipulation: use word boundaries, exclude "place" as spatial entity
+    if re.search(r"\b(pick\s+up|grasp|carry|lift)\b", text_lower):
         return "unsupported"
-    if any(w in text_lower for w in ["escort", "guide", "accompany"]):
+    # Escort: "escort" or "accompany" are clear; "guide" needs actor context
+    if re.search(r"\b(escort|accompany)\b", text_lower):
         return "escort"
-    if any(w in text_lower for w in ["find", "locate", "search"]):
+    if re.search(r"\bguide\b", text_lower) and re.search(r"\b(person|patient|him|her|them)\b", text_lower):
+        return "escort"
+    if re.search(r"\b(find|locate|search)\b", text_lower):
         return "locate"
-    if any(w in text_lower for w in ["navigate", "go to", "go to the"]):
+    if re.search(r"\b(navigate|go\s+to)\b", text_lower):
         return "navigate"
-    if any(w in text_lower for w in ["avoid", "bypass", "skip"]):
+    if re.search(r"\b(avoid|bypass|skip)\b", text_lower):
         return "avoid"
-    if any(w in text_lower for w in ["wait", "pause"]):
+    if re.search(r"\b(wait|pause)\b", text_lower):
         return "wait"
-    if any(w in text_lower for w in ["ask", "clarify"]):
+    if re.search(r"\b(ask|clarify)\b", text_lower):
         return "ask_clarification"
     return "navigate"  # Default
 
@@ -190,19 +195,23 @@ def _build_intent_from_exact_id(node_id: str, action: str) -> TaskIntent:
 def validate_and_canonicalize_intent(
     user_command: str,
     intent: TaskIntent,
+    eval_mode: bool = False,
 ) -> TaskIntent:
     """Validate and canonicalize parsed intent.
 
     Removes spurious roles and fixes common LLM errors.
+    In eval_mode, action override is disabled to measure pure LLM accuracy.
     """
     text_lower = user_command.lower()
 
     # Action deterministic override - don't let small model misclassify actions
-    rule_action = _detect_action_from_text(user_command)
-    if rule_action != "navigate":  # navigate is default, so only override if unambiguous
-        if intent.action != rule_action:
-            logger.info(f"Overriding action from '{intent.action}' to '{rule_action}' based on text")
-            intent.action = rule_action
+    # Skip in eval_mode to measure pure LLM action accuracy
+    if not eval_mode:
+        rule_action = _detect_action_from_text(user_command)
+        if rule_action != "navigate":  # navigate is default, so only override if unambiguous
+            if intent.action != rule_action:
+                logger.info(f"Overriding action from '{intent.action}' to '{rule_action}' based on text")
+                intent.action = rule_action
 
     # Detect if user explicitly mentions from/to
     has_from = any(w in text_lower for w in ["from", "starting at", "beginning at"])
@@ -292,13 +301,12 @@ def parse_intent_with_llm(
     user_command: str,
     model: str = "mistral",
     config: dict | None = None,
-) -> TaskIntent:
+    eval_mode: bool = False,
+) -> TaskIntent | dict:
     """Parse natural language command into structured TaskIntent using LLM.
 
-    Supports:
-    1. Exact-ID fast path (no LLM needed)
-    2. LLM structured parser
-    3. Intent semantic validation/canonicalization
+    In eval_mode, returns a dict with raw_lmm_output and canonicalized_intent
+    to separate LLM ability from rule contributions.
     """
     from ollama import Client
     from main_rag import get_ollama_host, load_config, CONFIG_PATH
@@ -324,10 +332,11 @@ def parse_intent_with_llm(
     options = config.get("options", {
         "temperature": 0.1,
         "num_ctx": 8192,
-        "num_predict": 4096,
+        "num_predict": 512,
     })
-    # Thinking models (qwen3.5) need enough tokens to finish thinking + produce content
-    if options.get("num_predict", 0) < 2048:
+    # Thinking models need enough tokens to finish thinking + produce content
+    is_thinking_model = any(k in model.lower() for k in ["qwen3.5", "qwen3", "thinking"])
+    if is_thinking_model and options.get("num_predict", 0) < 2048:
         options["num_predict"] = 2048
 
     # Use Ollama structured output with JSON schema
@@ -342,17 +351,24 @@ def parse_intent_with_llm(
     )
 
     raw_content = response.message.content
+    thinking_text = response.message.thinking
 
     # Thinking model fallback: if content is empty but thinking has text,
     # extract JSON from the thinking field
-    if not raw_content and response.message.thinking:
+    if not raw_content and thinking_text:
         logger.info(f"Model returned empty content, extracting from thinking field")
-        raw_content = _extract_json_from_thinking(response.message.thinking)
+        raw_content = _extract_json_from_thinking(thinking_text)
 
     if not raw_content:
         raise ValueError("LLM returned empty response")
 
     # Parse using Pydantic validation
+    raw_json = None
+    try:
+        raw_json = json.loads(raw_content)
+    except json.JSONDecodeError:
+        raw_json = {"_raw_text": raw_content}
+
     try:
         intent = TaskIntent.model_validate_json(raw_content)
     except Exception as e:
@@ -361,9 +377,17 @@ def parse_intent_with_llm(
         raise ValueError(f"Invalid TaskIntent from LLM: {e}")
 
     # Step 3: Validate and canonicalize
-    intent = validate_and_canonicalize_intent(user_command, intent)
+    canonicalized = validate_and_canonicalize_intent(user_command, intent, eval_mode=eval_mode)
 
-    return intent
+    if eval_mode:
+        return {
+            "raw_lmm_output": raw_json,
+            "canonicalized_intent": canonicalized,
+            "thinking_text": thinking_text[:500] if thinking_text else None,
+            "raw_content": raw_content,
+        }
+
+    return canonicalized
 
 
 def _extract_json_from_thinking(thinking_text: str) -> str | None:
@@ -401,6 +425,9 @@ def _extract_json_from_thinking(thinking_text: str) -> str | None:
         return json_candidate[:last_brace + 1]
 
     return None
+
+
+def _parse_entity_ref(data: dict | None) -> EntityReference | None:
     """Parse entity reference from dict."""
     if not data or not data.get("text"):
         return None

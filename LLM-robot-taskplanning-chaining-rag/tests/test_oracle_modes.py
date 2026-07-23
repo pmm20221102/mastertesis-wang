@@ -25,12 +25,12 @@ def test_oracle_intent_structure():
         "target": {
             "text": "chair",
             "label": "chair",
-            "node_type": "objects",
+            "node_type": "object",
         },
         "destination": {
             "text": "bedroom",
             "label": "bedroom",
-            "node_type": "rooms",
+            "node_type": "room",
         },
         "constraints": [
             {
@@ -90,21 +90,21 @@ def test_oracle_grounding_structure():
         "action": "navigate",
         "target": {
             "node_id": "chair_123",
-            "node_type": "objects",
+            "node_type": "object",
             "label": "chair",
             "room_id": "bedroom_456",
             "place_id": "place_789",
         },
         "destination": {
             "node_id": "bedroom_456",
-            "node_type": "rooms",
+            "node_type": "room",
             "label": "bedroom",
         },
         "constraints": [
             {
                 "type": "avoid",
                 "node_id": "bathroom_012",
-                "node_type": "rooms",
+                "node_type": "room",
                 "label": "bathroom",
             }
         ],
@@ -131,12 +131,12 @@ def test_oracle_intent_with_actor():
         "actor": {
             "text": "patient",
             "label": "patient",
-            "node_type": "agents",
+            "node_type": "agent",
         },
         "destination": {
             "text": "entrance",
             "label": "entrance",
-            "node_type": "places",
+            "node_type": "place",
         },
     }
 
@@ -170,7 +170,7 @@ def test_oracle_grounding_with_multiple_constraints():
         "action": "navigate",
         "target": {
             "node_id": "room_1",
-            "node_type": "rooms",
+            "node_type": "room",
             "label": "office",
         },
         "constraints": [

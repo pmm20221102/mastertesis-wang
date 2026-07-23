@@ -120,10 +120,12 @@ class PlanDraftStep(BaseModel):
 
         Rules:
         - No-ref actions (wait, ask_clarification, return_to_base): target_ref must be ""
-        - All other actions: target_ref is REQUIRED, empty or invalid raises ValueError
+        - All other actions: target_ref is preferred but not strictly required
+          (LLM often omits it; _resolve_target_refs will infer from action type)
         - Valid refs: actor/target/source/destination, step_N_*, constraint_*
         """
         import re
+        import logging
         valid_refs = {"actor", "target", "source", "destination"}
         step_pattern = r"^step_(\d+)_(target|source|destination|actor)$"
         constraint_pattern = r"^constraint_(avoid|prefer)_\d+$"
@@ -137,12 +139,12 @@ class PlanDraftStep(BaseModel):
                 self.target_ref = ""  # Force empty for no-ref actions
             return
 
-        # All other actions REQUIRE a valid target_ref
+        # Allow empty target_ref — will be inferred by _resolve_target_refs
         if not self.target_ref:
-            raise ValueError(
-                f"target_ref is required for action '{self.action}'. "
-                f"Use one of: actor, target, source, destination, step_N_*, constraint_*"
+            logging.getLogger(__name__).debug(
+                f"Step {self.step}: target_ref empty for '{self.action}', will infer from action type"
             )
+            return
 
         # Validate target_ref format
         is_valid = (
@@ -151,9 +153,8 @@ class PlanDraftStep(BaseModel):
             or bool(re.match(constraint_pattern, self.target_ref))
         )
         if not is_valid:
-            raise ValueError(
-                f"Invalid target_ref '{self.target_ref}' for action '{self.action}'. "
-                f"Must be: actor/target/source/destination, step_N_*, or constraint_*"
+            logging.getLogger(__name__).warning(
+                f"Step {self.step}: invalid target_ref '{self.target_ref}' for '{self.action}'"
             )
 
 

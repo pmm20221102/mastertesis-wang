@@ -1,0 +1,45 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_version": "v2",
+  "benchmark_file": "intent_benchmark_150_v2.jsonl",
+  "benchmark_file_hash": "01384fbb2001679c",
+  "case_count": 160,
+  "categories": {
+    "aggregate": 10,
+    "ambiguous": 5,
+    "avoid_prefer": 10,
+    "escort_guide": 10,
+    "locate_target": 15,
+    "multi_step": 15,
+    "navigate_target": 15,
+    "relation": 20,
+    "room_place_constraint": 20,
+    "source_destination": 10,
+    "set_quantifier": 10,
+    "spatial": 15,
+    "unsupported": 5
+  },
+  "required_roles_distribution": {
+    "target": 125,
+    "actor+destination": 15,
+    "destination+target": 5,
+    "destination+source": 10,
+    "": 5
+  },
+  "seed": 42,
+  "coverage_targets": {
+    "navigate_target": 15,
+    "locate_target": 15,
+    "room_place_constraint": 20,
+    "relation": 20,
+    "spatial": 15,
+    "set_quantifier": 10,
+    "aggregate": 10,
+    "source_destination": 10,
+    "escort_guide": 10,
+    "avoid_prefer": 10,
+    "unsupported": 5,
+    "ambiguous": 5,
+    "multi_step": 15
+  }
+}

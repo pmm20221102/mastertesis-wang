@@ -1,0 +1,14 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_version": "v2",
+  "benchmark_file_hash": "60b44f95bd064427",
+  "case_count": 60,
+  "categories": {
+    "single_step_target": 15,
+    "source_destination": 10,
+    "escort_guide": 10,
+    "avoid_prefer": 10,
+    "multi_step": 15
+  },
+  "seed": 42
+}

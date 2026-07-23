@@ -1,0 +1,25 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_file": "planning_benchmark_50_v1.jsonl",
+  "benchmark_file_hash": "1f1a8566b12eea8f",
+  "source_benchmark": "grounding_benchmark_100_v3.jsonl",
+  "source_benchmark_hash": "25407e21069e4d71",
+  "case_count": 45,
+  "categories": {
+    "ambiguous": 2,
+    "complex": 4,
+    "exact_id": 4,
+    "not_found": 7,
+    "obj_nav": 4,
+    "place_constraint": 6,
+    "relation": 7,
+    "room_constraint": 5,
+    "spatial": 6
+  },
+  "status_distribution": {
+    "ambiguous": 13,
+    "valid": 25,
+    "target_not_found": 7
+  },
+  "seed": 42
+}
