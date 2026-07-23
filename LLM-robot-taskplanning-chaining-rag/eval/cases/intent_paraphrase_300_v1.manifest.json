@@ -1,0 +1,27 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_file": "intent_paraphrase_300_v1.jsonl",
+  "benchmark_file_hash": "3bb49d5336e1b07b",
+  "source_benchmark": "intent_benchmark_100_v1.jsonl",
+  "source_benchmark_hash": "934b51f191b92f43",
+  "case_count": 300,
+  "paraphrases_per_intent": 3,
+  "language_style_distribution": {
+    "colloquial": 100,
+    "rephrased": 100,
+    "standard": 100
+  },
+  "categories": {
+    "ambiguous": 15,
+    "object_navigation": 30,
+    "place_constraint": 45,
+    "room_constraint": 30,
+    "set_query": 30,
+    "not_found": 30,
+    "spatial": 30,
+    "exact_id": 15,
+    "complex": 30,
+    "relation": 45
+  },
+  "seed": 42
+}

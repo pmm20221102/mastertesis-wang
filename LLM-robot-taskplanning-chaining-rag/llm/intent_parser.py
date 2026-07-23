@@ -323,9 +323,12 @@ def parse_intent_with_llm(
 
     options = config.get("options", {
         "temperature": 0.1,
-        "num_ctx": 4096,
-        "num_predict": 512,
+        "num_ctx": 8192,
+        "num_predict": 4096,
     })
+    # Thinking models (qwen3.5) need enough tokens to finish thinking + produce content
+    if options.get("num_predict", 0) < 2048:
+        options["num_predict"] = 2048
 
     # Use Ollama structured output with JSON schema
     response = client.chat(
@@ -339,6 +342,13 @@ def parse_intent_with_llm(
     )
 
     raw_content = response.message.content
+
+    # Thinking model fallback: if content is empty but thinking has text,
+    # extract JSON from the thinking field
+    if not raw_content and response.message.thinking:
+        logger.info(f"Model returned empty content, extracting from thinking field")
+        raw_content = _extract_json_from_thinking(response.message.thinking)
+
     if not raw_content:
         raise ValueError("LLM returned empty response")
 
@@ -356,7 +366,41 @@ def parse_intent_with_llm(
     return intent
 
 
-def _parse_entity_ref(data: dict | None) -> EntityReference | None:
+def _extract_json_from_thinking(thinking_text: str) -> str | None:
+    """Extract JSON from thinking model's reasoning text.
+
+    Thinking models (qwen3.5) may put all output in the 'thinking' field.
+    This function tries to find a JSON object in the thinking text.
+    """
+    import re
+    # Find the outermost JSON object
+    # Try to find ```json ... ``` blocks first
+    json_match = re.search(r"```json\s*(\{.*?\})\s*```", thinking_text, re.DOTALL)
+    if json_match:
+        return json_match.group(1)
+
+    # Try to find a JSON object (greedy match for the outermost braces)
+    brace_start = thinking_text.find("{")
+    if brace_start == -1:
+        return None
+
+    depth = 0
+    for i in range(brace_start, len(thinking_text)):
+        if thinking_text[i] == "{":
+            depth += 1
+        elif thinking_text[i] == "}":
+            depth -= 1
+            if depth == 0:
+                return thinking_text[brace_start:i + 1]
+
+    # If we didn't find matching braces, try a simpler approach
+    json_candidate = thinking_text[brace_start:]
+    # Find last } and slice
+    last_brace = json_candidate.rfind("}")
+    if last_brace > 0:
+        return json_candidate[:last_brace + 1]
+
+    return None
     """Parse entity reference from dict."""
     if not data or not data.get("text"):
         return None

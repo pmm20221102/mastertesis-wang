@@ -551,40 +551,62 @@ def run_intent_evaluation(
     logger.info(f"Loaded {len(cases)} intent cases (filter: {category_filter or 'all'})")
 
     all_results = []
+    out = Path(output_dir) if output_dir else None
+    if out:
+        out.mkdir(parents=True, exist_ok=True)
+
     for repeat in range(repeats):
         logger.info(f"Repeat {repeat + 1}/{repeats}")
+        repeat_results = []
         for i, case in enumerate(cases):
             result = evaluate_intent_case(case, model, config)
             result["repeat"] = repeat
             all_results.append(result)
+            repeat_results.append(result)
             status = "OK" if result["strict_exact_match"] else f"FAIL({result['failure_category']})"
             logger.info(f"  [{repeat}] {case['case_id']}: {status} ({result['latency_ms']:.0f}ms)")
 
-    # Compute summary
+            # Incremental save after each case
+            if out:
+                with open(out / "per_case_results.jsonl", "w", encoding="utf-8") as f:
+                    for r in all_results:
+                        r_copy = {k: v for k, v in r.items() if k not in ("parsed_intent", "oracle_intent", "raw_output")}
+                        f.write(json.dumps(r_copy, ensure_ascii=False) + "\n")
+
+        # After each repeat: recompute summary and save full outputs
+        if out:
+            summary = compute_intent_summary(all_results, cases)
+            summary["model"] = model
+            summary["repeats"] = repeats
+            summary["temperature"] = temperature
+
+            with open(out / "summary.json", "w", encoding="utf-8") as f:
+                json.dump(summary, f, indent=2, ensure_ascii=False)
+
+            with open(out / "predictions.jsonl", "w", encoding="utf-8") as f:
+                for r in all_results:
+                    f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
+
+            failures = [r for r in all_results if not r["strict_exact_match"]]
+            with open(out / "failures.jsonl", "w", encoding="utf-8") as f:
+                for r in failures:
+                    f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
+
+            with open(out / "error_breakdown.json", "w", encoding="utf-8") as f:
+                json.dump(summary.get("failure_breakdown", {}), f, indent=2)
+
+            write_intent_summary_md(summary, out / "report.md")
+            logger.info(f"  Repeat {repeat + 1} saved to {out}")
+
+    # Final summary
     summary = compute_intent_summary(all_results, cases)
     summary["model"] = model
     summary["repeats"] = repeats
     summary["temperature"] = temperature
 
-    # Save results
+    # Final save (run manifest + raw outputs)
     if output_dir:
         out = Path(output_dir)
-        out.mkdir(parents=True, exist_ok=True)
-
-        # Summary
-        with open(out / "summary.json", "w", encoding="utf-8") as f:
-            json.dump(summary, f, indent=2, ensure_ascii=False)
-
-        # Per-case results (without large fields)
-        with open(out / "per_case_results.jsonl", "w", encoding="utf-8") as f:
-            for r in all_results:
-                r_copy = {k: v for k, v in r.items() if k not in ("parsed_intent", "oracle_intent", "raw_output")}
-                f.write(json.dumps(r_copy, ensure_ascii=False) + "\n")
-
-        # Predictions with full data
-        with open(out / "predictions.jsonl", "w", encoding="utf-8") as f:
-            for r in all_results:
-                f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
 
         # Raw outputs
         with open(out / "raw_outputs.jsonl", "w", encoding="utf-8") as f:
@@ -595,16 +617,6 @@ def run_intent_evaluation(
                     "raw_output": r["raw_output"],
                     "schema_valid": r["schema_valid"],
                 }, ensure_ascii=False) + "\n")
-
-        # Failures
-        failures = [r for r in all_results if not r["strict_exact_match"]]
-        with open(out / "failures.jsonl", "w", encoding="utf-8") as f:
-            for r in failures:
-                f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
-
-        # Error breakdown
-        with open(out / "error_breakdown.json", "w", encoding="utf-8") as f:
-            json.dump(summary.get("failure_breakdown", {}), f, indent=2)
 
         # Run manifest
         import hashlib
@@ -623,9 +635,6 @@ def run_intent_evaluation(
         }
         with open(out / "run_manifest.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)
-
-        # Summary markdown
-        write_intent_summary_md(summary, out / "report.md")
 
         logger.info(f"Results saved to {out}")
 
