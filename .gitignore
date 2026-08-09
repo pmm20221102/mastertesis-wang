@@ -58,3 +58,16 @@ vector_db/
 dsg.json
 shared_dsg.json
 mesh.ply
+
+# Review documents / 评审文档（不提交）
+**/*Review*.md
+
+# CodeGraph index / CodeGraph 索引
+.codegraph/
+
+# Program archive packages / 程序压缩包（不提交）
+*.tar.gz
+*.zip
+
+# Windows Zone.Identifier metadata / Windows 下载标记
+*:Zone.Identifier

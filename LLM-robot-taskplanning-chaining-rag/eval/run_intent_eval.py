@@ -49,15 +49,23 @@ def _normalize_label(label: str | None) -> str:
 # --- Comparison helpers ---
 
 def _compare_entity_ref(pred: dict | None, exp: dict | None) -> dict[str, Any]:
-    """Compare predicted vs expected EntityReference."""
-    if exp is None and pred is None:
-        return {"match": True, "fields": {}}
-    if exp is None:
-        return {"match": False, "fields": {}, "spurious": True}
-    if pred is None:
-        return {"match": False, "fields": {}, "missing": True}
+    """Compare predicted vs expected EntityReference.
 
-    fields = {}
+    Returns semantic_match (with identity fallback) and surface_exact.
+    P0 #9 fix: when no label, text IS the semantic identity.
+    P0 #10 fix: locations compare text + node_type.
+    P0 #12.3: position comparison with 2D tolerance.
+    P0 #12.4: aggregate.location and aggregate.value comparison.
+    """
+    if exp is None and pred is None:
+        return {"semantic_match": True, "surface_match": True, "fields": {}}
+    if exp is None:
+        return {"semantic_match": False, "surface_match": False, "fields": {}, "spurious": True}
+    if pred is None:
+        return {"semantic_match": False, "surface_match": False, "fields": {}, "missing": True}
+
+    fields: dict[str, bool] = {}
+
     # label
     pred_label = _normalize_label(pred.get("label"))
     exp_label = _normalize_label(exp.get("label"))
@@ -73,22 +81,45 @@ def _compare_entity_ref(pred: dict | None, exp: dict | None) -> dict[str, Any]:
     exp_room = _normalize_text(exp.get("room"))
     fields["room"] = pred_room == exp_room
 
-    # text (soft match — not required to be identical)
+    # text — always tracked for surface match
     pred_text = _normalize_text(pred.get("text"))
     exp_text = _normalize_text(exp.get("text"))
     fields["text_match"] = pred_text == exp_text
+
+    # P0 #9: Semantic identity fallback
+    # If label exists → compare label + node_type
+    # If no label but visible identifier (text looks like place_XXXX/room_XXXX) → compare text + node_type
+    # Else → compare text
+    import re as _re
+    has_label = bool(exp_label)  # True if oracle has a canonical label
+    is_visible_id = bool(_re.match(r"^(place|room|object|agent|person)_?\d+", exp_text))
+
+    if has_label:
+        # Standard case: label + node_type defines identity
+        semantic_identity = fields["label"] and fields["node_type"]
+    elif is_visible_id:
+        # Visible identifier: text IS the identity (e.g., place_1234, room_0755)
+        semantic_identity = pred_text == exp_text and fields["node_type"]
+    else:
+        # No label, no visible ID: text is the only identity
+        semantic_identity = pred_text == exp_text
+
+    fields["semantic_identity"] = semantic_identity
 
     # quantifier
     pred_quant = pred.get("quantifier", "one")
     exp_quant = exp.get("quantifier", "one")
     fields["quantifier"] = pred_quant == exp_quant
 
-    # locations
+    # P0 #10: locations — compare node_type + text
     pred_locs = pred.get("locations", [])
     exp_locs = exp.get("locations", [])
-    pred_loc_types = sorted([_normalize_text(l.get("node_type")) for l in pred_locs])
-    exp_loc_types = sorted([_normalize_text(l.get("node_type")) for l in exp_locs])
-    fields["locations"] = pred_loc_types == exp_loc_types
+    if exp_locs:
+        pred_loc_set = {(_normalize_text(l.get("node_type")), _normalize_text(l.get("text", ""))) for l in pred_locs}
+        exp_loc_set = {(_normalize_text(l.get("node_type")), _normalize_text(l.get("text", ""))) for l in exp_locs}
+        fields["locations"] = pred_loc_set == exp_loc_set
+    else:
+        fields["locations"] = len(pred_locs) == 0
 
     # relations
     pred_rels = pred.get("relations", [])
@@ -97,7 +128,24 @@ def _compare_entity_ref(pred: dict | None, exp: dict | None) -> dict[str, Any]:
     exp_rel_set = {(r.get("relation"), _normalize_text(r.get("target_text"))) for r in exp_rels}
     fields["relations"] = pred_rel_set == exp_rel_set
 
-    # aggregate
+    # position (P0 #12.3) — compare with 2D tolerance (x, y only)
+    pred_pos = pred.get("position")
+    exp_pos = exp.get("position")
+    if exp_pos is None:
+        fields["position"] = pred_pos is None
+    elif pred_pos is None:
+        fields["position"] = False
+    else:
+        # Compare first 2 dimensions (x, y) with 10cm tolerance
+        import math
+        dim = min(len(pred_pos), len(exp_pos), 2)
+        if dim >= 2:
+            dist = math.sqrt(sum((a - b) ** 2 for a, b in zip(pred_pos[:2], exp_pos[:2])))
+            fields["position"] = dist < 0.1
+        else:
+            fields["position"] = pred_pos == exp_pos
+
+    # aggregate (P0 #12.4) — includes location and value
     pred_agg = pred.get("aggregate")
     exp_agg = exp.get("aggregate")
     if exp_agg is None:
@@ -105,13 +153,37 @@ def _compare_entity_ref(pred: dict | None, exp: dict | None) -> dict[str, Any]:
     elif pred_agg is None:
         fields["aggregate"] = False
     else:
-        fields["aggregate"] = (
+        agg_ok = (
             pred_agg.get("operation") == exp_agg.get("operation")
             and pred_agg.get("target_labels") == exp_agg.get("target_labels")
         )
+        # aggregate.location comparison
+        exp_loc = exp_agg.get("location")
+        pred_loc = pred_agg.get("location")
+        if exp_loc:
+            if pred_loc:
+                agg_ok = agg_ok and (
+                    _normalize_text(pred_loc.get("text")) == _normalize_text(exp_loc.get("text"))
+                    and pred_loc.get("node_type") == exp_loc.get("node_type")
+                )
+            else:
+                agg_ok = False
+        # aggregate.value comparison
+        if exp_agg.get("value") is not None:
+            agg_ok = agg_ok and pred_agg.get("value") == exp_agg.get("value")
+        fields["aggregate"] = agg_ok
 
-    overall = all(fields.values())
-    return {"match": overall, "fields": fields}
+    # Semantic match: uses identity fallback (not just label)
+    semantic_match = semantic_identity and fields["node_type"] and fields["room"]
+
+    # Surface exact: includes text_match and all other fields
+    surface_match = all(fields.values())
+
+    return {
+        "semantic_match": semantic_match,
+        "surface_match": surface_match,
+        "fields": fields,
+    }
 
 
 def _compute_role_metrics(predicted: dict, expected: dict) -> dict[str, Any]:
@@ -184,7 +256,11 @@ def _compute_location_f1(pred_locs: list, exp_locs: list) -> dict[str, Any]:
 # --- Failure classification ---
 
 def _classify_failure(predicted: dict, expected: dict, schema_valid: bool) -> str:
-    """Classify the primary failure category."""
+    """Classify the primary failure category.
+
+    Full taxonomy per P0 #14: checks actor, source, destination, constraints,
+    position, step roles — not just target.
+    """
     if not schema_valid:
         return "schema_error"
 
@@ -203,39 +279,68 @@ def _classify_failure(predicted: dict, expected: dict, schema_valid: bool) -> st
         if predicted.get(r) is not None and expected.get(r) is None:
             return "spurious_role"
 
-    # Check target fields
-    pred_target = predicted.get("target") or {}
-    exp_target = expected.get("target") or {}
+    # Check each role's fields
+    for role in roles:
+        pred_ref = predicted.get(role) or {}
+        exp_ref = expected.get(role) or {}
+        if not exp_ref:
+            continue
 
-    if exp_target.get("label") and _normalize_label(pred_target.get("label")) != _normalize_label(exp_target.get("label")):
-        return "wrong_label"
+        if exp_ref.get("label") and _normalize_label(pred_ref.get("label")) != _normalize_label(exp_ref.get("label")):
+            return f"wrong_{role}_label"
 
-    if exp_target.get("node_type") and _normalize_text(pred_target.get("node_type")) != _normalize_text(exp_target.get("node_type")):
-        return "wrong_node_type"
+        if exp_ref.get("node_type") and _normalize_text(pred_ref.get("node_type")) != _normalize_text(exp_ref.get("node_type")):
+            return f"wrong_{role}_node_type"
 
-    if exp_target.get("locations") and not pred_target.get("locations"):
-        return "location_error"
+        if role == "target":
+            if exp_ref.get("locations") and not pred_ref.get("locations"):
+                return "location_error"
 
-    if exp_target.get("relations"):
-        pred_rels = pred_target.get("relations", [])
-        exp_rels = exp_target.get("relations", [])
-        if len(pred_rels) != len(exp_rels) or set((r.get("relation"), r.get("target_text")) for r in pred_rels) != set((r.get("relation"), r.get("target_text")) for r in exp_rels):
-            return "relation_error"
+            if exp_ref.get("relations"):
+                pred_rels = pred_ref.get("relations", [])
+                exp_rels = exp_ref.get("relations", [])
+                if len(pred_rels) != len(exp_rels) or set((r.get("relation"), r.get("target_text")) for r in pred_rels) != set((r.get("relation"), r.get("target_text")) for r in exp_rels):
+                    return "relation_error"
 
-    if exp_target.get("quantifier") and pred_target.get("quantifier") != exp_target.get("quantifier"):
-        return "quantifier_error"
+            if exp_ref.get("quantifier") and pred_ref.get("quantifier") != exp_ref.get("quantifier"):
+                return "quantifier_error"
 
-    if exp_target.get("aggregate"):
-        pred_agg = pred_target.get("aggregate")
-        if not pred_agg or pred_agg.get("operation") != exp_target["aggregate"].get("operation"):
-            return "aggregate_error"
+            if exp_ref.get("aggregate"):
+                pred_agg = pred_ref.get("aggregate")
+                if not pred_agg or pred_agg.get("operation") != exp_ref["aggregate"].get("operation"):
+                    return "aggregate_error"
+
+            # Position check (P0 #12.3)
+            if exp_ref.get("position") and not pred_ref.get("position"):
+                return "position_error"
+
+    # Constraints check (P0 #12.2)
+    pred_constraints = predicted.get("constraints", [])
+    exp_constraints = expected.get("constraints", [])
+    if exp_constraints and not pred_constraints:
+        return "missing_constraint"
+    if exp_constraints:
+        pred_set = {(c.get("type"), c.get("description", "")) for c in pred_constraints}
+        exp_set = {(c.get("type"), c.get("description", "")) for c in exp_constraints}
+        if pred_set != exp_set:
+            return "constraint_error"
 
     # Multi-step
     if expected.get("steps"):
         if not predicted.get("steps"):
             return "step_decomposition_error"
-        if len(predicted.get("steps", [])) != len(expected.get("steps", [])):
-            return "step_decomposition_error"
+        pred_steps = predicted.get("steps", [])
+        exp_steps = expected.get("steps", [])
+        if len(pred_steps) != len(exp_steps):
+            return "step_count_error"
+        # Check per-step role binding (P0 #13)
+        for i, (ps, es) in enumerate(zip(pred_steps, exp_steps)):
+            if ps.get("action") != es.get("action"):
+                return f"step_{i}_action_error"
+            for r in ["actor", "target", "source", "destination"]:
+                if es.get(r) and ps.get(r):
+                    if _normalize_label(ps.get(r, {}).get("label")) != _normalize_label(es.get(r, {}).get("label")):
+                        return f"step_{i}_{r}_error"
 
     return "unknown_error"
 
@@ -349,22 +454,65 @@ def evaluate_intent_case(
         step_actions_correct = pred_step_actions == exp_step_actions
         multi_step_exact = step_count_correct and step_actions_correct
 
-    # Strict exact match — includes all role fields (label, node_type, room)
-    all_role_fields_correct = all(
-        rfm.get("match", True)
+    # Semantic strict — excludes text match (P0 #12.1)
+    all_role_semantic_correct = all(
+        rfm.get("semantic_match", True)
         for rfm in role_field_metrics.values()
     )
 
+    # Surface exact — includes text match
+    all_role_surface_correct = all(
+        rfm.get("surface_match", True)
+        for rfm in role_field_metrics.values()
+    )
+
+    # Constraints comparison (P0 #12.2)
+    pred_constraints = predicted.get("constraints", [])
+    exp_constraints = oracle.get("constraints", [])
+    pred_constr_set = {(c.get("type"), _normalize_text(c.get("description", ""))) for c in pred_constraints}
+    exp_constr_set = {(c.get("type"), _normalize_text(c.get("description", ""))) for c in exp_constraints}
+    constraints_correct = pred_constr_set == exp_constr_set
+
+    # Step-level comparison (P0 #13)
+    step_semantic_exact = False
+    step_role_accuracy = 0.0
+    if exp_steps is None:
+        step_semantic_exact = pred_steps is None
+    elif pred_steps is not None and len(pred_steps) == len(exp_steps):
+        step_matches = 0
+        for ps, es in zip(pred_steps, exp_steps):
+            step_ok = ps.get("action") == es.get("action")
+            # Compare step-level roles using full EntityReference comparator
+            for role in ["actor", "target", "source", "destination"]:
+                pred_ref = ps.get(role)
+                exp_ref = es.get(role)
+                if exp_ref is not None or pred_ref is not None:
+                    comp = _compare_entity_ref(pred_ref, exp_ref)
+                    step_ok = step_ok and comp.get("semantic_match", False)
+            if step_ok:
+                step_matches += 1
+        step_role_accuracy = step_matches / len(exp_steps)
+        step_semantic_exact = step_matches == len(exp_steps)
+
+    # Strict exact match (semantic — excludes text)
     strict_exact = (
         schema_valid
         and action_correct
         and role_metrics["f1"] == 1.0
-        and all_role_fields_correct
+        and all_role_semantic_correct
         and (location_metrics is None or location_metrics["exact_match"])
         and (relation_metrics is None or relation_metrics["exact_match"])
         and quantifier_correct
         and aggregate_correct
+        and constraints_correct
         and multi_step_exact
+        and step_semantic_exact
+    )
+
+    # Surface exact (includes text)
+    surface_exact = (
+        strict_exact
+        and all_role_surface_correct
     )
 
     # Failure classification
@@ -394,14 +542,20 @@ def evaluate_intent_case(
         "relation_metrics": relation_metrics,
         # Quantifier
         "quantifier_correct": quantifier_correct,
+        # Constraints (P0 #12.2)
+        "constraints_correct": constraints_correct,
         # Aggregate
         "aggregate_correct": aggregate_correct,
         # Multi-step
         "step_count_correct": step_count_correct,
         "step_actions_correct": step_actions_correct,
         "multi_step_exact": multi_step_exact,
-        # Strict
+        # Step-level (P0 #13)
+        "step_semantic_exact": step_semantic_exact,
+        "step_role_accuracy": step_role_accuracy,
+        # Strict (semantic vs surface)
         "strict_exact_match": strict_exact,
+        "surface_exact_match": surface_exact,
         # Failure
         "failure_category": failure_category,
         # Raw vs canonicalized trace
@@ -470,8 +624,19 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     multi_step_cases = [r for r in results if r.get("oracle_intent", {}).get("steps") is not None]
     multi_step_exact = sum(1 for r in multi_step_cases if r["multi_step_exact"])
 
-    # Strict exact match
+    # Strict exact match (semantic)
     strict_exact = sum(1 for r in results if r["strict_exact_match"])
+
+    # Surface exact match (P0 #12.1)
+    surface_exact = sum(1 for r in results if r.get("surface_exact_match", False))
+
+    # Constraints accuracy (P0 #12.2)
+    oracle_has_constraints = [r for r in results if r.get("oracle_intent", {}).get("constraints")]
+    constraints_correct_count = sum(1 for r in oracle_has_constraints if r.get("constraints_correct", False))
+
+    # Step-level metrics (P0 #13)
+    step_role_accs = [r.get("step_role_accuracy", 0.0) for r in multi_step_cases if r.get("step_role_accuracy") is not None]
+    avg_step_role_accuracy = sum(step_role_accs) / len(step_role_accs) if step_role_accs else None
 
     # Failure breakdown
     failure_breakdown = {}
@@ -507,7 +672,7 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     total_rules_applied = sum(r.get("rules_applied_count", 0) for r in results)
     cases_with_rules = sum(1 for r in results if r.get("rules_applied_count", 0) > 0)
 
-    # Raw action accuracy (before canonicalization)
+    # Raw action accuracy — report BOTH denominators (P0 #15)
     raw_action_correct = sum(1 for r in results
                              if r.get("raw_json") and r["raw_json"].get("action") == r.get("oracle_intent", {}).get("action"))
     raw_json_count = sum(1 for r in results if r.get("raw_json") and "_raw_text" not in r["raw_json"])
@@ -515,8 +680,11 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     return {
         "total_cases": total,
         "schema_validity_rate": schema_valid_count / total,
+        # Action accuracy (post-canonicalization, all cases)
         "action_accuracy": action_correct / total,
-        "raw_action_accuracy": raw_action_correct / raw_json_count if raw_json_count > 0 else None,
+        # Raw action accuracy — two denominators (P0 #15)
+        "raw_action_accuracy_all_cases": raw_action_correct / total if total > 0 else None,
+        "raw_action_accuracy_schema_valid_only": raw_action_correct / raw_json_count if raw_json_count > 0 else None,
         "raw_json_success_rate": raw_json_count / total,
         "canonicalization_rate": cases_with_rules / total,
         "avg_rules_per_case": total_rules_applied / total,
@@ -530,13 +698,21 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
         "non_default_quantifier_accuracy": non_default_quant_correct / len(non_default_quant_cases) if non_default_quant_cases else None,
         "non_default_quantifier_count": len(non_default_quant_cases),
         "spurious_quantifier_count": spurious_quant,
+        # Constraints (P0 #12.2)
+        "constraints_accuracy": constraints_correct_count / len(oracle_has_constraints) if oracle_has_constraints else None,
+        "constraints_case_count": len(oracle_has_constraints),
         "aggregate_positive_accuracy": agg_positive_correct / len(oracle_has_agg) if oracle_has_agg else None,
         "aggregate_positive_count": len(oracle_has_agg),
         "spurious_aggregate_count": spurious_agg,
         "multi_step_exact_rate": multi_step_exact / len(multi_step_cases) if multi_step_cases else None,
         "multi_step_case_count": len(multi_step_cases),
+        # Step-level (P0 #13)
+        "avg_step_role_accuracy": avg_step_role_accuracy,
+        # Strict (semantic) vs surface (P0 #12.1)
         "strict_exact_match_rate": strict_exact / total,
         "strict_exact_match_count": strict_exact,
+        "surface_exact_match_rate": surface_exact / total if total > 0 else None,
+        "surface_exact_match_count": surface_exact,
         "failure_breakdown": failure_breakdown,
         "category_breakdown": category_breakdown,
         "avg_latency_ms": avg_latency,
@@ -611,6 +787,8 @@ def run_intent_evaluation(
     category_filter: str | None = None,
 ) -> dict[str, Any]:
     """Run intent evaluation."""
+    import time as _time
+    run_start_time = _time.strftime("%Y-%m-%dT%H:%M:%S")
     from main_rag import load_config, CONFIG_PATH
 
     config = load_config(CONFIG_PATH)
@@ -727,20 +905,72 @@ def run_intent_evaluation(
                     "schema_valid": r["schema_valid"],
                 }, ensure_ascii=False) + "\n")
 
-        # Run manifest
+        # Run manifest (complete provenance)
         import hashlib
+        import time as _time
+
         with open(benchmark_path, "rb") as f:
             bench_hash = hashlib.sha256(f.read()).hexdigest()[:16]
 
+        # Prompt hash
+        from llm.intent_parser import INTENT_SYSTEM_PROMPT
+        prompt_hash = hashlib.sha256(INTENT_SYSTEM_PROMPT.encode()).hexdigest()[:16]
+
+        # Schema hash
+        from planner_schemas.intent import TaskIntent
+        schema_hash = hashlib.sha256(
+            json.dumps(TaskIntent.model_json_schema(), sort_keys=True).encode()
+        ).hexdigest()[:16]
+
+        # Config hash
+        config = load_config(CONFIG_PATH)
+        config_hash = hashlib.sha256(
+            json.dumps(config, sort_keys=True, default=str).encode()
+        ).hexdigest()[:16]
+
+        # Code commit (best effort)
+        try:
+            import subprocess
+            code_commit = subprocess.check_output(
+                ["git", "rev-parse", "--short", "HEAD"],
+                cwd=str(Path(__file__).parent.parent),
+                text=True, stderr=subprocess.DEVNULL
+            ).strip()
+        except Exception:
+            code_commit = "unknown"
+
+        # Model digest (if available via Ollama)
+        model_digest = "unknown"
+        try:
+            from ollama import Client
+            from main_rag import get_ollama_host
+            client = Client(host=get_ollama(config), timeout=10)
+            for m in client.list().get("models", []):
+                if m.get("model") == model:
+                    model_digest = m.get("digest", "unknown")[:16]
+                    break
+        except Exception:
+            pass
+
         manifest = {
             "model": model,
+            "model_digest": model_digest,
             "repeats": repeats,
             "temperature": temperature,
             "benchmark": benchmark_path,
             "benchmark_hash": bench_hash,
+            "prompt_hash": prompt_hash,
+            "schema_hash": schema_hash,
+            "config_hash": config_hash,
+            "code_commit": code_commit,
             "total_cases": len(cases),
             "total_evaluations": len(all_results),
             "output_dir": str(out),
+            "started_at": run_start_time if 'run_start_time' in dir() else "unknown",
+            "finished_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "duration_seconds": round(sum(r.get("latency_ms", 0) for r in all_results) / 1000, 1) if all_results else 0,
+            "completion_status": "completed",
+            "options": config.get("options", {}),
         }
         with open(out / "run_manifest.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)

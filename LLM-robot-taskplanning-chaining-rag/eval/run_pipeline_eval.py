@@ -393,7 +393,7 @@ def _run_planner_with_oracle_grounding(
 ) -> PipelineResult:
     """Run only the planner step with oracle grounding."""
     import time
-    from main_rag import _generate_grounded_plan, _validate_grounded_plan, _resolve_target_refs
+    from main_rag import _generate_grounded_plan, _validate_grounded_plan, _resolve_target_refs, _repair_plan
 
     t0 = time.time()
 
@@ -430,33 +430,47 @@ def _run_planner_with_oracle_grounding(
                 }
 
     for constr in oracle_grounding.get("constraints", []):
-        if constr.get("node_id"):
+        # P0 #33: Include both graph-grounded (avoid with node_id) and symbolic (prefer without node_id)
+        constr_type = constr.get("type", "avoid")
+        if constr_type == "avoid" and constr.get("node_id"):
             grounded_task["constraints"].append({
-                "type": constr.get("type", "avoid"),
+                "type": constr_type,
                 "node_id": constr["node_id"],
                 "node_type": constr.get("node_type", "unknown"),
                 "label": constr.get("label", ""),
             })
+        elif constr_type == "prefer":
+            # P0 #33: Prefer constraints don't require node_id
+            grounded_task["constraints"].append({
+                "type": "prefer",
+                "node_id": constr.get("node_id", ""),
+                "node_type": constr.get("node_type", "unknown"),
+                "label": constr.get("label", ""),
+                "value": constr.get("value", constr.get("label", "")),
+            })
 
-    # Generate plan
-    t_plan = time.time()
-    try:
-        task_plan = _generate_grounded_plan(instruction, grounded_task, model, config)
-        task_plan = _resolve_target_refs(task_plan, grounded_task)
-        plan_latency = (time.time() - t_plan) * 1000
-    except Exception as e:
-        plan_latency = (time.time() - t_plan) * 1000
-        return PipelineResult(
-            status="system_error",
-            grounded_task=grounded_task,
-            latency_ms={"planning_ms": plan_latency, "total_ms": (time.time() - t0) * 1000},
-            error=str(e),
-        )
+    # taskbook 8: multi-step oracle grounding → step-specific refs (step_N_role)
+    grounded_task["steps"] = []
+    for i, step_data in enumerate(oracle_grounding.get("steps", [])):
+        step_refs = {}
+        for role in ["actor", "target", "source", "destination"]:
+            ref = step_data.get(role)
+            if ref and ref.get("node_id"):
+                step_refs[role] = {
+                    "node_id": ref["node_id"],
+                    "node_type": ref.get("node_type", "unknown"),
+                    "label": ref.get("label", ""),
+                    "room_id": ref.get("room_id"),
+                    "place_id": ref.get("place_id"),
+                    "navigation_target": ref.get("navigation_target"),
+                }
+        grounded_task["steps"].append({"references": step_refs})
 
-    # Build mock grounding for validation
+    # Build mock grounding for validation (validator needs it before generation loop)
     from grounding.orchestrator import GroundingResult
     from api_schemas import ResolutionResult, ResolutionCandidate
     from planner_schemas.intent import EntityReference
+    from schema import TaskPlan
 
     mock_grounding = GroundingResult()
     for role, ref_data in grounded_task["references"].items():
@@ -475,32 +489,66 @@ def _run_planner_with_oracle_grounding(
         )
     for i, constr in enumerate(grounded_task["constraints"]):
         ref = EntityReference(text=constr.get("label", f"constraint_{i}"))
+        # P0 #33: Prefer constraints may not have node_id
+        node_id = constr.get("node_id", "")
+        if constr["type"] == "prefer" and not node_id:
+            node_id = f"prefer_{constr.get('label', i)}"
         mock_grounding.add_constraint_result(
             f"constraint_{constr['type']}_{i}",
             ResolutionResult(
                 status="resolved",
                 reference=ref,
                 selected=ResolutionCandidate(
-                    node_id=constr["node_id"],
+                    node_id=node_id,
                     node_type=constr.get("node_type", "unknown"),
                     label=constr.get("label", ""),
                 ),
             ),
         )
 
-    # Validate
-    validation_errors = _validate_grounded_plan(task_plan, mock_grounding)
+    # Generate plan with repair loop (taskbook 14: up to 2 repairs).
+    # PlanDraft schema ValidationError（如 target_ref 缺失/非法）也进入 repair ——
+    # 程序不静默猜测，但允许 LLM 在 repair 中修复（任务书 7.2）。
+    t_plan = time.time()
+    task_plan = None
+    raw_plan_draft = None
+    validation_errors = []
+    repair_attempts = 0
+    while True:
+        try:
+            if task_plan is None:
+                task_plan = _generate_grounded_plan(instruction, grounded_task, model, config)
+                raw_plan_draft = task_plan.model_dump() if task_plan else None
+            else:
+                task_plan = _repair_plan(task_plan, validation_errors, grounded_task, model, config)
+            task_plan = _resolve_target_refs(task_plan, grounded_task)
+            validation_errors = _validate_grounded_plan(task_plan, mock_grounding, grounded_task=grounded_task)
+            if not validation_errors:
+                break
+        except Exception as e:
+            # schema 解析失败（如 target_ref 缺失）→ 转 repair 错误，不静默猜测
+            first_line = (str(e).splitlines() or [str(e)])[0][:120]
+            validation_errors = [f"PlanDraft schema error: {first_line}"]
+            if task_plan is None:
+                task_plan = TaskPlan(status="valid", task_chain=[])
+        if repair_attempts >= 2:
+            break
+        repair_attempts += 1
 
-    # If validation errors exist, mark as system_error
+    plan_latency = (time.time() - t_plan) * 1000
+
+    # If validation errors still exist, mark as system_error
     if validation_errors:
         return PipelineResult(
             status="system_error",
             grounding=mock_grounding.to_dict(),
             grounded_task=grounded_task,
             task_plan=json.loads(task_plan.model_dump_json()),
+            raw_plan_draft=raw_plan_draft,
             validation_errors=validation_errors,
             latency_ms={
                 "planning_ms": plan_latency,
+                "repair_attempts": repair_attempts,
                 "total_ms": (time.time() - t0) * 1000,
             },
             error=f"Validation failed: {validation_errors}",
@@ -511,9 +559,11 @@ def _run_planner_with_oracle_grounding(
         grounding=mock_grounding.to_dict(),
         grounded_task=grounded_task,
         task_plan=json.loads(task_plan.model_dump_json()),
+        raw_plan_draft=raw_plan_draft,
         validation_errors=validation_errors,
         latency_ms={
             "planning_ms": plan_latency,
+            "repair_attempts": repair_attempts,
             "total_ms": (time.time() - t0) * 1000,
         },
     )
@@ -557,9 +607,14 @@ def evaluate_planning_case(
         grounding_data = result.grounding
         grounded_task_data = result.grounded_task
         validation_errors = result.validation_errors
+        raw_plan_draft = result.raw_plan_draft  # P0 #36
 
         expected_status = expected.get("status", "valid")
         status_correct = predicted_status == expected_status
+
+        # P0 #36: raw plan draft validity
+        raw_plan_valid = raw_plan_draft is not None and raw_plan_draft.get("status") != "system_error"
+        raw_plan_had_errors = bool(validation_errors)
 
         # Extract predicted actions and target_refs
         predicted_actions = [step.get("action") for step in task_chain]
@@ -595,6 +650,12 @@ def evaluate_planning_case(
             tid = step.get("target_id")
             if tid:
                 emitted_ids.append(tid)
+            # P0 #31: Also collect role_ids
+            role_ids = step.get("role_ids")
+            if role_ids and isinstance(role_ids, dict):
+                for rid in role_ids.values():
+                    if rid and rid not in emitted_ids:
+                        emitted_ids.append(rid)
             constr = step.get("constraints", {})
             if isinstance(constr, dict):
                 for aid in constr.get("avoid", []):
@@ -629,6 +690,8 @@ def evaluate_planning_case(
                 ungrounded_ids.append(eid)
 
         # Check role-specific ID correctness
+        step_target_ref_correct_count = 0
+        step_target_ref_total = 0
         if "expected_steps" in expected:
             for i, step in enumerate(task_chain):
                 if i < len(expected["expected_steps"]):
@@ -638,9 +701,43 @@ def evaluate_planning_case(
                     pred_target_ref = step.get("target_ref")
                     pred_target_id = step.get("target_id")
 
+                    # P0 #35: compare target_ref itself
+                    if exp_target_ref:
+                        step_target_ref_total += 1
+                        if pred_target_ref == exp_target_ref:
+                            step_target_ref_correct_count += 1
+
                     if exp_target_id and pred_target_id and pred_target_id != exp_target_id:
                         if pred_target_id in grounding_ids:
                             wrong_role_ids.append(pred_target_id)
+
+        # P0 #35: target_ref accuracy
+        step_target_ref_accuracy = (
+            step_target_ref_correct_count / step_target_ref_total
+            if step_target_ref_total > 0 else None
+        )
+
+        # P0 #38: constraint accuracy
+        expected_avoid_ids = set(expected.get("expected_avoid_ids", []))
+        predicted_avoid_ids = set()
+        for step in task_chain:
+            constr = step.get("constraints", {})
+            if isinstance(constr, dict):
+                for aid in constr.get("avoid", []):
+                    predicted_avoid_ids.add(aid)
+        constraint_avoid_correct = (
+            expected_avoid_ids == predicted_avoid_ids
+            if expected_avoid_ids else None
+        )
+
+        # P0 #31: role_refs correctness
+        role_refs_correct = None
+        exp_step0 = (expected.get("expected_steps") or [{}])[0] if expected.get("expected_steps") else {}
+        exp_role_refs = exp_step0.get("role_refs")
+        if exp_role_refs:
+            pred_step0 = task_chain[0] if task_chain else {}
+            pred_role_refs = pred_step0.get("role_refs")
+            role_refs_correct = pred_role_refs == exp_role_refs if pred_role_refs else False
 
         return {
             "case_id": case["case_id"],
@@ -658,6 +755,19 @@ def evaluate_planning_case(
             "predicted_target_refs": predicted_target_refs,
             "predicted_target_ids": predicted_target_ids,
             "target_ids_correct": target_ids_correct,
+            # P0 #36: raw plan draft
+            "raw_plan_valid": raw_plan_valid,
+            "raw_plan_had_errors": raw_plan_had_errors,
+            "raw_plan_draft": raw_plan_draft,
+            # P0 #35: per-step target_ref accuracy
+            "step_target_ref_accuracy": step_target_ref_accuracy,
+            "step_target_ref_total": step_target_ref_total,
+            # P0 #38: constraint accuracy
+            "constraint_avoid_correct": constraint_avoid_correct,
+            "expected_avoid_ids": list(expected_avoid_ids),
+            "predicted_avoid_ids": list(predicted_avoid_ids),
+            # P0 #31: role_refs
+            "role_refs_correct": role_refs_correct,
             "emitted_ids": emitted_ids,
             "grounding_ids": list(grounding_ids),
             "hallucinated_ids": hallucinated_ids,
@@ -1073,6 +1183,28 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
         target_ids_cases = [r for r in planning if r.get("target_ids_correct") is not None]
         target_ids_correct = sum(1 for r in target_ids_cases if r["target_ids_correct"])
 
+        # P0 #35: step target_ref accuracy
+        step_ref_cases = [r for r in planning if r.get("step_target_ref_accuracy") is not None]
+        avg_step_ref_accuracy = (
+            sum(r["step_target_ref_accuracy"] for r in step_ref_cases) / len(step_ref_cases)
+            if step_ref_cases else None
+        )
+
+        # P0 #38: constraint accuracy (avoid + prefer)
+        constraint_cases = [r for r in planning if r.get("constraint_avoid_correct") is not None]
+        constraint_correct = sum(1 for r in constraint_cases if r["constraint_avoid_correct"])
+
+        # P0 #33: prefer constraint accuracy
+        prefer_cases = [r for r in planning if any(
+            c.get("type") == "prefer" for c in (r.get("grounded_task") or {}).get("constraints", [])
+            if isinstance(c, dict)
+        )]
+        prefer_correct = sum(1 for r in prefer_cases if r.get("constraint_avoid_correct"))
+
+        # P0 #31: role_refs accuracy
+        role_refs_cases = [r for r in planning if r.get("role_refs_correct") is not None]
+        role_refs_correct = sum(1 for r in role_refs_cases if r["role_refs_correct"])
+
         # ID safety metrics (N/A if all_graph_ids not available)
         has_graph_ids = any(r.get("emitted_ids") for r in planning)
         total_emitted = sum(len(r.get("emitted_ids", [])) for r in planning)
@@ -1100,6 +1232,18 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             "target_ids_accuracy": target_ids_correct / len(target_ids_cases) if target_ids_cases else None,
             "target_ids_evaluated_count": len(target_ids_cases),
             "target_ids_na_count": total - len(target_ids_cases),
+            # P0 #35: step target_ref accuracy
+            "step_target_ref_accuracy": avg_step_ref_accuracy,
+            "step_target_ref_evaluated_count": len(step_ref_cases),
+            # P0 #38: constraint accuracy
+            "constraint_avoid_accuracy": constraint_correct / len(constraint_cases) if constraint_cases else None,
+            "constraint_avoid_evaluated_count": len(constraint_cases),
+            # P0 #33: prefer constraint accuracy
+            "constraint_prefer_accuracy": prefer_correct / len(prefer_cases) if prefer_cases else None,
+            "constraint_prefer_evaluated_count": len(prefer_cases),
+            # P0 #31: role_refs accuracy
+            "role_refs_accuracy": role_refs_correct / len(role_refs_cases) if role_refs_cases else None,
+            "role_refs_evaluated_count": len(role_refs_cases),
             # ID safety (N/A if no emitted IDs)
             "hallucinated_id_rate": total_hallucinated / total_emitted if total_emitted > 0 else None,
             "ungrounded_id_rate": total_ungrounded / total_emitted if total_emitted > 0 else None,

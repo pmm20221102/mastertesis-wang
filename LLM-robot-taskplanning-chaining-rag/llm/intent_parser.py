@@ -123,7 +123,10 @@ FEW-SHOT EXAMPLES:
 11. "First find the chair, then navigate to the office"
 → {"action": "navigate", "target": {"text": "chair", "label": "chairs", "node_type": "object"}, "destination": {"text": "office", "node_type": "room"}, "steps": [{"action": "locate", "target": {"text": "chair", "label": "chairs", "node_type": "object"}}, {"action": "navigate", "destination": {"text": "office", "node_type": "room"}}]}
 
-12. "Pick up the chair"
+12. "Go to the nearest place to the chairs"
+→ {"action": "navigate", "target": {"text": "the nearest place to the chairs", "node_type": "place", "quantifier": "nearest"}}
+
+13. "Pick up the chair"
 → {"action": "unsupported"}
 """
 
@@ -162,11 +165,12 @@ def _detect_action_from_text(text: str) -> str:
     # Manipulation: use word boundaries, exclude "place" as spatial entity
     if re.search(r"\b(pick\s+up|grasp|carry|lift)\b", text_lower):
         return "unsupported"
-    # Escort: "escort" or "accompany" are clear; "guide" needs actor context
+    # Escort: "escort" or "accompany" are clear
     if re.search(r"\b(escort|accompany)\b", text_lower):
         return "escort"
-    if re.search(r"\bguide\b", text_lower) and re.search(r"\b(person|patient|him|her|them)\b", text_lower):
-        return "escort"
+    # Guide: separate action from escort (P0 #18)
+    if re.search(r"\b(guide|lead|show|direct)\b", text_lower):
+        return "guide"
     if re.search(r"\b(find|locate|search)\b", text_lower):
         return "locate"
     if re.search(r"\b(navigate|go\s+to)\b", text_lower):
@@ -238,7 +242,7 @@ def validate_and_canonicalize_intent(
         if not intent.actor:
             # Try to infer from text
             if "person" in text_lower or "patient" in text_lower:
-                intent.actor = EntityReference(text="person", node_type="agents")
+                intent.actor = EntityReference(text="person", node_type="agent")
 
     # Rule 4: Remove room/place ID from room field if it's the same as target
     if intent.target and intent.target.room:
@@ -269,10 +273,13 @@ def validate_and_canonicalize_intent(
         intent.constraints = cleaned_constraints
 
     # Rule 6: quantifier should match user text
+    # Use word-boundary matching: "all" must be a word, not a substring of
+    # e.g. "small" (which contains "all").
+    import re as _re
     if intent.target:
-        if any(w in text_lower for w in ["all", "every", "each"]):
+        if _re.search(r"\b(?:all|every|each)\b", text_lower):
             intent.target.quantifier = "all"
-        elif any(w in text_lower for w in ["nearest", "closest", "nearby"]):
+        elif _re.search(r"\b(?:nearest|closest|nearby)\b", text_lower):
             intent.target.quantifier = "nearest"
 
     # Rule 7: Remove spurious relations not mentioned by user
@@ -342,6 +349,7 @@ def parse_intent_with_llm(
     # Use Ollama structured output with JSON schema
     response = client.chat(
         model=model,
+        think=False,
         messages=[
             {"role": "system", "content": INTENT_SYSTEM_PROMPT},
             {"role": "user", "content": user_command},

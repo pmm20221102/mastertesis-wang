@@ -105,24 +105,33 @@ class PlanDraftStep(BaseModel):
     - Step-specific: "step_N_target", "step_N_source", "step_N_destination"
     - Constraints: "constraint_avoid_X", "constraint_prefer_X"
     - No-ref actions: "" (only for wait, ask_clarification, return_to_base)
+
+    role_refs: Optional dict for multi-role actions (P0 #31).
+    For actions like escort_to/guide_to that need both actor and destination,
+    use role_refs={"actor": "actor", "destination": "destination"}.
+    When role_refs is set, target_ref is ignored.
     """
 
     step: int
     action: AllowedAction
     target_type: TargetType
     target_ref: str = ""  # Required for executable actions; "" only for no-ref actions
+    role_refs: Optional[dict[str, str]] = None  # P0 #31: multi-role support
     description: str
     executor: ExecutorType
     constraints: Constraints = Field(default_factory=Constraints)
 
     def model_post_init(self, __context: Any) -> None:
-        """Validate target_ref after initialization.
+        """Validate target_ref and role_refs after initialization.
 
         Rules:
         - No-ref actions (wait, ask_clarification, return_to_base): target_ref must be ""
-        - All other actions: target_ref is preferred but not strictly required
-          (LLM often omits it; _resolve_target_refs will infer from action type)
+        - All other actions: target_ref is REQUIRED (taskbook 7.1/7.2). Missing or
+          invalid target_ref raises a Validation Error — the system never auto-infers
+          or silently rewrites refs.
         - Valid refs: actor/target/source/destination, step_N_*, constraint_*
+        - role_refs: optional dict for multi-role actions (P0 #31). When present,
+          target_ref is ignored.
         """
         import re
         import logging
@@ -137,14 +146,34 @@ class PlanDraftStep(BaseModel):
             # These actions must NOT have a target_ref
             if self.target_ref and self.target_ref != "":
                 self.target_ref = ""  # Force empty for no-ref actions
+            if self.role_refs:
+                self.role_refs = None  # Force empty for no-ref actions
             return
 
-        # Allow empty target_ref — will be inferred by _resolve_target_refs
+        # Validate role_refs if provided (P0 #31)
+        if self.role_refs:
+            for role_name, ref_value in self.role_refs.items():
+                if role_name not in ("actor", "target", "source", "destination"):
+                    logging.getLogger(__name__).warning(
+                        f"Step {self.step}: invalid role_refs key '{role_name}'"
+                    )
+                if ref_value and not (
+                    ref_value in valid_refs
+                    or bool(re.match(step_pattern, ref_value))
+                    or bool(re.match(constraint_pattern, ref_value))
+                ):
+                    logging.getLogger(__name__).warning(
+                        f"Step {self.step}: invalid role_refs value '{ref_value}' for '{role_name}'"
+                    )
+            return  # role_refs takes precedence over target_ref validation
+
+        # target_ref is REQUIRED for executable actions (taskbook 7.1/7.2).
+        # Missing target_ref → Validation Error. No auto-inference.
         if not self.target_ref:
-            logging.getLogger(__name__).debug(
-                f"Step {self.step}: target_ref empty for '{self.action}', will infer from action type"
+            raise ValueError(
+                f"Step {self.step}: action '{self.action}' requires a non-empty target_ref. "
+                "LLM must output an available role ref; missing refs are rejected, not inferred."
             )
-            return
 
         # Validate target_ref format
         is_valid = (
@@ -153,8 +182,9 @@ class PlanDraftStep(BaseModel):
             or bool(re.match(constraint_pattern, self.target_ref))
         )
         if not is_valid:
-            logging.getLogger(__name__).warning(
-                f"Step {self.step}: invalid target_ref '{self.target_ref}' for '{self.action}'"
+            raise ValueError(
+                f"Step {self.step}: invalid target_ref '{self.target_ref}' for action '{self.action}'. "
+                "Valid refs: actor/target/source/destination, step_N_*, constraint_*"
             )
 
 
@@ -181,6 +211,10 @@ class TaskStep(BaseModel):
         target_id: Exact scene graph node ID or workflow ID; ``None`` for
             actions that do not target a specific entity. Populated by the
             system from target_ref, not by the LLM directly.
+        role_refs: Dict mapping role names to refs (P0 #31).
+            For multi-role actions like escort_to: {"actor": "actor", "destination": "destination"}.
+        role_ids: Dict mapping role names to resolved node IDs (P0 #31).
+            Populated by the system from role_refs, not by the LLM directly.
         description: Short human-readable description of this step.
         executor: The subsystem responsible for executing this step.
         constraints: Navigation and behavioral constraints for this step.
@@ -191,6 +225,8 @@ class TaskStep(BaseModel):
     target_type: TargetType
     target_ref: Optional[str] = None
     target_id: Optional[str] = None
+    role_refs: Optional[dict[str, str]] = None  # P0 #31: multi-role
+    role_ids: Optional[dict[str, str]] = None   # P0 #31: resolved multi-role
     description: str
     executor: ExecutorType
     constraints: Constraints = Field(default_factory=Constraints)
@@ -216,6 +252,32 @@ class TaskPlan(BaseModel):
     notes: list[str] = Field(default_factory=list)
 
 
+class SimplePlanStep(BaseModel):
+    """Planner v3 最小 LLM 输出（Planner阶段全面审查与简化改进指导 第 6/19 节）。
+
+    LLM 只决定高层动作 + semantic role ref；executor / target_type / target_id /
+    constraints / step 编号 / escort secondary role 全部由确定性 Compiler 绑定。
+    """
+    action: Literal["navigate_to", "escort_to", "wait", "return_to_base"]
+    ref: str | None = None  # semantic role: target/source/destination/actor；wait/return_to_base 为 None
+
+    def model_post_init(self, __context: Any) -> None:
+        if self.action in ("navigate_to", "escort_to"):
+            if not self.ref:
+                raise ValueError(f"action '{self.action}' requires a non-empty ref")
+            if self.ref not in ("actor", "target", "source", "destination"):
+                raise ValueError(f"invalid ref '{self.ref}' for action '{self.action}'")
+        else:  # wait, return_to_base
+            if self.ref:
+                raise ValueError(f"action '{self.action}' must not have a ref")
+
+
+class SimplePlanDraft(BaseModel):
+    """Planner v3 LLM 输出：只含 status + 最小 step 列表。"""
+    status: AllowedStatus
+    steps: list[SimplePlanStep] = Field(default_factory=list)
+
+
 class PipelineResult(BaseModel):
     """Unified result from structured pipeline - success and failure.
 
@@ -227,6 +289,7 @@ class PipelineResult(BaseModel):
     grounding: Optional[dict] = None
     grounded_task: Optional[dict] = None
     task_plan: Optional[dict] = None
+    raw_plan_draft: Optional[dict] = None  # P0 #36: raw plan before compilation
     validation_errors: list[str] = Field(default_factory=list)
     latency_ms: dict[str, float] = Field(default_factory=dict)
     error: Optional[str] = None

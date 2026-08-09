@@ -115,6 +115,7 @@ When the instruction references a room by its contents (e.g. "the room with chai
       "target_type": "<type>",
       "target_ref": "<role_reference>",
       "target_id": null,
+      "role_refs": null,
       "description": "<short description>",
       "executor": "<executor>",
       "constraints": {
@@ -127,6 +128,33 @@ When the instruction references a room by its contents (e.g. "the room with chai
   "clarification_request": null,
   "target_not_found": null,
   "notes": []
+}
+
+For single-role actions: use target_ref only.
+For multi-role actions (escort_to, guide_to): use role_refs instead of target_ref.
+
+## Multi-Role Actions (P0 #31)
+
+For actions that require multiple roles (escort_to, guide_to, navigate_from_to),
+use role_refs to specify which grounded entities map to which roles:
+
+- escort_to: role_refs = {"actor": "<person_ref>", "destination": "<place_ref>"}
+- guide_to: role_refs = {"actor": "<person_ref>", "destination": "<place_ref>"}
+- navigate_from_to: role_refs = {"source": "<start_ref>", "destination": "<end_ref>"}
+
+When role_refs is provided, target_ref is not needed. The system resolves
+role_refs to actual node IDs.
+
+Example for "Escort the person to the kitchen":
+{
+  "step": 1,
+  "action": "escort_to",
+  "target_type": "person",
+  "target_ref": "",
+  "role_refs": {"actor": "actor", "destination": "destination"},
+  "description": "Escort the person to the kitchen.",
+  "executor": "nav2",
+  "constraints": {"avoid": [], "prefer": [], "conditions": []}
 }
 
 ## Example

@@ -14,6 +14,7 @@ import logging
 import math
 from pathlib import Path
 from typing import Any
+import os
 
 from schemas import BBox, SceneEdge, SceneGraph, SceneNode
 
@@ -41,6 +42,17 @@ KHRONOS_LABEL_MAP: dict[int, str] = {
     17: "humans",
     18: "railing",
 }
+
+# ADE20K label space (non-GT / semantic inference mode). Enabled via RAG_LABEL_SPACE=ade20k
+KHRONOS_LABEL_MAP_ADE20K: dict[int, str] = {
+    0: "unknown", 1: "wall", 2: "floor", 3: "ceiling", 4: "door",
+    5: "stairs", 6: "structure", 7: "shelf", 8: "plant", 9: "bed",
+    10: "storage", 11: "table", 12: "chair", 13: "wall_decoration",
+    14: "couch", 15: "light", 16: "appliance", 17: "thing",
+    18: "deformable", 19: "dynamic_nonhuman", 20: "human",
+}
+if os.environ.get("RAG_LABEL_SPACE") == "ade20k":
+    KHRONOS_LABEL_MAP = KHRONOS_LABEL_MAP_ADE20K
 
 # layer number -> human-readable type name
 LAYER_TYPE_MAP: dict[int, str] = {

@@ -102,6 +102,14 @@ class GroundingResult:
                 ids.add(result.selected.node_id)
         return ids
 
+    def get_constraint_prefer_ids(self) -> set[str]:
+        """Get all node IDs that should be preferred."""
+        ids = set()
+        for key, result in self.constraints.items():
+            if "prefer" in key and result.status == "resolved" and result.selected:
+                ids.add(result.selected.node_id)
+        return ids
+
     def get_constraint_ids(self) -> set[str]:
         """Get all resolved node IDs from constraints (avoid, prefer, etc.)."""
         ids = set()

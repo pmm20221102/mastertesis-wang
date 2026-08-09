@@ -21,7 +21,7 @@ from typing import Any
 import yaml
 from pydantic import ValidationError
 
-from schema import TaskPlan, TaskStep, PlanDraft, Constraints
+from schema import TaskPlan, TaskStep, PlanDraft, Constraints, PipelineResult
 
 logger = logging.getLogger(__name__)
 
@@ -264,9 +264,9 @@ def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
     all_lookup = {**ref_lookup, **constraint_lookup}
 
     for step in task_plan.task_chain:
-        # Infer missing target_ref from action type
-        if not step.target_ref:
-            step.target_ref = _infer_target_ref(step.action, all_lookup)
+        # NO auto-inference of missing target_ref (taskbook 7.2).
+        # Missing target_ref was already rejected at PlanDraft schema level.
+        # If it still ends up empty here (no-ref action), skip ID resolution.
 
         # Resolve target_ref to target_id
         if step.target_ref and step.target_ref in all_lookup:
@@ -274,6 +274,23 @@ def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
         elif step.target_ref and step.target_ref.startswith("step_"):
             # Step-specific ref not found — may be multi-step issue
             logger.warning(f"Step {step.step}: target_ref '{step.target_ref}' not found in grounded task refs")
+
+        # P0 #30: Resolve role_refs → role_ids
+        if step.role_refs:
+            role_ids = {}
+            for role_name, ref_value in step.role_refs.items():
+                if ref_value in all_lookup:
+                    role_ids[role_name] = all_lookup[ref_value]
+                elif ref_value.startswith("step_"):
+                    logger.warning(f"Step {step.step}: role_refs[{role_name}]='{ref_value}' not found")
+                else:
+                    role_ids[role_name] = ref_value  # Keep as-is if not resolvable
+            step.role_ids = role_ids
+            # Also set target_id from first role if not already set
+            if not step.target_id and role_ids:
+                first_id = next(iter(role_ids.values()), None)
+                if first_id:
+                    step.target_id = first_id
 
         # Resolve avoid references in constraints
         if step.constraints and step.constraints.avoid:
@@ -284,6 +301,16 @@ def _resolve_target_refs(task_plan: TaskPlan, grounded_task: dict) -> TaskPlan:
                 else:
                     resolved_avoid.append(avoid_ref)
             step.constraints.avoid = resolved_avoid
+
+        # Resolve prefer references in constraints (taskbook 11.7)
+        if step.constraints and step.constraints.prefer:
+            resolved_prefer = []
+            for pref_ref in step.constraints.prefer:
+                if pref_ref in all_lookup:
+                    resolved_prefer.append(all_lookup[pref_ref])
+                else:
+                    resolved_prefer.append(pref_ref)
+            step.constraints.prefer = resolved_prefer
 
     return task_plan
 
@@ -383,6 +410,7 @@ def run_llm_once(model: str, prompt: str, config: dict[str, Any]) -> str:
 
     response = client.chat(
         model=model,
+        think=False,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": prompt},
@@ -664,7 +692,7 @@ def run_structured_task_planner(
     # Stage 6: Validate plan against grounding
     logger.info("Stage 6: Validating plan...")
     t0 = time.time()
-    validation_errors = _validate_grounded_plan(task_plan, grounding)
+    validation_errors = _validate_grounded_plan(task_plan, grounding, grounded_task)
     if validation_errors:
         logger.warning(f"Validation errors: {validation_errors}")
         # Try repair once
@@ -672,7 +700,7 @@ def run_structured_task_planner(
             task_plan = _repair_plan(task_plan, validation_errors, grounded_task, model, config)
             # Re-resolve target_ref after repair
             task_plan = _resolve_target_refs(task_plan, grounded_task)
-            validation_errors = _validate_grounded_plan(task_plan, grounding)
+            validation_errors = _validate_grounded_plan(task_plan, grounding, grounded_task)
         except Exception:
             pass
     latency["validation_ms"] = (time.time() - t0) * 1000
@@ -832,7 +860,11 @@ RULES:
 
 3. Do NOT output node IDs. The system resolves roles to IDs.
 
-4. For multi-step tasks:
+4. Every executable step MUST have a non-empty target_ref from AVAILABLE ROLES
+   or STEP-SPECIFIC REFS. A missing or invalid target_ref is a fatal schema error —
+   never leave target_ref empty.
+
+5. For multi-step tasks:
    - Each step must have a target_ref from available refs
    - Use step-specific refs for step-dependent targets
    - Step N's target_ref should reference step N's grounded entity
@@ -844,6 +876,14 @@ OUTPUT:
     {{"step": 1, "action": "navigate_to", "target_type": "object", "target_ref": "target", "description": "Navigate to chair", "executor": "nav2", "constraints": {{"avoid": [], "prefer": [], "conditions": []}}}}
   ]
 }}
+
+For multi-role actions (escort_to, guide_to), use role_refs:
+{{
+  "step": 1, "action": "escort_to", "target_type": "person", "target_ref": "",
+  "role_refs": {{"actor": "actor", "destination": "destination"}},
+  "description": "Escort person to destination", "executor": "nav2",
+  "constraints": {{"avoid": [], "prefer": [], "conditions": []}}
+}}
 """
 
     from ollama import Client
@@ -852,6 +892,7 @@ OUTPUT:
 
     response = client.chat(
         model=model,
+        think=False,
         messages=[
             {"role": "system", "content": "Output valid JSON only. No explanations."},
             {"role": "user", "content": prompt},
@@ -883,6 +924,7 @@ OUTPUT:
                 target_type=step.target_type,
                 target_ref=step.target_ref,
                 target_id=None,  # Will be filled by _resolve_target_refs
+                role_refs=step.role_refs,  # P0 #30: copy role_refs from PlanDraft
                 description=step.description,
                 executor=step.executor,
                 constraints=step.constraints,
@@ -892,7 +934,7 @@ OUTPUT:
     return task_plan
 
 
-def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
+def _validate_grounded_plan(task_plan: TaskPlan, grounding, grounded_task: dict | None = None) -> list[str]:
     """Validate that all target_ids in plan come from grounding results.
 
     Checks:
@@ -900,12 +942,15 @@ def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
     2. Role-specific ID correctness (target_ref -> expected node_id)
     3. Action-executor mapping
     4. Action-target_ref validity
-    5. Avoid constraints use constraint IDs
-    6. Status/task_chain consistency
-    7. Missing target_id for executable steps
-    8. Step numbering
-    9. Duplicate action-target pairs
+    5. target_ref exists in available refs (taskbook 7.3)
+    6. step_N_role bound to correct step/role (taskbook 8.1)
+    7. Avoid constraints use constraint IDs
+    8. Status/task_chain consistency
+    9. Missing target_id for executable steps
+    10. Step numbering
+    11. Duplicate action-target pairs
     """
+    import re
     from schema import ACTION_EXECUTOR_MAP, ACTION_TARGET_REFS
 
     errors = []
@@ -916,6 +961,21 @@ def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
     # All allowed IDs
     allowed_all_ids = allowed_ref_ids | allowed_constraint_ids
     avoid_ids = grounding.get_constraint_avoid_ids()
+
+    # Build available target_ref set (taskbook 7.3): top-level roles + constraint keys + step refs
+    available_refs = set()
+    for role in ["actor", "target", "source", "destination"]:
+        if grounding.get_resolved_id_by_role(role):
+            available_refs.add(role)
+    for key in grounding.constraints.keys():
+        available_refs.add(key)
+    step_ref_to_id = {}
+    for step_idx, step_data in enumerate((grounded_task or {}).get("steps", [])):
+        for role, ref_data in (step_data.get("references", {}) or {}).items():
+            ref_name = f"step_{step_idx}_{role}"
+            available_refs.add(ref_name)
+            if isinstance(ref_data, dict) and ref_data.get("node_id"):
+                step_ref_to_id[ref_name] = ref_data["node_id"]
 
     # Build role → node_id mapping for role-specific validation
     role_to_id = {}
@@ -953,9 +1013,9 @@ def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
         if step.action in ("wait", "ask_clarification", "return_to_base"):
             continue
 
-        # Check target_ref is not empty for executable actions
-        if not step.target_ref:
-            errors.append(f"Step {step.step}: action '{step.action}' requires target_ref but got empty")
+        # Check target_ref or role_refs is present for executable actions
+        if not step.target_ref and not step.role_refs:
+            errors.append(f"Step {step.step}: action '{step.action}' requires target_ref or role_refs but got empty")
 
         # Check action-executor mapping
         expected_executor = ACTION_EXECUTOR_MAP.get(step.action)
@@ -972,6 +1032,39 @@ def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
             )
             if not is_valid_ref:
                 errors.append(f"Step {step.step}: action '{step.action}' cannot use target_ref '{step.target_ref}'")
+
+        # taskbook 7.3: target_ref must be an available ref from grounded task
+        if step.target_ref and step.target_ref not in available_refs:
+            errors.append(f"Step {step.step}: target_ref '{step.target_ref}' not in available refs {sorted(available_refs)}")
+
+        # taskbook 8.1: step-specific ref must bind to the correct step's role id
+        if step.target_ref:
+            _m = re.match(r"^step_(\d+)_(\w+)$", step.target_ref)
+            if _m:
+                if step.target_ref not in step_ref_to_id:
+                    errors.append(
+                        f"Step {step.step}: step-specific ref '{step.target_ref}' has no grounded node_id "
+                        f"(step {_m.group(1)} role '{_m.group(2)}' missing)"
+                    )
+                elif step.target_id and step.target_id != step_ref_to_id[step.target_ref]:
+                    errors.append(
+                        f"Step {step.step}: step-specific ref '{step.target_ref}' bound to wrong id "
+                        f"(expected {step_ref_to_id[step.target_ref]}, got {step.target_id})"
+                    )
+
+        # P0 #30: Validate role_refs
+        if step.role_refs:
+            for role_name, ref_value in step.role_refs.items():
+                if role_name not in ("actor", "target", "source", "destination"):
+                    errors.append(f"Step {step.step}: invalid role_refs key '{role_name}'")
+                if ref_value and ref_value not in valid_target_refs and not ref_value.startswith("step_") and not ref_value.startswith("constraint_"):
+                    errors.append(f"Step {step.step}: role_refs[{role_name}]='{ref_value}' not in valid refs for '{step.action}'")
+
+        # P0 #30: Validate role_ids (if resolved)
+        if step.role_ids:
+            for role_name, node_id in step.role_ids.items():
+                if node_id and node_id not in allowed_all_ids:
+                    errors.append(f"Step {step.step}: role_ids[{role_name}]='{node_id}' not in grounded references")
 
         # Check missing target_id for executable steps
         if step.action in ACTIONS_REQUIRING_TARGET and not step.target_id:
@@ -1009,6 +1102,17 @@ def _validate_grounded_plan(task_plan: TaskPlan, grounding) -> list[str]:
         if missing_avoid:
             errors.append(f"Avoid constraints not applied: {missing_avoid}")
 
+    # taskbook 11.7/13: prefer constraints must be preserved in the plan
+    prefer_ids = grounding.get_constraint_prefer_ids()
+    if prefer_ids:
+        plan_prefer_ids = set()
+        for step in task_plan.task_chain:
+            if step.constraints and step.constraints.prefer:
+                plan_prefer_ids.update(step.constraints.prefer)
+        missing_prefer = prefer_ids - plan_prefer_ids
+        if missing_prefer:
+            errors.append(f"Prefer constraints not applied: {missing_prefer}")
+
     return errors
 
 
@@ -1045,6 +1149,8 @@ RULES:
 2. Do NOT output raw node IDs (numbers). The system resolves target_ref to IDs.
 3. Use correct executor for each action.
 4. For multi-step: use step_N_target, step_N_destination etc.
+5. Every executable step MUST have a non-empty target_ref from the available refs.
+   A missing target_ref is exactly what caused the validation error — fix it.
 
 Output valid JSON only.
 """
@@ -1055,6 +1161,7 @@ Output valid JSON only.
 
     response = client.chat(
         model=model,
+        think=False,
         messages=[
             {"role": "system", "content": "Output valid JSON only. No explanations."},
             {"role": "user", "content": prompt},

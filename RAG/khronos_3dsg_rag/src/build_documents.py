@@ -26,6 +26,26 @@ from schemas import RagDocument, SceneGraph, SceneNode
 
 logger = logging.getLogger(__name__)
 
+# Label -> 语义相关描述（同义词 / 常见改写），用于增强实体文档的向量语义召回。
+LABEL_DESCRIPTIONS = {
+    "large_static_wall_furniture": "wall-mounted furnishing, wall furniture, wall cabinets, shelf, shelving, wall unit",
+    "large_office_objects": "large office equipment, office machines, table, desk, workstation",
+    "chairs": "chair, seat, seating, sitting",
+    "signs": "sign, notice marker, signage, billboard",
+    "small_office_objects": "small desk items, stationery, office accessories, desk supplies",
+}
+
+
+def _inject_label_descriptions(docs):
+    """为实体/上下文文档追加 label 的语义描述，提升同义词与自然语言改写的召回。"""
+    for d in docs:
+        label = (d.metadata or {}).get("label")
+        desc = LABEL_DESCRIPTIONS.get(label)
+        if desc and d.text and "Related terms:" not in d.text:
+            d.text = d.text + f" Related terms: {desc}."
+    return docs
+
+
 # Types that act as "containers" (region/room/place/building)
 CONTAINER_TYPES = {"room", "rooms", "place", "places", "building", "buildings", "region", "floor"}
 
@@ -553,5 +573,6 @@ def build_all_documents(
 
     if aliases:
         docs.extend(build_alias_chunks(aliases))
+    docs = _inject_label_descriptions(docs)
     logger.info(f"Generated {len(docs)} RAG documents (with graph-aware metadata)")
     return docs

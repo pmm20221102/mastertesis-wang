@@ -189,6 +189,6 @@ All functions have docstrings. Logging uses `logging.getLogger(__name__)` instea
 
 - Entity scoring uses `normalize_text` (lowercased, non-alphanumeric → space) and `compact_text` (all non-alphanumeric removed) for alias matching.
   实体评分使用 `normalize_text`（小写化、非字母数字字符替换为空格）和 `compact_text`（移除所有非字母数字字符）进行别名匹配。
-
+  
 - All output uses `logging.getLogger(__name__)` — no `print()` calls. Configure via `logging.basicConfig()` in `__main__`.
   所有输出使用 `logging.getLogger(__name__)`，不使用 `print()` 调用。通过 `logging.basicConfig()` 在 `__main__` 中配置。

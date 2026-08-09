@@ -119,7 +119,7 @@ def test_evaluator_multi_step():
     predicted = {"action": "navigate", "steps": [{"action": "locate"}]}
     expected = {"action": "navigate", "steps": [{"action": "locate"}, {"action": "navigate"}]}
     fc = _classify_failure(predicted, expected, True)
-    assert fc == "step_decomposition_error"
+    assert fc == "step_count_error"
 
 
 def test_evaluator_wrong_action():
@@ -158,7 +158,7 @@ def test_compare_entity_ref():
     """Entity ref comparison should handle None and field matching."""
     # Both None
     r = _compare_entity_ref(None, None)
-    assert r["match"] is True
+    assert r["semantic_match"] is True
 
     # Expected None, predicted present (spurious)
     r = _compare_entity_ref({"text": "chair"}, None)
@@ -173,15 +173,29 @@ def test_compare_entity_ref():
         {"text": "chair", "label": "chairs", "node_type": "object"},
         {"text": "chair", "label": "chairs", "node_type": "object"},
     )
-    assert r["match"] is True
+    assert r["semantic_match"] is True
 
     # Both present, label mismatch
     r = _compare_entity_ref(
         {"text": "chair", "label": "chairs"},
         {"text": "chair", "label": "desks"},
     )
-    assert r["match"] is False
+    assert r["semantic_match"] is False
     assert r["fields"]["label"] is False
+
+    # P0 #9: text-only identity (no label) — different text should fail semantic
+    r = _compare_entity_ref(
+        {"text": "place_1111", "node_type": "place"},
+        {"text": "place_2222", "node_type": "place"},
+    )
+    assert r["semantic_match"] is False, "Different place IDs without label should fail semantic"
+
+    # Same text, same type — should pass
+    r = _compare_entity_ref(
+        {"text": "place_1111", "node_type": "place"},
+        {"text": "place_1111", "node_type": "place"},
+    )
+    assert r["semantic_match"] is True
 
 
 # Need pytest for approx

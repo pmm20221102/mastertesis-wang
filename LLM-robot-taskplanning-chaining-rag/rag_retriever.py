@@ -161,6 +161,7 @@ Return JSON only, no explanation."""
 
     response = client.chat(
         model=model,
+        think=False,
         messages=[{"role": "user", "content": keyword_prompt}],
         options=options,
     )
