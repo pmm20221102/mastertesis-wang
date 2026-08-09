@@ -1,0 +1,34 @@
+{
+  "benchmark_name": "khronos_grounding_100_v3",
+  "benchmark_status": "development",
+  "supersedes": "grounding_benchmark_100_v2",
+  "supersedes_reason": [
+    "manifest hash integrity fixed",
+    "byte-level reproducibility ensured",
+    "candidate_node_ids sorted",
+    "aggregate tie candidate set fixed"
+  ],
+  "case_count": 100,
+  "random_seed": 42,
+  "dataset_name": "khronos_office",
+  "source_dsg_hash": "32725d572bb50789",
+  "canonical_graph_hash": "0780cba502ec2673",
+  "canonical_graph_version": 2,
+  "benchmark_file_hash": "77e0b31fc5f5a592",
+  "generator_code_hash": "7230d3e12885fe0f",
+  "schema_version": 2,
+  "category_counts": {
+    "ambiguous": 5,
+    "obj_nav": 10,
+    "place_constraint": 15,
+    "room_constraint": 10,
+    "set_query": 10,
+    "not_found": 10,
+    "spatial": 10,
+    "exact_id": 5,
+    "complex": 10,
+    "relation": 15
+  },
+  "created_at": "2026-07-17",
+  "generator": "generate_grounding_benchmark_v2.py"
+}

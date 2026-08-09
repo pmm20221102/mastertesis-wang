@@ -1,0 +1,22 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_file": "planner_benchmark_50_v2.jsonl",
+  "benchmark_file_hash": "958f38e0ceb2e3c0",
+  "case_count": 50,
+  "categories": {
+    "single_locate": 5,
+    "single_navigate": 8,
+    "locate_then_navigate": 7,
+    "source_destination": 6,
+    "escort": 5,
+    "avoid_constraint": 4,
+    "prefer_constraint": 3,
+    "ambiguous_grounding": 3,
+    "not_found_grounding": 3,
+    "unsupported_action": 2,
+    "multi_step": 4
+  },
+  "canonical_graph": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/office_dense/canonical_graph_v2.json",
+  "canonical_graph_hash": "0c5510bdad333830",
+  "seed": 42
+}

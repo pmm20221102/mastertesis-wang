@@ -1,0 +1,30 @@
+{"case_id": "joint_001", "instruction": "Find something employees can sit on.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_002", "instruction": "Find everything people can sit on.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_quantifier": "all"}
+{"case_id": "joint_003", "instruction": "Find all chairs in the building.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_quantifier": "all"}
+{"case_id": "joint_004", "instruction": "Where are the chairs?", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_005", "instruction": "Find the signs in the building.", "expected_label": "signs", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_006", "instruction": "Find the directional markers.", "expected_label": "signs", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_007", "instruction": "Find all the signs.", "expected_label": "signs", "expected_status": "matched", "expected_node_type": "object", "expected_quantifier": "all"}
+{"case_id": "joint_008", "instruction": "Find something to write with.", "expected_label": "small_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_009", "instruction": "Find small objects at workstations.", "expected_label": "small_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_010", "instruction": "Find things employees keep at work.", "expected_label": "small_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_011", "instruction": "Find storage attached to the structure.", "expected_label": "large_static_wall_furniture", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_012", "instruction": "Find things mounted on the wall.", "expected_label": "large_static_wall_furniture", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_013", "instruction": "Find the built-in wall storage.", "expected_label": "large_static_wall_furniture", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_014", "instruction": "Find the large office equipment.", "expected_label": "large_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_015", "instruction": "Find heavy devices in the workspace.", "expected_label": "large_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_016", "instruction": "Find big machines used for work.", "expected_label": "large_office_objects", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_017", "instruction": "Find chairs in the entrance area.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_place": true}
+{"case_id": "joint_018", "instruction": "Find signs near the entrance.", "expected_label": "signs", "expected_status": "matched", "expected_node_type": "object", "expected_place": true}
+{"case_id": "joint_019", "instruction": "Find something to sit on in room 0752.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_room": true}
+{"case_id": "joint_020", "instruction": "Find chairs in room 0752.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_room": true}
+{"case_id": "joint_021", "instruction": "Find the elevator.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_022", "instruction": "Find a printer.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_023", "instruction": "Find the coffee maker.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_024", "instruction": "Find the refrigerator.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_025", "instruction": "Find the window.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_026", "instruction": "Find chairs near the corridor.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object", "expected_place": true}
+{"case_id": "joint_027", "instruction": "Find the light fixtures.", "expected_label": null, "expected_status": "not_found", "expected_node_type": null}
+{"case_id": "joint_028", "instruction": "Find something for people to relax on.", "expected_label": "chairs", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_029", "instruction": "Find the wall storage units.", "expected_label": "large_static_wall_furniture", "expected_status": "matched", "expected_node_type": "object"}
+{"case_id": "joint_030", "instruction": "Find the notice signs near the door.", "expected_label": "signs", "expected_status": "matched", "expected_node_type": "object", "expected_place": true}

@@ -1,0 +1,56 @@
+{
+  "benchmark_status": "development",
+  "benchmark_version": "v3",
+  "benchmark_file": "intent_paraphrase_480_v3.jsonl",
+  "benchmark_file_hash": "e7b512e97c1ef86f",
+  "source_benchmark": "intent_benchmark_160_v3.jsonl",
+  "source_count": 160,
+  "case_count": 480,
+  "paraphrases_per_intent": 3,
+  "language_style_distribution": {
+    "colloquial": 160,
+    "rephrased": 160,
+    "standard": 160
+  },
+  "sentence_type_distribution": {
+    "question": 63,
+    "imperative": 412,
+    "fragment": 5
+  },
+  "categories": {
+    "aggregate": 30,
+    "avoid_prefer": 30,
+    "escort_guide": 30,
+    "locate_target": 45,
+    "multi_step": 60,
+    "navigate_target": 45,
+    "relation": 60,
+    "room_place_constraint": 60,
+    "source_destination": 30,
+    "set_quantifier": 30,
+    "spatial": 45,
+    "unsupported": 15
+  },
+  "duplicates_skipped": 31,
+  "slot_violations_total": 0,
+  "missing_sources": [],
+  "seed": 42,
+  "validation": {
+    "total_480": {
+      "passed": true,
+      "detail": "Expected 480, got 480"
+    },
+    "all_sources_covered": {
+      "passed": true,
+      "detail": "0 sources incomplete"
+    },
+    "balanced_styles": {
+      "passed": true,
+      "detail": "Styles: {'colloquial': 160, 'rephrased': 160, 'standard': 160}"
+    },
+    "zero_violations": {
+      "passed": true,
+      "detail": "0 violations"
+    }
+  }
+}

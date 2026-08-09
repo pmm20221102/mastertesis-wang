@@ -1,0 +1,16 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_file": "e2e_supported_scope_36_v1.jsonl",
+  "benchmark_file_sha256": "665f67776a64010bb60ba25ff598aac2b2a7ef9c38aff37f58418a8ec753fbfb",
+  "case_count": 36,
+  "categories": {
+    "single_navigate": 12,
+    "room_constrained_navigate": 8,
+    "ordered_source_destination": 8,
+    "ambiguous_gate": 3,
+    "not_found_gate": 3,
+    "unsupported_gate": 2
+  },
+  "source": "e2e_test_50_v1.jsonl",
+  "seed": 42
+}

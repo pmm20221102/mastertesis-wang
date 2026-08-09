@@ -1,0 +1,19 @@
+{
+  "benchmark_status": "ready",
+  "benchmark_file": "e2e_test_50_v1.jsonl",
+  "benchmark_file_sha256": "46dbfddd557ff6f8a0c7e0c4b5404d257dc9394c50609fa8406107fd6c8ce9ab",
+  "case_count": 50,
+  "categories": {
+    "single_navigate": 12,
+    "room_constrained_navigate": 8,
+    "ordered_source_destination": 8,
+    "escort": 6,
+    "navigate_with_avoid": 4,
+    "navigate_with_prefer": 4,
+    "ambiguous_gate": 3,
+    "not_found_gate": 3,
+    "unsupported_gate": 2
+  },
+  "canonical_graph_hash": "0c5510bdad3338305f4242562dea74a0cf1aa6fa95936065ab9e57e049f1c24d",
+  "seed": 42
+}

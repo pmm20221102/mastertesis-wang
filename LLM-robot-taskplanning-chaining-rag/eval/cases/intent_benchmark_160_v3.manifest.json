@@ -1,0 +1,77 @@
+{
+  "benchmark_status": "development",
+  "benchmark_version": "v3",
+  "benchmark_file": "intent_benchmark_160_v3.jsonl",
+  "benchmark_file_hash": "d7c5b8c8c49ba7b7",
+  "case_count": 160,
+  "categories": {
+    "aggregate": 10,
+    "avoid_prefer": 10,
+    "escort_guide": 10,
+    "locate_target": 15,
+    "multi_step": 20,
+    "navigate_target": 15,
+    "relation": 20,
+    "room_place_constraint": 20,
+    "source_destination": 10,
+    "set_quantifier": 10,
+    "spatial": 15,
+    "unsupported": 5
+  },
+  "required_roles_distribution": {
+    "target": 115,
+    "actor+destination": 15,
+    "destination+target": 15,
+    "destination+source": 10,
+    "": 5
+  },
+  "seed": 42,
+  "validation": {
+    "filename_matches_count": {
+      "passed": true,
+      "detail": "160 cases expected, got 160"
+    },
+    "no_duplicate_instructions": {
+      "passed": true,
+      "detail": "0 duplicates"
+    },
+    "no_empty_labels": {
+      "passed": true,
+      "detail": "0 empty labels"
+    },
+    "no_double_room": {
+      "passed": true,
+      "detail": "0 double room"
+    },
+    "escort_guide_consistency": {
+      "passed": true,
+      "detail": "0 mismatches"
+    },
+    "all_multi_step_have_steps": {
+      "passed": true,
+      "detail": "0 missing"
+    },
+    "no_ambiguous_category": {
+      "passed": true,
+      "detail": "0 ambiguous"
+    },
+    "oracle_validity": {
+      "passed": true,
+      "detail": "0 invalid"
+    }
+  },
+  "coverage_targets": {
+    "navigate_target": 15,
+    "locate_target": 15,
+    "room_place_constraint": 20,
+    "relation": 20,
+    "spatial": 15,
+    "set_quantifier": 10,
+    "aggregate": 10,
+    "source_destination": 10,
+    "escort_guide": 10,
+    "avoid_prefer": 10,
+    "unsupported": 5,
+    "multi_step": 20
+  }
+}
