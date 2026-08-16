@@ -1,0 +1,23 @@
+{"case_id": "semantic_t_001", "query": "where can people rest in this building", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_002", "query": "a place for employees to relax", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_003", "query": "a comfortable spot for a break", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_004", "query": "instructions showing the way around", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_005", "query": "directional information in the building", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_006", "query": "guidance messages for navigation", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_007", "query": "small belongings at workplaces", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_008", "query": "little things people keep at work", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_009", "query": "tiny objects around the office", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_010", "query": "storage attached to the structure", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_011", "query": "fixed storage units", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_012", "query": "built-in storage in the office", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_013", "query": "heavy appliances in the workspace", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_014", "query": "big devices used for work", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_015", "query": "machinery in the office", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_t_hf_001", "query": "monitor", "expected_status": "not_found"}
+{"case_id": "semantic_t_hf_002", "query": "printer", "expected_status": "not_found"}
+{"case_id": "semantic_t_hf_003", "query": "coffee maker", "expected_status": "not_found"}
+{"case_id": "semantic_t_hf_004", "query": "window", "expected_status": "not_found"}
+{"case_id": "semantic_t_hf_005", "query": "projector", "expected_status": "not_found"}
+{"case_id": "semantic_t_hf_006", "query": "refrigerator", "expected_status": "not_found"}
+{"case_id": "semantic_t_nf_001", "query": "toilet", "expected_status": "not_found"}
+{"case_id": "semantic_t_nf_002", "query": "cafeteria", "expected_status": "not_found"}

@@ -1,0 +1,172 @@
+##### START gemma4:e4b 13:53:48
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 12040.60it/s]
+=== 联合测试 v3 [gemma4:e4b] ===
+  total_cases: 30
+  model: gemma4:e4b
+  intent_gate_success: 0.7
+  semantic_label_hit1: 0.9583
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.6667
+  grounding_exact_success: 0.6333
+  joint_exact_success: 0.6333
+  room_grounding_success: 0.3333
+  ambiguous_candidate_f1: 0.8333
+  set_exact_match: 1.0
+  failure_by_stage: {'intent_quantifier': 3, 'intent_location': 6, 'semantic_retrieval': 1, 'grounding_candidate_set': 1}
+  failure_count: 11
+失败 11:
+  joint_v3_011: Find a chair in room 0756. stage=intent_quantifier
+  joint_v3_012: Find a sign in room 0756. stage=intent_location
+  joint_v3_013: Find a large office machine in room 07 stage=intent_location
+  joint_v3_014: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_015: Find a chair in room 0752. stage=intent_quantifier
+  joint_v3_016: Find a sign in room 0752. stage=intent_location
+  joint_v3_017: Find a small office item in room 0752. stage=intent_location
+  joint_v3_018: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_024: Find a bicycle. stage=intent_quantifier
+  joint_v3_029: Find something employees can sit on du stage=semantic_retrieval
+  joint_v3_030: Find items people use for writing at w stage=grounding_candidate_set
+##### END gemma4:e4b 13:54:37
+##### START granite4.1:3b 13:54:37
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11776.77it/s]
+=== 联合测试 v3 [granite4.1:3b] ===
+  total_cases: 30
+  model: granite4.1:3b
+  intent_gate_success: 0.9333
+  semantic_label_hit1: 1.0
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.9333
+  grounding_exact_success: 0.9333
+  joint_exact_success: 0.9333
+  room_grounding_success: 0.9167
+  ambiguous_candidate_f1: 1.0
+  set_exact_match: 1.0
+  failure_by_stage: {'intent_location': 1, 'intent_quantifier': 1}
+  failure_count: 2
+失败 2:
+  joint_v3_016: Find a sign in room 0752. stage=intent_location
+  joint_v3_030: Find items people use for writing at w stage=intent_quantifier
+##### END granite4.1:3b 13:55:05
+##### START ministral-3:3b-instruct-2512-q4_K_M 13:55:05
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 9577.25it/s]
+=== 联合测试 v3 [ministral-3:3b-instruct-2512-q4_K_M] ===
+  total_cases: 30
+  model: ministral-3:3b-instruct-2512-q4_K_M
+  intent_gate_success: 0.7333
+  semantic_label_hit1: 1.0
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.7333
+  grounding_exact_success: 0.7333
+  joint_exact_success: 0.7333
+  room_grounding_success: 0.5833
+  ambiguous_candidate_f1: 1.0
+  set_exact_match: 0.7778
+  failure_by_stage: {'intent_quantifier': 3, 'intent_location': 5}
+  failure_count: 8
+失败 8:
+  joint_v3_001: Find something people can sit on. stage=intent_quantifier
+  joint_v3_013: Find a large office machine in room 07 stage=intent_location
+  joint_v3_017: Find a small office item in room 0752. stage=intent_location
+  joint_v3_018: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_020: Find all signs in room 0752. stage=intent_location
+  joint_v3_022: Find all wall-mounted storage units in stage=intent_location
+  joint_v3_029: Find something employees can sit on du stage=intent_quantifier
+  joint_v3_030: Find items people use for writing at w stage=intent_quantifier
+##### END ministral-3:3b-instruct-2512-q4_K_M 13:55:45
+##### START qwen3:4b 13:55:45
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11503.44it/s]
+=== 联合测试 v3 [qwen3:4b] ===
+  total_cases: 30
+  model: qwen3:4b
+  intent_gate_success: 0.6333
+  semantic_label_hit1: 0.9583
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.6
+  grounding_exact_success: 0.6
+  joint_exact_success: 0.6
+  room_grounding_success: 0.1667
+  ambiguous_candidate_f1: 1.0
+  set_exact_match: 0.5556
+  failure_by_stage: {'intent_location': 10, 'semantic_retrieval': 1, 'intent_quantifier': 1}
+  failure_count: 12
+失败 12:
+  joint_v3_011: Find a chair in room 0756. stage=intent_location
+  joint_v3_013: Find a large office machine in room 07 stage=intent_location
+  joint_v3_014: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_015: Find a chair in room 0752. stage=intent_location
+  joint_v3_017: Find a small office item in room 0752. stage=intent_location
+  joint_v3_018: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_019: Find all chairs in room 0752. stage=intent_location
+  joint_v3_020: Find all signs in room 0752. stage=intent_location
+  joint_v3_021: Find all small office items in room 07 stage=intent_location
+  joint_v3_022: Find all wall-mounted storage units in stage=intent_location
+  joint_v3_029: Find something employees can sit on du stage=semantic_retrieval
+  joint_v3_030: Find items people use for writing at w stage=intent_quantifier
+##### END qwen3:4b 13:56:22
+##### START qwen3.5:2b 13:56:22
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11195.16it/s]
+=== 联合测试 v3 [qwen3.5:2b] ===
+  total_cases: 30
+  model: qwen3.5:2b
+  intent_gate_success: 0.5
+  semantic_label_hit1: 0.9583
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.5
+  grounding_exact_success: 0.5
+  joint_exact_success: 0.5
+  room_grounding_success: 0.0
+  ambiguous_candidate_f1: 1.0
+  set_exact_match: 0.5556
+  failure_by_stage: {'intent_quantifier': 4, 'intent_location': 11}
+  failure_count: 15
+失败 15:
+  joint_v3_001: Find something people can sit on. stage=intent_quantifier
+  joint_v3_011: Find a chair in room 0756. stage=intent_location
+  joint_v3_012: Find a sign in room 0756. stage=intent_location
+  joint_v3_013: Find a large office machine in room 07 stage=intent_quantifier
+  joint_v3_014: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_015: Find a chair in room 0752. stage=intent_location
+  joint_v3_016: Find a sign in room 0752. stage=intent_location
+  joint_v3_017: Find a small office item in room 0752. stage=intent_location
+  joint_v3_018: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_019: Find all chairs in room 0752. stage=intent_location
+  joint_v3_020: Find all signs in room 0752. stage=intent_location
+  joint_v3_021: Find all small office items in room 07 stage=intent_location
+##### END qwen3.5:2b 13:57:10
+##### START qwen3.5:4b 13:57:10
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 11015.21it/s]
+=== 联合测试 v3 [qwen3.5:4b] ===
+  total_cases: 30
+  model: qwen3.5:4b
+  intent_gate_success: 0.6333
+  semantic_label_hit1: 0.9583
+  semantic_recall5: 1.0
+  semantic_stage_success: 0.6333
+  grounding_exact_success: 0.6
+  joint_exact_success: 0.6
+  room_grounding_success: 0.5
+  ambiguous_candidate_f1: 0.8
+  set_exact_match: 0.7778
+  failure_by_stage: {'intent_quantifier': 6, 'intent_location': 5, 'grounding_candidate_set': 1}
+  failure_count: 12
+失败 12:
+  joint_v3_001: Find something people can sit on. stage=intent_quantifier
+  joint_v3_002: Find one directional marker. stage=intent_quantifier
+  joint_v3_005: Find one large office machine. stage=intent_quantifier
+  joint_v3_013: Find a large office machine in room 07 stage=intent_location
+  joint_v3_014: Find a wall-mounted storage unit in ro stage=intent_location
+  joint_v3_016: Find a sign in room 0752. stage=intent_location
+  joint_v3_017: Find a small office item in room 0752. stage=intent_quantifier
+  joint_v3_020: Find all signs in room 0752. stage=intent_location
+  joint_v3_022: Find all wall-mounted storage units in stage=intent_location
+  joint_v3_026: Find a bathtub. stage=intent_quantifier
+  joint_v3_029: Find something employees can sit on du stage=intent_quantifier
+  joint_v3_030: Find items people use for writing at w stage=grounding_candidate_set
+##### END qwen3.5:4b 13:58:03
+ALL_DONE 13:58:03

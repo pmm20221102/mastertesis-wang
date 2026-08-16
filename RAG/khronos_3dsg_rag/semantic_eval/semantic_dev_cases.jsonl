@@ -1,0 +1,33 @@
+{"case_id": "semantic_001", "query": "chair", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_002", "query": "chairs", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_003", "query": "seat", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_004", "query": "seating", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_005", "query": "things to sit on", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_006", "query": "where to sit", "expected_label": "chairs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_007", "query": "sign", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_008", "query": "signs", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_009", "query": "notice marker", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_010", "query": "notice board", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_011", "query": "signage", "expected_label": "signs", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_012", "query": "small office object", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_013", "query": "small desk item", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_014", "query": "small items on desk", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_015", "query": "office stationery", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_016", "query": "desk accessories", "expected_label": "small_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_017", "query": "large static wall furniture", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_018", "query": "wall-mounted furnishing", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_019", "query": "furniture attached to wall", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_020", "query": "wall cabinets", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_021", "query": "wall-mounted storage", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_022", "query": "large office object", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_023", "query": "office equipment", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_024", "query": "large office equipment", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_025", "query": "big office machines", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_026", "query": "shelf", "expected_label": "large_static_wall_furniture", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_027", "query": "table", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_028", "query": "desk", "expected_label": "large_office_objects", "expected_node_type": "object", "expected_status": "matched"}
+{"case_id": "semantic_nf_001", "query": "elevator", "expected_status": "not_found"}
+{"case_id": "semantic_nf_002", "query": "bathroom", "expected_status": "not_found"}
+{"case_id": "semantic_nf_003", "query": "kitchen", "expected_status": "not_found"}
+{"case_id": "semantic_nf_004", "query": "swimming pool", "expected_status": "not_found"}
+{"case_id": "semantic_nf_005", "query": "garden", "expected_status": "not_found"}
