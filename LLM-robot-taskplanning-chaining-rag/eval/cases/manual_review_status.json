@@ -1,0 +1,76 @@
+{
+  "review_date": "2026-07-31",
+  "reviewer": "automated + pending human",
+  "benchmarks": {
+    "intent_benchmark_160_v3": {
+      "status": "automated_validation_passed",
+      "human_review": "pending",
+      "checks_passed": [
+        "filename_matches_count",
+        "no_duplicate_instructions",
+        "no_empty_labels",
+        "no_double_room",
+        "escort_guide_consistency",
+        "all_multi_step_have_steps",
+        "no_ambiguous_category",
+        "oracle_validity"
+      ],
+      "notes": "All automated checks passed. Human review recommended for instruction naturalness."
+    },
+    "intent_paraphrase_480_v3": {
+      "status": "automated_validation_passed",
+      "human_review": "pending",
+      "checks_passed": [
+        "total_480",
+        "all_sources_covered",
+        "balanced_styles",
+        "zero_violations"
+      ],
+      "notes": "480/480 cases, 0 slot violations, balanced styles (160/160/160). Human review recommended for paraphrase quality."
+    },
+    "planning_generation_v3": {
+      "status": "automated_validation_passed",
+      "human_review": "pending",
+      "checks_passed": [
+        "no_duplicate_gen_instructions",
+        "all_multi_step_real",
+        "escort_guide_consistency"
+      ],
+      "notes": "60 generation cases, 0 duplicates, all multi-step have real steps."
+    },
+    "planning_status_gate_v3": {
+      "status": "automated_validation_passed",
+      "human_review": "pending",
+      "checks_passed": [
+        "gate_diversity"
+      ],
+      "notes": "20 gate cases with diverse labels."
+    }
+  },
+  "schema_changes": {
+    "planstep_role_refs": {
+      "status": "implemented",
+      "human_review": "pending",
+      "notes": "role_refs/role_ids added to PlanDraftStep and TaskStep for multi-role actions."
+    }
+  },
+  "evaluator_changes": {
+    "intent_evaluator_v3": {
+      "status": "implemented",
+      "human_review": "pending",
+      "notes": "semantic_strict vs surface_exact, constraints/position/aggregate in strict, full failure taxonomy."
+    },
+    "planner_evaluator_v3": {
+      "status": "implemented",
+      "human_review": "pending",
+      "notes": "step_target_ref_accuracy, constraint_avoid_accuracy, role_refs_accuracy."
+    }
+  },
+  "next_steps": [
+    "Run intent evaluation with a model on intent_benchmark_160_v3",
+    "Run paraphrase evaluation on intent_paraphrase_480_v3",
+    "Run planning evaluation on planning_generation_v3 with oracle_grounding mode",
+    "Human review of benchmark instructions for naturalness",
+    "Human review of paraphrase quality"
+  ]
+}

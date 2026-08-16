@@ -1,0 +1,167 @@
+{
+  "instruction": "Starting from your current position, first navigate to the chair in room 0756, then navigate to the wall-mounted storage unit in room 0759, then navigate to the small office item in room 0758, then navigate to the large office machine in room 0764, and finally navigate to the wall-mounted storage unit in room 0767. Stop briefly at each destination before continuing to the next one.",
+  "intent": {
+    "action": "navigate",
+    "actor": null,
+    "target": null,
+    "source": null,
+    "destination": {
+      "text": "chair",
+      "node_type": null,
+      "label": "chairs",
+      "name": null,
+      "room": "0756",
+      "locations": [
+        {
+          "node_id": null,
+          "text": "Room 0756",
+          "node_type": "room"
+        }
+      ],
+      "relations": [],
+      "attributes": {},
+      "position": null,
+      "quantifier": "one",
+      "aggregate": null
+    },
+    "constraints": [],
+    "description": "",
+    "steps": [
+      {
+        "action": "navigate",
+        "actor": null,
+        "target": null,
+        "source": null,
+        "destination": {
+          "text": "chair",
+          "node_type": null,
+          "label": "chairs",
+          "name": null,
+          "room": "0756",
+          "locations": [
+            {
+              "node_id": null,
+              "text": "Room 0756",
+              "node_type": "room"
+            }
+          ],
+          "relations": [],
+          "attributes": {},
+          "position": null,
+          "quantifier": "one",
+          "aggregate": null
+        },
+        "constraints": [],
+        "description": ""
+      },
+      {
+        "action": "navigate",
+        "actor": null,
+        "target": null,
+        "source": null,
+        "destination": {
+          "text": "wall-mounted storage unit",
+          "node_type": null,
+          "label": "wall-mounted storage units",
+          "name": null,
+          "room": "0759",
+          "locations": [
+            {
+              "node_id": null,
+              "text": "Room 0759",
+              "node_type": "room"
+            }
+          ],
+          "relations": [],
+          "attributes": {},
+          "position": null,
+          "quantifier": "one",
+          "aggregate": null
+        },
+        "constraints": [],
+        "description": ""
+      },
+      {
+        "action": "navigate",
+        "actor": null,
+        "target": null,
+        "source": null,
+        "destination": {
+          "text": "small office item",
+          "node_type": null,
+          "label": "small office items",
+          "name": null,
+          "room": "0758",
+          "locations": [
+            {
+              "node_id": null,
+              "text": "Room 0758",
+              "node_type": "room"
+            }
+          ],
+          "relations": [],
+          "attributes": {},
+          "position": null,
+          "quantifier": "one",
+          "aggregate": null
+        },
+        "constraints": [],
+        "description": ""
+      },
+      {
+        "action": "navigate",
+        "actor": null,
+        "target": null,
+        "source": null,
+        "destination": {
+          "text": "large office machine",
+          "node_type": null,
+          "label": "large office machines",
+          "name": null,
+          "room": "0764",
+          "locations": [
+            {
+              "node_id": null,
+              "text": "Room 0764",
+              "node_type": "room"
+            }
+          ],
+          "relations": [],
+          "attributes": {},
+          "position": null,
+          "quantifier": "one",
+          "aggregate": null
+        },
+        "constraints": [],
+        "description": ""
+      },
+      {
+        "action": "navigate",
+        "actor": null,
+        "target": null,
+        "source": null,
+        "destination": {
+          "text": "wall-mounted storage unit",
+          "node_type": null,
+          "label": "wall-mounted storage units",
+          "name": null,
+          "room": "0767",
+          "locations": [
+            {
+              "node_id": null,
+              "text": "Room 0767",
+              "node_type": "room"
+            }
+          ],
+          "relations": [],
+          "attributes": {},
+          "position": null,
+          "quantifier": "one",
+          "aggregate": null
+        },
+        "constraints": [],
+        "description": ""
+      }
+    ]
+  }
+}

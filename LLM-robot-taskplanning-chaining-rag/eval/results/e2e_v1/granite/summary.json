@@ -1,0 +1,24 @@
+{
+  "model": "granite4.1:3b",
+  "repeats": 3,
+  "total_cases": 150,
+  "e2e_strict_success": 0.74,
+  "final_validation_pass": 0.74,
+  "intent_gate_success": 0.98,
+  "semantic_stage_success": 0.96,
+  "grounding_exact_success": 0.88,
+  "planner_strict_success": 0.74,
+  "compiler_success": 0.74,
+  "validator_success": 0.74,
+  "status_gate_accuracy": 1.0,
+  "failure_by_stage": {
+    "semantic_retrieval": 3,
+    "intent_location": 3,
+    "planner_action": 21,
+    "grounding_id": 12
+  },
+  "final_compiled_exact_match": 1.0,
+  "error_rate": 0.02,
+  "avg_total_latency_ms": 917.5,
+  "failure_count": 39
+}

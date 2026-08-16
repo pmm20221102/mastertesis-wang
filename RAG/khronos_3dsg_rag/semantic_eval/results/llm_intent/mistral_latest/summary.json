@@ -1,0 +1,15 @@
+{
+  "model": "mistral:latest",
+  "total_cases": 30,
+  "schema_validity": 1.0,
+  "action_accuracy": 0.9,
+  "target_role_precision": 0.9167,
+  "target_role_recall": 0.8462,
+  "target_role_f1": 0.88,
+  "node_type_provided_rate": 0.0667,
+  "node_type_accuracy_when_provided": 0.0769,
+  "spurious_role_rate": 0.0667,
+  "room_extraction_accuracy": 1.0,
+  "warm_mean_ms": 824.7,
+  "warm_median_ms": 576.1
+}

@@ -1,0 +1,199 @@
+{
+  "source": "/home/ulmmt/Masterthesis-wang/scene-graph-khronos/snapshots/office_launch_dense/2026_08_03-16_46_38/dsg.json",
+  "spark_dsg_version": {
+    "major": 1,
+    "minor": 1,
+    "patch": 3
+  },
+  "declared_frame": "map",
+  "directed": false,
+  "total_nodes": 3096,
+  "total_edges": 12335,
+  "layer_summary": {
+    "layer_2_part_0": {
+      "count": 209,
+      "layer_name": "None"
+    },
+    "layer_2_part_97": {
+      "count": 392,
+      "layer_name": "None"
+    },
+    "layer_3_part_0": {
+      "count": 2472,
+      "layer_name": "None"
+    },
+    "layer_4_part_0": {
+      "count": 22,
+      "layer_name": "None"
+    },
+    "layer_5_part_0": {
+      "count": 1,
+      "layer_name": "None"
+    }
+  },
+  "places": {
+    "label": "PLACES",
+    "count": 2472,
+    "id_index_min": 20,
+    "id_index_max": 28765,
+    "position_valid": 2472,
+    "position_invalid": 0,
+    "position_xy_range": {
+      "x_min": -19.7,
+      "x_max": 21.7,
+      "y_min": 3.3,
+      "y_max": 37.9
+    },
+    "position_z_range": {
+      "z_min": 1.1,
+      "z_max": 3.9
+    },
+    "has_orientation": 2472,
+    "has_quaternion": 0,
+    "attr_keys_top": [
+      [
+        "active_frontier",
+        2472
+      ],
+      [
+        "anti_frontier",
+        2472
+      ],
+      [
+        "bounding_box",
+        2472
+      ],
+      [
+        "color",
+        2472
+      ],
+      [
+        "deformation_connections",
+        2472
+      ],
+      [
+        "distance",
+        2472
+      ],
+      [
+        "frontier_scale",
+        2472
+      ],
+      [
+        "is_active",
+        2472
+      ],
+      [
+        "is_predicted",
+        2472
+      ],
+      [
+        "last_update_time_ns",
+        2472
+      ],
+      [
+        "mesh_vertex_labels",
+        2472
+      ],
+      [
+        "metadata",
+        2472
+      ],
+      [
+        "name",
+        2472
+      ],
+      [
+        "need_cleanup",
+        2472
+      ],
+      [
+        "num_basis_points",
+        2472
+      ]
+    ]
+  },
+  "mesh_places": {
+    "label": "MESH_PLACES",
+    "count": 0,
+    "id_index_min": null,
+    "id_index_max": null,
+    "position_valid": 0,
+    "position_invalid": 0,
+    "position_xy_range": null,
+    "position_z_range": null,
+    "has_orientation": 0,
+    "has_quaternion": 0,
+    "attr_keys_top": []
+  },
+  "rooms": {
+    "count": 22
+  },
+  "buildings": {
+    "count": 1
+  },
+  "objects": {
+    "count": 209
+  },
+  "edges": {
+    "total": 12335,
+    "directed_flag": false,
+    "weight_min": 0.2,
+    "weight_max": 4.2942,
+    "weight_mean": 0.9768,
+    "self_loop": 0,
+    "duplicate_directed": 0,
+    "intra_place": 8833,
+    "intra_mesh_place": 0,
+    "place_room": 2455,
+    "other": 1047,
+    "weight_hist": {
+      "0.1-0.5": 2762,
+      "0.5-1.0": 2289,
+      "1.0-3.0": 7181,
+      "3.0-10": 103
+    }
+  },
+  "connectivity_places": {
+    "num_components": 6,
+    "largest_component_size": 2455,
+    "component_sizes": [
+      2455,
+      5,
+      3,
+      3,
+      3,
+      3
+    ],
+    "isolated_nodes": 0,
+    "singleton_ids": []
+  },
+  "room_place_relation": {
+    "num_rooms_with_places": 22,
+    "places_per_room": {
+      "R12": 620,
+      "R14": 387,
+      "R6": 215,
+      "R9": 215,
+      "R0": 207,
+      "R15": 170,
+      "R19": 169,
+      "R20": 135,
+      "R4": 112,
+      "R17": 68,
+      "R16": 32,
+      "R7": 29,
+      "R18": 20,
+      "R2": 13,
+      "R8": 13,
+      "R1": 9,
+      "R21": 9,
+      "R5": 8,
+      "R10": 7,
+      "R3": 6,
+      "R13": 6,
+      "R11": 5
+    },
+    "rooms_without_places": []
+  }
+}

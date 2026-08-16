@@ -41,16 +41,26 @@ def _write_summary_json(report: EvalReport, path: Path) -> None:
 def _write_summary_csv(report: EvalReport, path: Path) -> None:
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["query_type", "count", "hit", "mrr", "recall", "precision", "f1", "graph_accuracy"])
+        writer.writerow([
+            "query_type", "count",
+            "hit@1", "hit@3", "hit@10",
+            "mrr@1", "mrr@3", "mrr@10",
+            "recall@10", "precision@10", "f1@10",
+            "graph_accuracy",
+        ])
         for qt, m in report.metrics_by_type.items():
             writer.writerow([
                 qt,
                 m.get("count", 0),
-                f"{m.get('hit', 0):.4f}",
-                f"{m.get('mrr', 0):.4f}",
-                f"{m.get('recall', 0):.4f}",
-                f"{m.get('precision', 0):.4f}",
-                f"{m.get('f1', 0):.4f}",
+                f"{m.get('hit@1', 0):.4f}",
+                f"{m.get('hit@3', 0):.4f}",
+                f"{m.get('hit@10', 0):.4f}",
+                f"{m.get('mrr@1', 0):.4f}",
+                f"{m.get('mrr@3', 0):.4f}",
+                f"{m.get('mrr@10', 0):.4f}",
+                f"{m.get('recall@10', 0):.4f}",
+                f"{m.get('precision@10', 0):.4f}",
+                f"{m.get('f1@10', 0):.4f}",
                 f"{m.get('graph_accuracy', 0):.4f}",
             ])
         writer.writerow([])
@@ -70,9 +80,26 @@ def _write_summary_md(report: EvalReport, path: Path) -> None:
     for k, v in report.overall_metrics.items():
         lines.append(f"- **{k}**: {v:.4f}")
 
-    lines.extend(["", "## Metrics by Query Type", "", "| Query Type | Count | Hit | MRR | Recall | Precision | F1 | Graph Acc |", "|-----------|-------|-----|-----|--------|-----------|-----|-----------|"])
+    lines.extend([
+        "",
+        "## Metrics by Query Type",
+        "",
+        "| Query Type | Count | Hit@1 | Hit@3 | Hit@10 | MRR@3 | MRR@10 | Recall@10 | Precision@10 | F1@10 | Graph Acc |",
+        "|-----------|-------|-------|-------|--------|-------|--------|-----------|--------------|-------|-----------|",
+    ])
     for qt, m in report.metrics_by_type.items():
-        lines.append(f"| {qt} | {m.get('count', 0)} | {m.get('hit', 0):.4f} | {m.get('mrr', 0):.4f} | {m.get('recall', 0):.4f} | {m.get('precision', 0):.4f} | {m.get('f1', 0):.4f} | {m.get('graph_accuracy', 0):.4f} |")
+        lines.append(
+            f"| {qt} | {m.get('count', 0)} "
+            f"| {m.get('hit@1', 0):.4f} "
+            f"| {m.get('hit@3', 0):.4f} "
+            f"| {m.get('hit@10', 0):.4f} "
+            f"| {m.get('mrr@3', 0):.4f} "
+            f"| {m.get('mrr@10', 0):.4f} "
+            f"| {m.get('recall@10', 0):.4f} "
+            f"| {m.get('precision@10', 0):.4f} "
+            f"| {m.get('f1@10', 0):.4f} "
+            f"| {m.get('graph_accuracy', 0):.4f} |"
+        )
 
     if report.failures:
         lines.extend(["", "## Failure Examples", ""])

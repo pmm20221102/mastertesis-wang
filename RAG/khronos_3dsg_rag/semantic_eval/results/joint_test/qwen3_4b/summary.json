@@ -1,0 +1,10 @@
+{
+  "model": "qwen3:4b",
+  "total_cases": 30,
+  "intent_success_rate": 1.0,
+  "semantic_retrieval_success_rate": 1.0,
+  "grounding_success_rate": 1.0,
+  "final_node_id_correct_rate": 1.0,
+  "joint_success_rate": 1.0,
+  "failure_by_stage": {}
+}

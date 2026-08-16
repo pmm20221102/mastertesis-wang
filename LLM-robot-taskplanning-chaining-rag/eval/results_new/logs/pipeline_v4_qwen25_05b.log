@@ -1,0 +1,1717 @@
+WARNING: Could not load graph IDs: 'SceneGraphRAG' object has no attribute 'get_all_node_ids'
+INFO: Evaluating grounding cases from eval/cases/grounding_benchmark_v4.jsonl
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded canonical index from JSON v2: 1858 nodes
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_ambiguous_001: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_ambiguous_002: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_ambiguous_003: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_ambiguous_004: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_ambiguous_005: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_objnav_006: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_objnav_007: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Not found: No nodes found matching 'large_office_object'
+INFO:   [0] v2_objnav_008: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_objnav_009: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['chairs']
+INFO:   [0] v2_objnav_010: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_objnav_011: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': small_office_object
+INFO:   Resolved to: 8070450532247936886
+INFO:   [0] v2_objnav_012: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO: Grounding 'destination': large_static_wall_furniture
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Extracted terms: ['large_static_wall']
+INFO: Extracted terms: ['large_static_wall']
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_objnav_013: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Not found: No nodes found matching 'large_office_object'
+INFO:   [0] v2_objnav_014: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO: Extracted terms: ['sign']
+INFO:   [0] v2_objnav_015: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_place_016: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_place_017: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['area 947436']
+INFO:   [0] v2_place_018: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO: Extracted terms: ['large_office_object']
+INFO:   [0] v2_place_019: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO: Extracted terms: ['large_office_object']
+INFO:   [0] v2_place_020: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO: Extracted terms: ['large_office_object']
+INFO:   [0] v2_place_021: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO: Extracted terms: ['sign']
+INFO:   [0] v2_place_022: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_place_023: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_object']
+INFO:   [0] v2_place_024: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_place_025: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['area 949381']
+INFO: Extracted terms: ['chair']
+INFO:   [0] v2_place_026: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_place_027: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_place_028: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_object']
+INFO: Extracted terms: ['small_office_object']
+INFO:   [0] v2_place_029: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_place_030: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_room_031: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_room_032: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_room_033: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_room_034: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_room_035: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_room_036: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_object']
+INFO:   [0] v2_room_037: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_room_038: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_room_039: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO: Extracted terms: ['sign']
+INFO:   [0] v2_room_040: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: No nodes matching label='objects' type='None' with location constraints
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   [0] v2_set_041: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: No nodes matching label='objects' type='None' with location constraints
+INFO:   [0] v2_set_042: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chairs
+INFO:   Not found: None
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   [0] v2_set_043: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chairs
+INFO:   Not found: None
+INFO:   [0] v2_set_044: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_objects
+INFO:   Not found: No nodes matching label='objects' type='None' with location constraints
+INFO:   [0] v2_set_045: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_objects
+INFO:   Not found: No nodes matching label='objects' type='None' with location constraints
+INFO:   [0] v2_set_046: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': signs
+INFO:   Not found: No nodes matching label='objects' type='None' with location constraints
+INFO:   [0] v2_set_047: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': every sign in the scene
+INFO:   Not found: None
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   [0] v2_set_048: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Not found: None
+INFO:   [0] v2_set_049: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Not found: None
+INFO:   [0] v2_set_050: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': refrigerator
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['refrigerator']
+INFO:   Not found: No nodes found matching 'refrigerator'
+INFO:   [0] v2_notfound_051: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': swimming pool
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['swimming pool']
+INFO:   Not found: No nodes found matching 'swimming pool'
+INFO:   [0] v2_notfound_052: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': gym
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['gym']
+INFO:   Not found: No nodes found matching 'gym'
+INFO:   [0] v2_notfound_053: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': cafeteria
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['cafeteria']
+INFO:   Not found: No nodes found matching 'cafeteria'
+INFO:   [0] v2_notfound_054: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': library
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['library']
+INFO:   Not found: No nodes found matching 'library'
+INFO:   [0] v2_notfound_055: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': workshop
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['workshop']
+INFO:   Not found: No nodes found matching 'workshop'
+INFO:   [0] v2_notfound_056: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': elevator shaft
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['elevator shaft']
+INFO:   Not found: No nodes found matching 'elevator shaft'
+INFO: Extracted terms: ['elevator shaft']
+INFO:   [0] v2_notfound_057: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': rooftop
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['rooftop']
+INFO:   Not found: No nodes found matching 'rooftop'
+INFO:   [0] v2_notfound_058: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': basement
+INFO:   Not found: No nodes matching label='basements' type='None' with location constraints
+INFO:   [0] v2_notfound_059: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Grounding 'target': underground parking
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['underground parking']
+INFO:   Not found: No nodes found matching 'underground parking'
+INFO:   [0] v2_notfound_060: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Resolved to: 8070450532247936886
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   [0] v2_spatial_061: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large static wall furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['wall']
+INFO:   Not found: No nodes found matching 'large static wall furniture'
+INFO:   [0] v2_spatial_062: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Resolved to: 8070450532247936886
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   [0] v2_spatial_063: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO:   [0] v2_spatial_064: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Grounding 'target': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO:   [0] v2_spatial_065: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Resolved to: 8070450532247936886
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   [0] v2_spatial_066: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO:   [0] v2_spatial_067: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO: Grounding 'destination': small office objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['office', 'objects']
+INFO: Extracted terms: ['chairs']
+INFO:   Not found: Relation target 'the nearest place to the chairs' not found
+INFO:   [0] v2_spatial_068: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large office objects
+INFO:   Resolved to: 8070450532247943309
+INFO: Grounding 'destination': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['office']
+INFO:   [0] v2_spatial_069: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large static wall furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['wall']
+INFO:   Ambiguous: 57 candidates
+INFO: Grounding 'destination': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO:   [0] v2_spatial_070: ambiguous
+INFO: Exact node ID detected: 5692549928996307178
+INFO: Grounding 'target': 5692549928996307178
+INFO:   Resolved to: 5692549928996307178
+INFO:   [0] v2_exact_071: ready
+INFO: Exact node ID detected: 5692549928996307100
+INFO: Grounding 'target': 5692549928996307100
+INFO:   Resolved to: 5692549928996307100
+INFO:   [0] v2_exact_072: ready
+INFO: Exact node ID detected: 5692549928996307181
+INFO: Grounding 'target': 5692549928996307181
+INFO:   Resolved to: 5692549928996307181
+INFO:   [0] v2_exact_073: ready
+INFO: Exact node ID detected: 5692549928996307024
+INFO: Grounding 'target': 5692549928996307024
+INFO:   Resolved to: 5692549928996307024
+INFO:   [0] v2_exact_074: ready
+INFO: Exact node ID detected: 5692549928996307165
+INFO: Grounding 'target': 5692549928996307165
+INFO:   Resolved to: 5692549928996307165
+INFO:   [0] v2_exact_075: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['the small_office_object']
+INFO:   [0] v2_complex_076: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_object']
+INFO:   [0] v2_complex_077: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO: Extracted terms: ['room']
+INFO:   Not found: Relation target 'room 0752' not found
+INFO: Extracted terms: ['chair']
+INFO:   [0] v2_complex_078: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_complex_079: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_complex_080: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_complex_081: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_complex_082: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: None
+INFO:   [0] v2_complex_083: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': large_office_objects
+INFO:   Not found: None
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_objects']
+INFO: Extracted terms: ['room']
+INFO:   [0] v2_complex_084: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: None
+INFO:   [0] v2_complex_085: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_object']
+INFO:   [0] v2_relation_086: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_relation_087: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_relation_088: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['place 931807']
+INFO: Extracted terms: ['chair']
+INFO:   [0] v2_relation_089: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_relation_090: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 931848
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 931848']
+INFO:   Ambiguous: 200 candidates
+INFO:   [0] v2_relation_091: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious avoid constraint: avoid the office
+INFO: Grounding 'target': place 928841
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 928841']
+INFO:   Ambiguous: 200 candidates
+INFO:   [0] v2_relation_092: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 928834
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 928834']
+INFO:   Ambiguous: 200 candidates
+INFO:   [0] v2_relation_093: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 928867
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 928867']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['place 928867']
+INFO:   [0] v2_relation_094: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['room']
+INFO:   Not found: Relation target 'room' not found
+INFO:   [0] v2_relation_095: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Grounding 'target': chairs
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chairs']
+INFO:   [0] v2_relation_096: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_objects
+INFO:   Not found: None
+INFO:   [0] v2_relation_097: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 929444
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 929444']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['place 929444']
+INFO:   [0] v2_relation_098: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 928835
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 928835']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['place 928835']
+INFO:   [0] v2_relation_099: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': place 928834
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place 928834']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['place 928834']
+INFO:   [0] v2_relation_100: ambiguous
+INFO: Evaluating planning cases from eval/cases/planning_generation_v3.jsonl
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7171, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7171
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7171'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7171): not_found"]
+INFO:   [0] plan_v3_gen_001: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7006, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7006
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7006'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7006): not_found"]
+INFO:   [0] plan_v3_gen_002: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=small_office_objects, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['small_office_objects']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects): ambiguous"]
+INFO:   [0] plan_v3_gen_003: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=#7205, destination=Signs #7205
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': #7205
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#7205']
+INFO:   Not found: No nodes found matching '#7205'
+INFO: Grounding 'destination': Signs #7205
+INFO: Extracted terms: ['signs']
+INFO:   Ambiguous: 12 candidates
+INFO: Extracted terms: ['#7205']
+INFO: Extracted terms: ['signs']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (#7205): not_found", "'destination' (Signs #7205): ambiguous"]
+INFO:   [0] plan_v3_gen_004: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs): ambiguous"]
+INFO:   [0] plan_v3_gen_005: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_office_objects, destination=large_office_objects #7043
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_objects']
+INFO:   Not found: No nodes found matching 'large_office_objects'
+INFO: Grounding 'destination': large_office_objects #7043
+INFO:   Not found: None
+INFO: Extracted terms: ['office']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_office_objects): not_found"]
+INFO:   [0] plan_v3_gen_006: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs, destination=the chairs #7038
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding 'destination': the chairs #7038
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs): ambiguous", "'destination' (the chairs #7038): ambiguous"]
+INFO:   [0] plan_v3_gen_007: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7015, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7015
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7015'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7015): not_found"]
+INFO:   [0] plan_v3_gen_008: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=#7201, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': #7201
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#7201']
+INFO:   Not found: No nodes found matching '#7201'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (#7201): not_found"]
+INFO:   [0] plan_v3_gen_009: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Extracted terms: ['chairs']
+INFO: Extracted terms: ['chairs']
+INFO: Extracted terms: ['chairs']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs): ambiguous"]
+INFO:   [0] plan_v3_gen_010: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=small_office_objects, destination=the small_office_objects
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding 'destination': the small_office_objects
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 191 candidates
+INFO: Extracted terms: ['office']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects): ambiguous", "'destination' (the small_office_objects): ambiguous"]
+INFO:   [0] plan_v3_gen_011: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7147, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7147
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7147'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7147): not_found"]
+INFO:   [0] plan_v3_gen_012: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #6996, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #6996
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #6996'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #6996): not_found"]
+INFO:   [0] plan_v3_gen_013: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=small_office_objects, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Extracted terms: ['small_office_objects']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects): ambiguous"]
+INFO:   [0] plan_v3_gen_014: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs, destination=the chairs #7114
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding 'destination': the chairs #7114
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs): ambiguous", "'destination' (the chairs #7114): ambiguous"]
+INFO:   [0] plan_v3_gen_015: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #0577, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #0577
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0577']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #0670
+INFO: Extracted terms: ['place #0670']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #0577): ambiguous", "'source' (place #0670): ambiguous"]
+INFO:   [0] plan_v3_gen_016: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #8650, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #8650
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #8650']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #3671
+INFO: Extracted terms: ['place #3671']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #8650): ambiguous", "'source' (place #3671): ambiguous"]
+INFO:   [0] plan_v3_gen_017: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #9053, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #9053
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #9053']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #9028
+INFO: Extracted terms: ['place #9028']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #9053): ambiguous", "'source' (place #9028): ambiguous"]
+INFO:   [0] plan_v3_gen_018: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #0362, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #0362
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0362']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #2457
+INFO: Extracted terms: ['place #2457']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #0362): ambiguous", "'source' (place #2457): ambiguous"]
+INFO:   [0] plan_v3_gen_019: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #7780, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #7780
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #7780']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #0835
+INFO: Extracted terms: ['place #0835']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #7780): ambiguous", "'source' (place #0835): ambiguous"]
+INFO:   [0] plan_v3_gen_020: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #0039, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #0039
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0039']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #0039
+INFO: Extracted terms: ['place #0039']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #0039): ambiguous", "'source' (place #0039): ambiguous"]
+INFO:   [0] plan_v3_gen_021: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #6686, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #6686
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #6686']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #8696
+INFO: Extracted terms: ['place #8696']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #6686): ambiguous", "'source' (place #8696): ambiguous"]
+INFO:   [0] plan_v3_gen_022: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #0525, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #0525
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0525']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #2121
+INFO: Extracted terms: ['place #2121']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #0525): ambiguous", "'source' (place #2121): ambiguous"]
+INFO:   [0] plan_v3_gen_023: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #6412, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #6412
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #6412']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #8999
+INFO: Extracted terms: ['place #8999']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #6412): ambiguous", "'source' (place #8999): ambiguous"]
+INFO:   [0] plan_v3_gen_024: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=place #3244, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': place #3244
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #3244']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': place #6058
+INFO: Extracted terms: ['place #6058']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (place #3244): ambiguous", "'source' (place #6058): ambiguous"]
+INFO:   [0] plan_v3_gen_025: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=escort, target=None, destination=place #3291
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person #9934
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9934'
+INFO: Grounding 'destination': place #3291
+INFO: Extracted terms: ['place #3291']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person #9934): not_found", "'destination' (place #3291): ambiguous"]
+INFO:   [0] plan_v3_gen_026: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Parsed intent: action=guide, target=place 2485, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': place 2485
+INFO: Extracted terms: ['place 2485']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': person #9871
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9871'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (place 2485): ambiguous", "'source' (person #9871): not_found"]
+INFO:   [0] plan_v3_gen_027: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=escort, target=None, destination=place #0109
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person #9902
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9902'
+INFO: Grounding 'destination': place #0109
+INFO: Extracted terms: ['place #0109']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person #9902): not_found", "'destination' (place #0109): ambiguous"]
+INFO:   [0] plan_v3_gen_028: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Parsed intent: action=guide, target=place #1301, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': place #1301
+INFO: Extracted terms: ['place #1301']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': person #0182
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #0182'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (place #1301): ambiguous", "'source' (person #0182): not_found"]
+INFO:   [0] plan_v3_gen_029: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=escort, target=None, destination=place #7242
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person #9964
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9964'
+INFO: Grounding 'destination': place #7242
+INFO: Extracted terms: ['place #7242']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person #9964): not_found", "'destination' (place #7242): ambiguous"]
+INFO:   [0] plan_v3_gen_030: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Parsed intent: action=guide, target=place #9766, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': place #9766
+INFO: Extracted terms: ['place #9766']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': person #9844
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9844'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (place #9766): ambiguous", "'source' (person #9844): not_found"]
+INFO:   [0] plan_v3_gen_031: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=escort, target=None, destination=place #5244
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person #9839
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9839'
+INFO: Grounding 'destination': place #5244
+INFO: Extracted terms: ['place #5244']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person #9839): not_found", "'destination' (place #5244): ambiguous"]
+INFO:   [0] plan_v3_gen_032: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Parsed intent: action=guide, target=place #4365, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': place #4365
+INFO: Extracted terms: ['place #4365']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': person #9986
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9986'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (place #4365): ambiguous", "'source' (person #9986): not_found"]
+INFO:   [0] plan_v3_gen_033: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=escort, target=None, destination=place #3087
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person #9841
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9841'
+INFO: Grounding 'destination': place #3087
+INFO: Extracted terms: ['place #3087']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person #9841): not_found", "'destination' (place #3087): ambiguous"]
+INFO:   [0] plan_v3_gen_034: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'guide' based on text
+INFO: Parsed intent: action=guide, target=place 0482, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': place 0482
+INFO: Extracted terms: ['place 0482']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding 'source': person #9975
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9975'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (place 0482): ambiguous", "'source' (person #9975): not_found"]
+INFO:   [0] plan_v3_gen_035: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs #7059, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7059
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7059): ambiguous"]
+INFO:   [0] plan_v3_gen_036: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs #7168, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7168
+INFO:   Not found: None
+INFO: Grounding status: ready
+INFO: Stage 4: Building grounded task...
+INFO: Stage 5: Generating task plan...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Stage 6: Validating plan...
+WARNING: Validation errors: ["Step 1: action 'navigate_to' requires target_ref or role_refs but got empty", "Step 1: action 'navigate_to' requires target_id but got None", "Step 2: role_ids[actor]='actor' not in grounded references", "Step 2: role_ids[destination]='destination' not in grounded references", "Step 2: target_id 'actor' not in grounded references", "Step 2: avoid_id 'place_0' not in grounded references or constraints"]
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] plan_v3_gen_037: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7166, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7166
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (large_static_wall_furniture #7166): ambiguous"]
+INFO:   [0] plan_v3_gen_038: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=chairs #7094, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7094
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7094): ambiguous"]
+INFO:   [0] plan_v3_gen_039: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=small_office_objects, destination=the nearest place to the chairs
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding 'destination': the nearest place to the chairs
+INFO:   Resolved to: 8070450532247937053
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects): ambiguous"]
+INFO:   [0] plan_v3_gen_040: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious relation: inside chair #7059
+INFO: Parsed intent: action=navigate, target=chairs #7059, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7059
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chair']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7059): ambiguous"]
+INFO:   [0] plan_v3_gen_041: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious relation: inside chair #7168
+INFO: Parsed intent: action=navigate, target=chairs #7168, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7168
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chair']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7168): ambiguous"]
+INFO:   [0] plan_v3_gen_042: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7166, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7166
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7166'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7166): not_found"]
+INFO:   [0] plan_v3_gen_043: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious relation: inside chair #7094
+INFO: Parsed intent: action=navigate, target=chairs #7094, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7094
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7094): ambiguous"]
+INFO:   [0] plan_v3_gen_044: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=small_office_objects, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects): ambiguous"]
+INFO:   [0] plan_v3_gen_045: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=the small_office_objects, destination=place #3575
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the small_office_objects
+INFO:   Not found: None
+INFO: Grounding 'destination': place #3575
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #3575']
+INFO:   Ambiguous: 200 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'destination' (place #3575): ambiguous"]
+INFO:   [0] plan_v3_gen_046: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'escort' based on text
+INFO: Parsed intent: action=escort, target=large_static_wall_furniture #7040, destination=large_static_wall_furniture #7040
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': large_static_wall_furniture #7040
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7040'
+INFO: Grounding 'destination': large_static_wall_furniture #7040
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7040'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (large_static_wall_furniture #7040): not_found", "'destination' (large_static_wall_furniture #7040): not_found"]
+INFO:   [0] plan_v3_gen_047: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7002, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7002
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (large_static_wall_furniture #7002): ambiguous"]
+INFO:   [0] plan_v3_gen_048: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Parsed intent: action=locate, target=small_office_objects #7100, destination=place #2724
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': small_office_objects #7100
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 191 candidates
+INFO: Grounding 'destination': place #2724
+INFO: Extracted terms: ['place #2724']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['place #2724']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (small_office_objects #7100): ambiguous", "'destination' (place #2724): ambiguous"]
+INFO:   [0] plan_v3_gen_049: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'escort' based on text
+INFO: Parsed intent: action=escort, target=chairs #7053, destination=place #2756
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': chairs #7053
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding 'source': person #0077
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #0077'
+INFO: Grounding 'destination': place #2756
+INFO: Extracted terms: ['place #2756']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (chairs #7053): ambiguous", "'source' (person #0077): not_found", "'destination' (place #2756): ambiguous"]
+INFO:   [0] plan_v3_gen_050: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=the small_office_objects, destination=place #6884
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the small_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding 'destination': place #6884
+INFO: Extracted terms: ['place #6884']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['small_office_objects']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the small_office_objects): ambiguous", "'destination' (place #6884): ambiguous"]
+INFO:   [0] plan_v3_gen_051: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7170, destination=the large_static_wall_furniture #7170
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7170
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7170'
+INFO: Grounding 'destination': the large_static_wall_furniture #7170
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'the large_static_wall_furniture #7170'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['place #9683']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7170): not_found", "'destination' (the large_static_wall_furniture #7170): not_found"]
+INFO:   [0] plan_v3_gen_052: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'escort' based on text
+INFO: Parsed intent: action=escort, target=large_static_wall_furniture #7095, destination=person #0119
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': large_static_wall_furniture #7095
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Grounding 'destination': person #0119
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #0119'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['person']
+INFO: Extracted terms: ['place #9356']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (large_static_wall_furniture #7095): ambiguous", "'destination' (person #0119): not_found"]
+INFO:   [0] plan_v3_gen_053: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7021, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7021
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7021'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7021): not_found"]
+INFO:   [0] plan_v3_gen_054: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7096, destination=large_static_wall_furniture #7096
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7096
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7096'
+INFO: Grounding 'destination': large_static_wall_furniture #7096
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7096'
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['place #7396']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7096): not_found", "'destination' (large_static_wall_furniture #7096): not_found"]
+INFO:   [0] plan_v3_gen_055: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'escort' based on text
+INFO: Parsed intent: action=escort, target=small_office_objects #6994, destination=person #9986
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': small_office_objects #6994
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding 'destination': person #9986
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #9986'
+INFO: Extracted terms: ['small_office_objects']
+INFO: Extracted terms: ['person']
+INFO: Extracted terms: ['place #3575']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (small_office_objects #6994): ambiguous", "'destination' (person #9986): not_found"]
+INFO:   [0] plan_v3_gen_056: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7040, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7040
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Ambiguous: 57 candidates
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Extracted terms: ['place 8127']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (large_static_wall_furniture #7040): ambiguous"]
+INFO:   [0] plan_v3_gen_057: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Parsed intent: action=locate, target=large_static_wall_furniture #7002, destination=place #0150
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7002
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7002'
+INFO: Grounding 'destination': place #0150
+INFO: Extracted terms: ['place #0150']
+INFO:   Ambiguous: 200 candidates
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7002): not_found", "'destination' (place #0150): ambiguous"]
+INFO:   [0] plan_v3_gen_058: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'escort' based on text
+INFO: Parsed intent: action=escort, target=small_office_objects, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': person
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person'
+INFO: Grounding 'target': small_office_objects
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding 'source': person #0144
+INFO: Extracted terms: ['person']
+INFO:   Not found: No nodes found matching 'person #0144'
+INFO: Extracted terms: ['small_office_objects']
+INFO: Extracted terms: ['person']
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (person): not_found", "'target' (small_office_objects): ambiguous", "'source' (person #0144): not_found"]
+INFO:   [0] plan_v3_gen_059: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Overriding action from 'navigate' to 'locate' based on text
+INFO: Removing spurious source for locate action
+INFO: Parsed intent: action=locate, target=chairs #7053, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7053
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Extracted terms: ['chairs']
+INFO: Extracted terms: ['place #2756']
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7053): ambiguous"]
+INFO:   [0] plan_v3_gen_060: ambiguous
+INFO: Results saved to eval/results_new/pipeline_v4_qwen25_05b
+
+=== Evaluation Summary ===
+{
+  "mode": "structured",
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 100,
+    "pipeline_status_accuracy": 0.54,
+    "role_status_accuracy": 0.51,
+    "role_entity_id_accuracy": 0.22916666666666666,
+    "role_status_evaluated_count": 100,
+    "role_id_evaluated_count": 48,
+    "spurious_role_count": 4,
+    "spurious_role_rate": 0.038461538461538464,
+    "error_rate": 0.0,
+    "avg_latency_ms": 1215.487883090973,
+    "category_breakdown": {
+      "ambiguous": {
+        "total": 5,
+        "correct": 4,
+        "accuracy": 0.8,
+        "error_rate": 0.0
+      },
+      "complex": {
+        "total": 10,
+        "correct": 3,
+        "accuracy": 0.3,
+        "error_rate": 0.0
+      },
+      "exact_id": {
+        "total": 5,
+        "correct": 5,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "not_found": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "obj_nav": {
+        "total": 10,
+        "correct": 5,
+        "accuracy": 0.5,
+        "error_rate": 0.0
+      },
+      "place_constraint": {
+        "total": 15,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "relation": {
+        "total": 15,
+        "correct": 9,
+        "accuracy": 0.6,
+        "error_rate": 0.0
+      },
+      "room_constraint": {
+        "total": 10,
+        "correct": 6,
+        "accuracy": 0.6,
+        "error_rate": 0.0
+      },
+      "set_query": {
+        "total": 10,
+        "correct": 5,
+        "accuracy": 0.5,
+        "error_rate": 0.0
+      },
+      "spatial": {
+        "total": 10,
+        "correct": 7,
+        "accuracy": 0.7,
+        "error_rate": 0.0
+      }
+    },
+    "grounding_exact_success_rate": 0.5,
+    "grounding_exact_success_count": 50,
+    "case_failure_count": 51,
+    "exact_id_accuracy": 1.0,
+    "exact_id_count": 5,
+    "natural_language_accuracy": 0.4117647058823529,
+    "natural_language_count": 85,
+    "set_metrics": {
+      "case_count": 10,
+      "macro_precision": 0.5,
+      "macro_recall": 0.5,
+      "macro_f1": 0.5,
+      "micro_precision": 1.0,
+      "micro_recall": 0.5957446808510638,
+      "micro_f1": 0.7466666666666666,
+      "exact_set_match_count": 5,
+      "exact_set_match_rate": 0.5
+    },
+    "spatial_metrics": {
+      "case_count": 10,
+      "target_id_accuracy": 0.6,
+      "target_id_correct_count": 6,
+      "avg_distance_error": 0.0458492206085544
+    }
+  },
+  "planning": {
+    "total_cases": 60,
+    "planner_invoked_count": 60,
+    "pre_set_status_count": 0,
+    "pipeline_status_accuracy": 0.0,
+    "planner_status_accuracy": 0.0,
+    "planner_actions_accuracy": 0.016666666666666666,
+    "planner_actions_exact_sequence": 0.0,
+    "planner_actions_ordered": 0.016666666666666666,
+    "planner_steps_compliance": 0.016666666666666666,
+    "planner_validation_pass_rate": 0.0,
+    "target_ids_accuracy": 0.0,
+    "target_ids_evaluated_count": 60,
+    "target_ids_na_count": 0,
+    "step_target_ref_accuracy": 0.0,
+    "step_target_ref_evaluated_count": 1,
+    "constraint_avoid_accuracy": 0.0,
+    "constraint_avoid_evaluated_count": 10,
+    "constraint_prefer_accuracy": null,
+    "constraint_prefer_evaluated_count": 0,
+    "role_refs_accuracy": 0.0,
+    "role_refs_evaluated_count": 10,
+    "hallucinated_id_rate": null,
+    "ungrounded_id_rate": null,
+    "wrong_role_id_rate": null,
+    "total_emitted_ids": 0,
+    "total_hallucinated_ids": 0,
+    "total_ungrounded_ids": 0,
+    "total_wrong_role_ids": 0,
+    "error_rate": 1.0,
+    "avg_latency_ms": 1437.4460379282634,
+    "avg_planner_latency_ms": 1437.4460379282634
+  }
+}

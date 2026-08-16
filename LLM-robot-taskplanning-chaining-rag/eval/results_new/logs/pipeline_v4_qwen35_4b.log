@@ -1,0 +1,1628 @@
+WARNING: Could not load graph IDs: 'SceneGraphRAG' object has no attribute 'get_all_node_ids'
+INFO: Evaluating grounding cases from eval/cases/grounding_benchmark_v4.jsonl
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded canonical index from JSON v2: 1858 nodes
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_ambiguous_001: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_ambiguous_002: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 8 column 7 [type=json_invalid, input_value='{\n      "action": "loca...   },\n      ...\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "a large_office_object",
+        "label": "large_office_objects",
+        "node_type": "object"
+      },
+      ...
+    }
+INFO:   [0] v2_ambiguous_003: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_ambiguous_004: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': a small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['a small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_ambiguous_005: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_objnav_006: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_objnav_007: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': a large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['a large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_objnav_008: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': a sign
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['sign']
+INFO:   Ambiguous: 12 candidates
+INFO:   [0] v2_objnav_009: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_objnav_010: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': a chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_objnav_011: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': small_office_object
+INFO:   Resolved to: 5692549928996307046
+INFO:   [0] v2_objnav_012: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "person", ...}
+INFO:   [0] v2_objnav_013: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 18 [type=json_invalid, input_value='{"text": "person"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "person"...}
+INFO:   [0] v2_objnav_014: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "person", ...}
+INFO:   [0] v2_objnav_015: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_place_016: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"relation": "inside", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "inside", ...}
+INFO:   [0] v2_place_017: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large static wall furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['wall']
+INFO:   Not found: No nodes found matching 'large static wall furniture'
+INFO:   [0] v2_place_018: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'inside', 't...et_text': 'area 940752'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'inside', 't...et_text': 'area 940752'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+  "action": "locate",
+  "target": {
+    "text": "large_office_object",
+    "label": "large_office_objects",
+    "node_type": "object"
+  },
+  "constraints": [
+    {"relation": "inside", "target_text": "area 940752"}
+  ]
+}
+INFO:   [0] v2_place_019: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'large_office_ob..., 'node_type': 'object'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"text": "large_office_object", "label": "office_objects", "node_type": "object"}
+INFO:   [0] v2_place_020: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Not found: No nodes found matching 'large_office_object'
+INFO:   [0] v2_place_021: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"relation": "inside", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "inside", ...}
+INFO:   [0] v2_place_022: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_object']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_place_023: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_place_024: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"relation": "inside", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "inside", ...}
+INFO:   [0] v2_place_025: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: "chair", ..., loc..., node_type: "place"}]}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text: "chair", ..., locations: [{text: "area 949381", node_type: "place"}]}
+INFO:   [0] v2_place_026: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"action": "locate", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate", ...}
+INFO:   [0] v2_place_027: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chair
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chair']
+INFO:   Ambiguous: 36 candidates
+INFO:   [0] v2_place_028: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "inside", "target_text": "place 928841"}
+INFO:   [0] v2_place_029: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 3 [type=json_invalid, input_value='{ text: "sign", label: "...e_type: "object", ... }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: { text: "sign", label: "signs", node_type: "object", ... }
+INFO:   [0] v2_place_030: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"relation": "inside", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "inside", ...}
+INFO:   [0] v2_room_031: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 5908722711110090755
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 17 candidates
+INFO:   [0] v2_room_032: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] v2_room_033: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 590872271110090759
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['590872271110090759']
+INFO: Grounding 'target': a large static wall furniture
+INFO: Extracted terms: ['wall']
+INFO:   Not found: No nodes found matching 'a large static wall furniture'
+INFO:   [0] v2_room_034: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 590872271110090758
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['590872271110090758']
+INFO: Grounding 'target': sign
+INFO: Extracted terms: ['sign']
+INFO:   Not found: No nodes found matching 'sign'
+INFO:   [0] v2_room_035: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'chair', 'label'...: '5908722711110090756'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"text": "chair", "label": "chairs", "node_type": "object", "room": "5908722711110090756"}
+INFO:   [0] v2_room_036: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 590872271110090753
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['590872271110090753']
+INFO: Grounding 'target': small_office_object
+INFO: Extracted terms: ['small_office_object']
+INFO:   Not found: No nodes found matching 'small_office_object'
+INFO:   [0] v2_room_037: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ..., "room": "201"}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair", ..., "room": "201"}
+INFO:   [0] v2_room_038: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'chair', 'label'..., 'node_type': 'object'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"text": "chair", "label": "chairs", "node_type": "object"}
+INFO:   [0] v2_room_039: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 590872271110090753
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['590872271110090753']
+INFO: Grounding 'target': sign
+INFO: Extracted terms: ['sign']
+INFO:   Not found: No nodes found matching 'sign'
+INFO:   [0] v2_room_040: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large static wall furniture
+INFO:   Not found: No nodes matching label='static_wall_furniture' type='object' with location constraints
+INFO:   [0] v2_set_041: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: No nodes matching label='wall_mounted_objects' type='object' with location constraints
+INFO:   [0] v2_set_042: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': chairs
+INFO:   Not found: None
+INFO:   [0] v2_set_043: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': every chair in the scene
+INFO:   Not found: None
+INFO:   [0] v2_set_044: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_office_object
+INFO:   Not found: None
+INFO:   [0] v2_set_045: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 4 column 26 [type=json_invalid, input_value='{\n      "action": "loca...om number given.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {"text": "large_office_object", "label": "large_office_objects", "node_type": "object"},
+      "constraints": [], // or null? Example schema shows constraints as array. I'll use empty list if no specific location constraint, but wait... is there a scene context? Usually implies current environment. No room number given.
+    }
+INFO:   [0] v2_set_046: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': signs
+INFO:   Not found: None
+INFO:   [0] v2_set_047: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 18 [type=json_invalid, input_value='{"text": "sign", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "sign", ...}
+INFO:   [0] v2_set_048: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_objects
+INFO:   Not found: None
+INFO:   [0] v2_set_049: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO:   Not found: None
+INFO:   [0] v2_set_050: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the refrigerator
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the refrigerator']
+INFO:   Not found: No nodes found matching 'the refrigerator'
+INFO:   [0] v2_notfound_051: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': swimming pool
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['swimming pool']
+INFO:   Not found: No nodes found matching 'swimming pool'
+INFO:   [0] v2_notfound_052: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': the gym
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the gym']
+INFO:   Not found: No nodes found matching 'the gym'
+INFO:   [0] v2_notfound_053: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': the cafeteria
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the cafeteria']
+INFO:   Not found: No nodes found matching 'the cafeteria'
+INFO:   [0] v2_notfound_054: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': the library
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the library']
+INFO:   Not found: No nodes found matching 'the library'
+INFO:   [0] v2_notfound_055: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': workshop
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['workshop']
+INFO:   Not found: No nodes found matching 'workshop'
+INFO:   [0] v2_notfound_056: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': elevator shaft
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['elevator shaft']
+INFO:   Not found: No nodes found matching 'elevator shaft'
+INFO:   [0] v2_notfound_057: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': the rooftop
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['the rooftop']
+INFO:   Not found: No nodes found matching 'the rooftop'
+INFO:   [0] v2_notfound_058: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] v2_notfound_059: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': underground parking
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['underground parking']
+INFO:   Not found: No nodes found matching 'underground parking'
+INFO:   [0] v2_notfound_060: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: ..., quantifier: nearest}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text: ..., quantifier: nearest}
+INFO:   [0] v2_spatial_061: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 78 [type=json_invalid, input_value='{"action": "navigate", "...e to the chairs", ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": {"text": "the nearest place to the chairs", ...}}
+INFO:   [0] v2_spatial_062: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"relation": "near", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "near", ...}
+INFO:   [0] v2_spatial_063: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"relation": "near", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "near", ...}
+INFO:   [0] v2_spatial_064: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"action": "navigate", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", ...}
+INFO:   [0] v2_spatial_065: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 78 [type=json_invalid, input_value='{"action": "navigate", "...e to the chairs", ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": {"text": "the nearest place to the chairs", ...}}
+INFO:   [0] v2_spatial_066: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 78 [type=json_invalid, input_value='{"action": "navigate", "...e to the chairs", ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": {"text": "the nearest place to the chairs", ...}}
+INFO:   [0] v2_spatial_067: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 45 [type=json_invalid, input_value='{"text": "the nearest place to the chairs", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "the nearest place to the chairs", ...}
+INFO:   [0] v2_spatial_068: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 43 [type=json_invalid, input_value='{"text": "the nearest place to the chairs"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "the nearest place to the chairs"...}
+INFO:   [0] v2_spatial_069: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 78 [type=json_invalid, input_value='{"action": "navigate", "...e to the chairs", ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": {"text": "the nearest place to the chairs", ...}}
+INFO:   [0] v2_spatial_070: system_error
+INFO: Exact node ID detected: 5692549928996307178
+INFO: Grounding 'target': 5692549928996307178
+INFO:   Resolved to: 5692549928996307178
+INFO:   [0] v2_exact_071: ready
+INFO: Exact node ID detected: 5692549928996307100
+INFO: Grounding 'target': 5692549928996307100
+INFO:   Resolved to: 5692549928996307100
+INFO:   [0] v2_exact_072: ready
+INFO: Exact node ID detected: 5692549928996307181
+INFO: Grounding 'target': 5692549928996307181
+INFO:   Resolved to: 5692549928996307181
+INFO:   [0] v2_exact_073: ready
+INFO: Exact node ID detected: 5692549928996307024
+INFO: Grounding 'target': 5692549928996307024
+INFO:   Resolved to: 5692549928996307024
+INFO:   [0] v2_exact_074: ready
+INFO: Exact node ID detected: 5692549928996307165
+INFO: Grounding 'target': 5692549928996307165
+INFO:   Resolved to: 5692549928996307165
+INFO:   [0] v2_exact_075: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"relation": "inside", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"relation": "inside", ...}
+INFO:   [0] v2_complex_076: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_complex_077: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 3 column 21 [type=json_invalid, input_value='{\n                    ".....\n                  }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+                    "text": "...",
+                    ...
+                    "relations": [...],
+                    ...
+                  }
+INFO:   [0] v2_complex_078: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ..., "...object", "room": "201"}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair", ..., "node_type": "object", "room": "201"}
+INFO:   [0] v2_complex_079: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_static_wall_furniture
+INFO:   Not found: No nodes matching label='static_wall_furniture' type='None' with location constraints
+INFO:   [0] v2_complex_080: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding room 'target_room': 0754
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['0754']
+INFO: Grounding 'target': large static wall furniture
+INFO: Extracted terms: ['wall']
+INFO:   Not found: No nodes found matching 'large static wall furniture'
+INFO:   [0] v2_complex_081: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_static_wall_furniture
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture'
+INFO:   [0] v2_complex_082: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'operation': 'max_count'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"operation": "max_count"}
+INFO:   [0] v2_complex_083: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': large_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_objects']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_complex_084: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "chairs", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chairs", ...}
+INFO:   [0] v2_complex_085: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO: Extracted terms: ['place 928841']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_relation_086: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Grounding 'target': small_office_object
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_object']
+INFO:   Ambiguous: 70 candidates
+INFO:   [0] v2_relation_087: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928832'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928832'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "chair",
+        "label": "chairs",
+        "node_type": "object"
+      },
+      "constraints": [
+        {"relation": "inside", "target_text": "place 928832"}
+      ]
+    }
+INFO:   [0] v2_relation_088: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "inside", "target_text": "place 928841"}
+INFO:   [0] v2_relation_089: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 3 column 11 [type=json_invalid, input_value='{\n          "action": "...block? Wait.\n        }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+          "action": "...",
+          ...
+          "description": "...",
+          "steps": [...],
+          // constraints is listed as [TaskConstraint] but not explicitly defined inside EntityReference schema block? Wait.
+        }
+INFO:   [0] v2_relation_090: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `]` at line 6 column 9 [type=json_invalid, input_value='{\n      "action": "loca...aces\'.\n      ]\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {"text": "a place", "label": "places", "node_type": "place"},
+      "constraints": [
+        {"relation": "near", "target_text": "place 931848"} 
+        // Wait, RelationConstraint schema requires target_label too. I'll infer 'places' or keep generic if unknown. Let's use 'places'.
+      ]
+    }
+INFO:   [0] v2_relation_091: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': a place near place 928841
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['a place near place 928841']
+INFO:   Not found: No nodes found matching 'a place near place 928841'
+INFO:   [0] v2_relation_092: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 7 column 26 [type=json_invalid, input_value='{\n      "action": "loca... I put it there.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "actor": null,
+      "target": {"text": "a place", "label": "places", "node_type": "place"},
+      "source": null,
+      "destination": null,
+      "constraints": [], // Not strictly needed if relations are in target or separate? Example 4 has relation inside target. Wait, looking at schema: EntityReference can have 'relations'. So I put it there.
+    }
+INFO:   [0] v2_relation_093: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'near', 'tar...t_text': 'place 928867'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "near", "target_text": "place 928867"}
+INFO:   [0] v2_relation_094: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 28 [type=json_invalid, input_value='{"operation": "max_count", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"operation": "max_count", ...}
+INFO:   [0] v2_relation_095: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': chairs
+INFO:   Not found: None
+INFO:   [0] v2_relation_096: ready
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': large_office_objects
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_objects']
+INFO:   Ambiguous: 13 candidates
+INFO:   [0] v2_relation_097: ambiguous
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Grounding 'target': a place connected to place 929444
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['a place connected to place 929444']
+INFO:   Not found: No nodes found matching 'a place connected to place 929444'
+INFO:   [0] v2_relation_098: not_found
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 5 column 7 [type=json_invalid, input_value='{\n      "action": "loca...5"}],\n      ...\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {"text": "place", "label": "places", "node_type": "place"},
+      "relations": [{"relation": "connected_to", "target_text": "place 928835"}],
+      ...
+    }
+INFO:   [0] v2_relation_099: system_error
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'connected_t...t_text': 'place 928834'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "connected_to", "target_text": "place 928834"}
+INFO:   [0] v2_relation_100: system_error
+INFO: Evaluating planning cases from eval/cases/planning_generation_v3.jsonl
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=#7171 large_static_wall_furniture #7171, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': #7171 large_static_wall_furniture #7171
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching '#7171 large_static_wall_furniture #7171'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (#7171 large_static_wall_furniture #7171): not_found"]
+INFO:   [0] plan_v3_gen_001: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7006, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7006
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7006'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7006): not_found"]
+INFO:   [0] plan_v3_gen_002: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 17 [type=json_invalid, input_value='{"text": "chair"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair"...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 17 [type=json_invalid, input_value='{"text": "chair"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_003: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=the signs #7205, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the signs #7205
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['signs']
+INFO:   Ambiguous: 12 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the signs #7205): ambiguous"]
+INFO:   [0] plan_v3_gen_004: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=chairs #7052, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7052
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7052): ambiguous"]
+INFO:   [0] plan_v3_gen_005: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=the large_office_objects #7043, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the large_office_objects #7043
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_office_objects']
+INFO:   Ambiguous: 13 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the large_office_objects #7043): ambiguous"]
+INFO:   [0] plan_v3_gen_006: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=the chairs #7038, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the chairs #7038
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the chairs #7038): ambiguous"]
+INFO:   [0] plan_v3_gen_007: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=the large_static_wall_furniture #7015, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the large_static_wall_furniture #7015
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'the large_static_wall_furniture #7015'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (the large_static_wall_furniture #7015): not_found"]
+INFO:   [0] plan_v3_gen_008: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=signs #7201, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': signs #7201
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['signs']
+INFO:   Ambiguous: 12 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (signs #7201): ambiguous"]
+INFO:   [0] plan_v3_gen_009: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=the chairs #7004, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the chairs #7004
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the chairs #7004): ambiguous"]
+INFO:   [0] plan_v3_gen_010: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 33 [type=json_invalid, input_value='{"text": "small_office_object", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "small_office_object", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 33 [type=json_invalid, input_value='{"text": "small_office_object", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_011: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=large_static_wall_furniture #7147, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': large_static_wall_furniture #7147
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['large_static_wall_furniture']
+INFO:   Not found: No nodes found matching 'large_static_wall_furniture #7147'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'target' (large_static_wall_furniture #7147): not_found"]
+INFO:   [0] plan_v3_gen_012: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 33 [type=json_invalid, input_value='{"text": "small_office_object", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "small_office_object", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 33 [type=json_invalid, input_value='{"text": "small_office_object", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_013: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=the small_office_objects #7159, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': the small_office_objects #7159
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['small_office_objects']
+INFO:   Ambiguous: 70 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (the small_office_objects #7159): ambiguous"]
+INFO:   [0] plan_v3_gen_014: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=chairs #7114, destination=None
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'target': chairs #7114
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['chairs']
+INFO:   Ambiguous: 36 candidates
+INFO: Grounding status: ambiguous
+WARNING: Ambiguous grounding: ["'target' (chairs #7114): ambiguous"]
+INFO:   [0] plan_v3_gen_015: ambiguous
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=None, destination=place #0577
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #0670
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0670']
+INFO:   Not found: No nodes found matching 'place #0670'
+INFO: Grounding 'destination': place #0577
+INFO: Extracted terms: ['place #0577']
+INFO:   Not found: No nodes found matching 'place #0577'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #0670): not_found", "'destination' (place #0577): not_found"]
+INFO:   [0] plan_v3_gen_016: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=None, destination=place #8650
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #3671
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #3671']
+INFO:   Not found: No nodes found matching 'place #3671'
+INFO: Grounding 'destination': place #8650
+INFO: Extracted terms: ['place #8650']
+INFO:   Not found: No nodes found matching 'place #8650'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #3671): not_found", "'destination' (place #8650): not_found"]
+INFO:   [0] plan_v3_gen_017: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: "place #9028", la...s", node_type: "place"}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text: "place #9028", label: "places", node_type: "place"}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: "place #9028", la...s", node_type: "place"}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_018: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=None, destination=place #0362
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #2457
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #2457']
+INFO:   Not found: No nodes found matching 'place #2457'
+INFO: Grounding 'destination': place #0362
+INFO: Extracted terms: ['place #0362']
+INFO:   Not found: No nodes found matching 'place #0362'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #2457): not_found", "'destination' (place #0362): not_found"]
+INFO:   [0] plan_v3_gen_019: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=None, destination=place #7780
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #0835
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #0835']
+INFO:   Not found: No nodes found matching 'place #0835'
+INFO: Grounding 'destination': place #7780
+INFO: Extracted terms: ['place #7780']
+INFO:   Not found: No nodes found matching 'place #7780'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #0835): not_found", "'destination' (place #7780): not_found"]
+INFO:   [0] plan_v3_gen_020: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=None, destination=#5896
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': #0039
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#0039']
+INFO:   Not found: No nodes found matching '#0039'
+INFO: Grounding 'destination': #5896
+INFO: Extracted terms: ['#5896']
+INFO:   Not found: No nodes found matching '#5896'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (#0039): not_found", "'destination' (#5896): not_found"]
+INFO:   [0] plan_v3_gen_021: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=None, destination=#6686
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #8696
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #8696']
+INFO:   Not found: No nodes found matching 'place #8696'
+INFO: Grounding 'destination': #6686
+INFO: Extracted terms: ['#6686']
+INFO:   Not found: No nodes found matching '#6686'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #8696): not_found", "'destination' (#6686): not_found"]
+INFO:   [0] plan_v3_gen_022: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=navigate, target=None, destination=#0525
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': #2121
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#2121']
+INFO:   Not found: No nodes found matching '#2121'
+INFO: Grounding 'destination': #0525
+INFO: Extracted terms: ['#0525']
+INFO:   Not found: No nodes found matching '#0525'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (#2121): not_found", "'destination' (#0525): not_found"]
+INFO:   [0] plan_v3_gen_023: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Parsed intent: action=navigate, target=None, destination=place #6412
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'source': place #8999
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['place #8999']
+INFO:   Not found: No nodes found matching 'place #8999'
+INFO: Grounding 'destination': place #6412
+INFO: Extracted terms: ['place #6412']
+INFO:   Not found: No nodes found matching 'place #6412'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'source' (place #8999): not_found", "'destination' (place #6412): not_found"]
+INFO:   [0] plan_v3_gen_024: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 4 column 23 [type=json_invalid, input_value='{\n      "action": "navi...an object first.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "navigate",
+      "actor": null,
+      "target": null, // Navigation from A to B doesn't usually have a target object unless it's 'go to X'. Here destination is the place itself. In Example 10: source and destination are set. Target is often omitted or used for specific objects within navigation context. Let's look at Ex 10 again.
+      // "Navigate from the office to the kitchen" -> {"action": "navigate", "source": {...}, "destination": {...}}
+      // So target should be null here as it defines movement between places, not finding an object first.
+    }
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 4 column 23 [type=json_invalid, input_value='{\n      "action": "navi...an object first.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_025: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=escort, target=None, destination=#3291
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': #9934
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#9934']
+INFO:   Not found: No nodes found matching '#9934'
+INFO: Grounding 'destination': #3291
+INFO: Extracted terms: ['#3291']
+INFO:   Not found: No nodes found matching '#3291'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (#9934): not_found", "'destination' (#3291): not_found"]
+INFO:   [0] plan_v3_gen_026: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "person", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_027: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=escort, target=None, destination=#0109
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': #9902
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#9902']
+INFO:   Not found: No nodes found matching '#9902'
+INFO: Grounding 'destination': #0109
+INFO: Extracted terms: ['#0109']
+INFO:   Not found: No nodes found matching '#0109'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (#9902): not_found", "'destination' (#0109): not_found"]
+INFO:   [0] plan_v3_gen_028: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'person'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"text": "person"}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'person'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+INFO:   [0] plan_v3_gen_029: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"text": "the person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "the person", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"text": "the person", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_030: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=guide, target=None, destination=#9766
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': #9844
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#9844']
+INFO:   Not found: No nodes found matching '#9844'
+INFO: Grounding 'destination': #9766
+INFO: Extracted terms: ['#9766']
+INFO:   Not found: No nodes found matching '#9766'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (#9844): not_found", "'destination' (#9766): not_found"]
+INFO:   [0] plan_v3_gen_031: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': '#9839', 'label'...', 'node_type': 'agent'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"text": "#9839", "label": "person", "node_type": "agent"}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': '#9839', 'label'...', 'node_type': 'agent'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+INFO:   [0] plan_v3_gen_032: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_033: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=escort, target=None, destination=#3087
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': #9841
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#9841']
+INFO:   Not found: No nodes found matching '#9841'
+INFO: Grounding 'destination': #3087
+INFO: Extracted terms: ['#3087']
+INFO:   Not found: No nodes found matching '#3087'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (#9841): not_found", "'destination' (#3087): not_found"]
+INFO:   [0] plan_v3_gen_034: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO: Parsed intent: action=guide, target=None, destination=#0482
+INFO: Stage 2: Grounding entities...
+INFO: Grounding 'actor': #9975
+INFO: Loaded 1858 nodes for entity resolution
+INFO: Extracted terms: ['#9975']
+INFO:   Not found: No nodes found matching '#9975'
+INFO: Grounding 'destination': #0482
+INFO: Extracted terms: ['#0482']
+INFO:   Not found: No nodes found matching '#0482'
+INFO: Grounding status: not_found
+WARNING: Entity not found: ["'actor' (#9975): not_found", "'destination' (#0482): not_found"]
+INFO:   [0] plan_v3_gen_035: target_not_found
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected value at line 1 column 34 [type=json_invalid, input_value='{"action": "navigate", "target": ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected value at line 1 column 34 [type=json_invalid, input_value='{"action": "navigate", "target": ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_036: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{ "type": "avoid", ... }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: { "type": "avoid", ... }
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{ "type": "avoid", ... }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_037: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_038: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "inside", "target_text": "place 928841"}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+INFO:   [0] plan_v3_gen_039: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "inside", "target_text": "place 928841"}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+INFO:   [0] plan_v3_gen_040: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 27 [type=json_invalid, input_value='{"action": "unsupported", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "unsupported", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 27 [type=json_invalid, input_value='{"action": "unsupported", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_041: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 8 column 25 [type=json_invalid, input_value='{\n      "action": "navi...rce/dest/target.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "navigate",
+      "target": {
+        "text": "chairs #7168",
+        "label": "chairs",
+        "node_type": "object"
+      },
+      "constraints": [] // Optional, but maybe include route preference if possible? The schema doesn't define TaskConstraint structure. I'll leave it empty to avoid hallucination of constraint types not shown in examples. Or perhaps just omit constraints field entirely as per Ex 10 which didn't have extra fields beyond source/dest/target.
+    }
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 8 column 25 [type=json_invalid, input_value='{\n      "action": "navi...rce/dest/target.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_042: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_043: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: ..., label: ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text: ..., label: ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text: ..., label: ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_044: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"action": "locate", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"action": "locate", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_045: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate"...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_046: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_047: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_048: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate"...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_049: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_050: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_051: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"action": "navigate", ... , "steps": [...]}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", ... , "steps": [...]}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 24 [type=json_invalid, input_value='{"action": "navigate", ... , "steps": [...]}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_052: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 44 [type=json_invalid, input_value='{"text": "the nearest place to the chairs" ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "the nearest place to the chairs" ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 44 [type=json_invalid, input_value='{"text": "the nearest place to the chairs" ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_053: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_054: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 4 column 131 [type=json_invalid, input_value='{\n      "action": "navi...tep).\n      ...\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "navigate",
+      "actor": null,
+      "target": {"text": "the large_static_wall_furniture #7096", "label": "large_static_wall_furniture", "node_type": "object"}, // Wait, Example 11 sets target in steps. Does it set a top-level target? Ex 11: action=navigate, target=chair (first step), destination=office (second step).
+      ...
+    }
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 4 column 131 [type=json_invalid, input_value='{\n      "action": "navi...tep).\n      ...\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_055: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Intent parsing failed: LLM returned empty response
+INFO:   [0] plan_v3_gen_056: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{type: ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {type: ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{type: ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_057: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 19 [type=json_invalid, input_value='{"text": "chair", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_058: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate"...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 20 [type=json_invalid, input_value='{"action": "locate"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_059: system_error
+INFO: === Structured Pipeline ===
+INFO: Stage 1: Parsing intent...
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 45 [type=json_invalid, input_value='{"text": "the nearest place to the chairs", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "the nearest place to the chairs", ...}
+ERROR: Intent parsing failed: Invalid TaskIntent from LLM: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 45 [type=json_invalid, input_value='{"text": "the nearest place to the chairs", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+INFO:   [0] plan_v3_gen_060: system_error
+INFO: Results saved to eval/results_new/pipeline_v4_qwen35_4b
+
+=== Evaluation Summary ===
+{
+  "mode": "structured",
+  "model": "qwen3.5:4b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 100,
+    "pipeline_status_accuracy": 0.29,
+    "role_status_accuracy": 0.5272727272727272,
+    "role_entity_id_accuracy": 0.25,
+    "role_status_evaluated_count": 55,
+    "role_id_evaluated_count": 20,
+    "spurious_role_count": 0,
+    "spurious_role_rate": 0.0,
+    "error_rate": 0.45,
+    "avg_latency_ms": 53833.01200628281,
+    "category_breakdown": {
+      "ambiguous": {
+        "total": 5,
+        "correct": 3,
+        "accuracy": 0.6,
+        "error_rate": 0.2
+      },
+      "complex": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.5
+      },
+      "exact_id": {
+        "total": 5,
+        "correct": 5,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "not_found": {
+        "total": 10,
+        "correct": 9,
+        "accuracy": 0.9,
+        "error_rate": 0.1
+      },
+      "obj_nav": {
+        "total": 10,
+        "correct": 5,
+        "accuracy": 0.5,
+        "error_rate": 0.3
+      },
+      "place_constraint": {
+        "total": 15,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.6
+      },
+      "relation": {
+        "total": 15,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.6
+      },
+      "room_constraint": {
+        "total": 10,
+        "correct": 1,
+        "accuracy": 0.1,
+        "error_rate": 0.5
+      },
+      "set_query": {
+        "total": 10,
+        "correct": 6,
+        "accuracy": 0.6,
+        "error_rate": 0.2
+      },
+      "spatial": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 1.0
+      }
+    },
+    "grounding_exact_success_rate": 0.29,
+    "grounding_exact_success_count": 29,
+    "case_failure_count": 26,
+    "exact_id_accuracy": 1.0,
+    "exact_id_count": 5,
+    "natural_language_accuracy": 0.17647058823529413,
+    "natural_language_count": 85,
+    "set_metrics": {
+      "case_count": 8,
+      "macro_precision": 0.75,
+      "macro_recall": 0.75,
+      "macro_f1": 0.75,
+      "micro_precision": 1.0,
+      "micro_recall": 0.6752136752136753,
+      "micro_f1": 0.8061224489795918,
+      "exact_set_match_count": 6,
+      "exact_set_match_rate": 0.75
+    }
+  },
+  "planning": {
+    "total_cases": 60,
+    "planner_invoked_count": 60,
+    "pre_set_status_count": 0,
+    "pipeline_status_accuracy": 0.0,
+    "planner_status_accuracy": 0.0,
+    "planner_actions_accuracy": 0.0,
+    "planner_actions_exact_sequence": 0.0,
+    "planner_actions_ordered": 0.0,
+    "planner_steps_compliance": 0.0,
+    "planner_validation_pass_rate": 0.0,
+    "target_ids_accuracy": 0.0,
+    "target_ids_evaluated_count": 60,
+    "target_ids_na_count": 0,
+    "step_target_ref_accuracy": null,
+    "step_target_ref_evaluated_count": 0,
+    "constraint_avoid_accuracy": 0.0,
+    "constraint_avoid_evaluated_count": 10,
+    "constraint_prefer_accuracy": null,
+    "constraint_prefer_evaluated_count": 0,
+    "role_refs_accuracy": 0.0,
+    "role_refs_evaluated_count": 10,
+    "hallucinated_id_rate": null,
+    "ungrounded_id_rate": null,
+    "wrong_role_id_rate": null,
+    "total_emitted_ids": 0,
+    "total_hallucinated_ids": 0,
+    "total_ungrounded_ids": 0,
+    "total_wrong_role_ids": 0,
+    "error_rate": 1.0,
+    "avg_latency_ms": 75073.15926949184,
+    "avg_planner_latency_ms": 75073.15926949184
+  }
+}

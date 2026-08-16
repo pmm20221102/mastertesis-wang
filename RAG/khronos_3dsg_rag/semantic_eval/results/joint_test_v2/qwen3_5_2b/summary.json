@@ -1,0 +1,17 @@
+{
+  "total_cases": 30,
+  "model": "qwen3.5:2b",
+  "intent_strict_success": 0.3,
+  "semantic_label_hit1": 0.9167,
+  "semantic_recall5": 1.0,
+  "semantic_retrieval_success": 0.9333,
+  "grounding_success": 0.9333,
+  "exact_id_match": 0.9333,
+  "candidate_f1_matched": 0.9167,
+  "set_exact_match": 0.9048,
+  "joint_success": 0.9333,
+  "failure_by_stage": {
+    "semantic_retrieval": 2
+  },
+  "failure_count": 2
+}

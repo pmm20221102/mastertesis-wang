@@ -1,0 +1,20 @@
+{
+  "benchmark_status": "final",
+  "benchmark_version": "v4",
+  "benchmark_file": "final_planner_30.jsonl",
+  "benchmark_file_hash": "2b47ca6ca5ce0fb5",
+  "case_count": 30,
+  "categories": {
+    "single_step_target": 10,
+    "source_destination": 5,
+    "avoid_prefer": 5,
+    "multi_step": 10
+  },
+  "seed": 42,
+  "exclusions": [
+    "escort_guide",
+    "prefer",
+    "role_refs"
+  ],
+  "notes": "Stable subset for thesis evaluation"
+}

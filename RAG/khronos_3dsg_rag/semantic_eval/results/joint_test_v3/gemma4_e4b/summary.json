@@ -1,0 +1,22 @@
+{
+  "total_cases": 30,
+  "model": "gemma4:e4b",
+  "intent_gate_success": 0.7,
+  "semantic_label_hit1": 0.9167,
+  "semantic_recall5": 1.0,
+  "semantic_stage_success": 0.6333,
+  "grounding_exact_success": 0.6333,
+  "joint_exact_success": 0.6333,
+  "room_grounding_success": 0.3333,
+  "ambiguous_candidate_f1": 1.0,
+  "set_exact_match": 1.0,
+  "node_type_provided_rate": 0.0,
+  "node_type_correct_rate": 0.0,
+  "node_type_wrong_rate": 0.0,
+  "failure_by_stage": {
+    "intent_quantifier": 3,
+    "intent_location": 6,
+    "semantic_retrieval": 2
+  },
+  "failure_count": 11
+}

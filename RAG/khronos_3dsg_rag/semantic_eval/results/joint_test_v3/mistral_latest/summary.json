@@ -1,0 +1,20 @@
+{
+  "total_cases": 30,
+  "model": "mistral:latest",
+  "intent_gate_success": 1.0,
+  "semantic_label_hit1": 0.9583,
+  "semantic_recall5": 1.0,
+  "semantic_stage_success": 0.9333,
+  "grounding_exact_success": 0.9333,
+  "joint_exact_success": 0.9333,
+  "room_grounding_success": 1.0,
+  "ambiguous_candidate_f1": 1.0,
+  "set_exact_match": 1.0,
+  "node_type_provided_rate": 0.0,
+  "node_type_correct_rate": 0.0,
+  "node_type_wrong_rate": 0.0,
+  "failure_by_stage": {
+    "semantic_retrieval": 2
+  },
+  "failure_count": 2
+}

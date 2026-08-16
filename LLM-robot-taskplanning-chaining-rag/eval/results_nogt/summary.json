@@ -1,0 +1,136 @@
+{
+  "mode": "structured",
+  "model": "gemma4:e4b",
+  "repeats": 1,
+  "grounding": {
+    "total_cases": 100,
+    "pipeline_status_accuracy": 0.16,
+    "role_status_accuracy": 0.16,
+    "role_entity_id_accuracy": 0.1,
+    "role_status_evaluated_count": 100,
+    "role_id_evaluated_count": 50,
+    "spurious_role_count": 3,
+    "spurious_role_rate": 0.02912621359223301,
+    "error_rate": 0.0,
+    "avg_latency_ms": 3568.8633155822754,
+    "category_breakdown": {
+      "ambiguous": {
+        "total": 5,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "complex": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "exact_id": {
+        "total": 5,
+        "correct": 5,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "not_found": {
+        "total": 10,
+        "correct": 10,
+        "accuracy": 1.0,
+        "error_rate": 0.0
+      },
+      "obj_nav": {
+        "total": 10,
+        "correct": 1,
+        "accuracy": 0.1,
+        "error_rate": 0.0
+      },
+      "place_constraint": {
+        "total": 15,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "relation": {
+        "total": 15,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "room_constraint": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "set_query": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      },
+      "spatial": {
+        "total": 10,
+        "correct": 0,
+        "accuracy": 0.0,
+        "error_rate": 0.0
+      }
+    },
+    "grounding_exact_success_rate": 0.16,
+    "grounding_exact_success_count": 16,
+    "case_failure_count": 84,
+    "exact_id_accuracy": 1.0,
+    "exact_id_count": 5,
+    "natural_language_accuracy": 0.011764705882352941,
+    "natural_language_count": 85,
+    "set_metrics": {
+      "case_count": 10,
+      "macro_precision": 0.0,
+      "macro_recall": 0.0,
+      "macro_f1": 0.0,
+      "micro_precision": 0,
+      "micro_recall": 0.0,
+      "micro_f1": 0,
+      "exact_set_match_count": 0,
+      "exact_set_match_rate": 0.0
+    },
+    "spatial_metrics": {
+      "case_count": 10,
+      "target_id_accuracy": 0.0,
+      "target_id_correct_count": 0,
+      "avg_distance_error": 0
+    }
+  },
+  "planning": {
+    "total_cases": 60,
+    "planner_invoked_count": 60,
+    "pre_set_status_count": 0,
+    "pipeline_status_accuracy": 0.0,
+    "planner_status_accuracy": 0.0,
+    "planner_actions_accuracy": 0.0,
+    "planner_actions_exact_sequence": 0.0,
+    "planner_actions_ordered": 0.0,
+    "planner_steps_compliance": 0.0,
+    "planner_validation_pass_rate": 0.0,
+    "target_ids_accuracy": 0.0,
+    "target_ids_evaluated_count": 60,
+    "target_ids_na_count": 0,
+    "step_target_ref_accuracy": null,
+    "step_target_ref_evaluated_count": 0,
+    "constraint_avoid_accuracy": 0.0,
+    "constraint_avoid_evaluated_count": 10,
+    "constraint_prefer_accuracy": null,
+    "constraint_prefer_evaluated_count": 0,
+    "role_refs_accuracy": 0.0,
+    "role_refs_evaluated_count": 10,
+    "hallucinated_id_rate": null,
+    "ungrounded_id_rate": null,
+    "wrong_role_id_rate": null,
+    "total_emitted_ids": 0,
+    "total_hallucinated_ids": 0,
+    "total_ungrounded_ids": 0,
+    "total_wrong_role_ids": 0,
+    "error_rate": 1.0,
+    "avg_latency_ms": 5293.195577462514,
+    "avg_planner_latency_ms": 5293.195577462514
+  }
+}

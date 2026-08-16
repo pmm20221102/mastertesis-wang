@@ -1,0 +1,17 @@
+{
+  "total_cases": 30,
+  "model": "ministral-3:3b-instruct-2512-q4_K_M",
+  "intent_strict_success": 0.3333,
+  "semantic_label_hit1": 0.9583,
+  "semantic_recall5": 1.0,
+  "semantic_retrieval_success": 0.9667,
+  "grounding_success": 0.9667,
+  "exact_id_match": 0.9667,
+  "candidate_f1_matched": 0.9583,
+  "set_exact_match": 1.0,
+  "joint_success": 0.9667,
+  "failure_by_stage": {
+    "semantic_retrieval": 1
+  },
+  "failure_count": 1
+}

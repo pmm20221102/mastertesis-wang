@@ -13,7 +13,7 @@ def _case_id(dataset: str, query_type: str, key: str) -> str:
     return f"{dataset}_{query_type}_{h}"
 
 
-def generate_hierarchy_queries(gt: GraphGroundTruth) -> list[EvalCase]:
+def generate_hierarchy_queries(gt: GraphGroundTruth, max_cases: int = 200) -> list[EvalCase]:
     """Generate 'what is inside X?' queries for container nodes."""
     cases = []
     templates = [
@@ -24,6 +24,8 @@ def generate_hierarchy_queries(gt: GraphGroundTruth) -> list[EvalCase]:
     ]
 
     for node in gt.nodes:
+        if len(cases) >= max_cases:
+            break
         if not node.child_ids:
             continue
         name = node.name or node.node_id
@@ -44,24 +46,59 @@ def generate_hierarchy_queries(gt: GraphGroundTruth) -> list[EvalCase]:
     return cases
 
 
-def generate_reverse_hierarchy_queries(gt: GraphGroundTruth) -> list[EvalCase]:
-    """Generate 'where is X?' queries for leaf nodes."""
+def generate_reverse_hierarchy_queries(gt: GraphGroundTruth, max_cases: int = 200) -> list[EvalCase]:
+    """Generate 'where is X?' queries for leaf nodes.
+
+    For nodes with unique labels, use the label.
+    For nodes with duplicate labels, use the node ID (instance query).
+    """
     cases = []
-    templates = [
-        "Where is {name} located?",
-        "Which room contains {name}?",
-        "Find the location of {name}.",
-        "What is the parent of {name}?",
+
+    # Count label occurrences to detect duplicates
+    label_counts: dict[str, int] = defaultdict(int)
+    for node in gt.nodes:
+        if node.label:
+            label_counts[node.label.lower()] += 1
+
+    # Instance-level templates
+    instance_templates = [
+        "Where is node {node_id} located?",
+        "Find the location of node {node_id}.",
+        "What is the parent of node {node_id}?",
     ]
 
+    # Category-level templates (for reference, not used in this function)
+    # category_templates = [
+    #     "Which rooms contain {label}?",
+    #     "Find all locations of {label}.",
+    # ]
+
     for node in gt.nodes:
+        if len(cases) >= max_cases:
+            break
         if not node.parent_ids:
             continue
-        name = node.name or node.label or node.node_id
-        if not name:
-            continue
-        tmpl = templates[hash(node.node_id) % len(templates)]
-        query = tmpl.format(name=name)
+
+        # Determine query type based on label uniqueness
+        label = node.label or ""
+        is_unique_label = label and label_counts.get(label.lower(), 0) == 1
+
+        if is_unique_label:
+            # Use label for unique entities
+            name = node.name or node.label
+            templates = [
+                f"Where is {name} located?",
+                f"Which room contains {name}?",
+                f"Find the location of {name}.",
+                f"What is the parent of {name}?",
+            ]
+            query = templates[hash(node.node_id) % len(templates)]
+        else:
+            # Use node ID for duplicate labels (instance query)
+            query = instance_templates[hash(node.node_id) % len(instance_templates)].format(
+                node_id=node.node_id
+            )
+
         cases.append(EvalCase(
             case_id=_case_id(gt.dataset, "reverse_hierarchy", node.node_id),
             dataset=gt.dataset,
@@ -71,13 +108,13 @@ def generate_reverse_hierarchy_queries(gt: GraphGroundTruth) -> list[EvalCase]:
             relevant_ids=node.parent_ids,
             source_node_id=node.node_id,
             source_node_type=node.node_type,
-            difficulty="easy",
+            difficulty="easy" if is_unique_label else "medium",
         ))
 
     return cases
 
 
-def generate_neighbor_queries(gt: GraphGroundTruth) -> list[EvalCase]:
+def generate_neighbor_queries(gt: GraphGroundTruth, max_cases: int = 200) -> list[EvalCase]:
     """Generate 'what is connected to X?' queries."""
     cases = []
     templates = [
@@ -87,6 +124,8 @@ def generate_neighbor_queries(gt: GraphGroundTruth) -> list[EvalCase]:
     ]
 
     for node in gt.nodes:
+        if len(cases) >= max_cases:
+            break
         if not node.neighbor_ids:
             continue
         name = node.name or node.node_id
@@ -168,10 +207,12 @@ def generate_semantic_queries(gt: GraphGroundTruth) -> list[EvalCase]:
     return cases
 
 
-def generate_spatial_queries(gt: GraphGroundTruth) -> list[EvalCase]:
+def generate_spatial_queries(gt: GraphGroundTruth, max_cases: int = 200) -> list[EvalCase]:
     """Generate spatial queries based on node positions."""
     cases = []
     for node in gt.nodes:
+        if len(cases) >= max_cases:
+            break
         if not node.position or len(node.position) < 2:
             continue
         x, y = node.position[0], node.position[1]
@@ -283,15 +324,22 @@ def generate_change_queries(changes: Sequence[GroundTruthChange]) -> list[EvalCa
 def generate_all_graph_cases(
     gt: GraphGroundTruth,
     seed: int = 42,
+    max_per_type: int = 200,
 ) -> list[EvalCase]:
-    """Generate all evaluation cases from graph groundtruth."""
+    """Generate all evaluation cases from graph groundtruth.
+
+    Args:
+        gt: Graph groundtruth data.
+        seed: Random seed for shuffling.
+        max_per_type: Maximum cases per query type (default 200).
+    """
     cases = []
-    cases.extend(generate_hierarchy_queries(gt))
-    cases.extend(generate_reverse_hierarchy_queries(gt))
-    cases.extend(generate_neighbor_queries(gt))
+    cases.extend(generate_hierarchy_queries(gt, max_cases=max_per_type))
+    cases.extend(generate_reverse_hierarchy_queries(gt, max_cases=max_per_type))
+    cases.extend(generate_neighbor_queries(gt, max_cases=max_per_type))
     cases.extend(generate_type_queries(gt))
     cases.extend(generate_semantic_queries(gt))
-    cases.extend(generate_spatial_queries(gt))
+    cases.extend(generate_spatial_queries(gt, max_cases=max_per_type))
 
     rng = random.Random(seed)
     rng.shuffle(cases)

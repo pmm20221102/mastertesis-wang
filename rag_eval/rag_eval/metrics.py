@@ -102,11 +102,95 @@ def graph_accuracy(retrieved_metadata: dict, expected_ids: list[str]) -> float:
     return 0.0
 
 
+def entity_resolution_accuracy(
+    resolved_ids: list[str],
+    expected_source_id: str,
+) -> float:
+    """Check if entity resolution found the correct source node.
+
+    Args:
+        resolved_ids: List of resolved node IDs from entity resolver.
+        expected_source_id: The expected source node ID.
+
+    Returns:
+        1.0 if found in top results, 0.0 otherwise.
+    """
+    if not expected_source_id:
+        return 1.0
+    if expected_source_id in resolved_ids[:5]:
+        return 1.0
+    return 0.0
+
+
+def parent_retrieval_accuracy(
+    retrieved_ids: list[str],
+    expected_parent_ids: list[str],
+) -> float:
+    """Check if parent nodes were correctly retrieved.
+
+    Args:
+        retrieved_ids: List of retrieved node IDs.
+        expected_parent_ids: List of expected parent node IDs.
+
+    Returns:
+        Proportion of expected parents found in retrieved results.
+    """
+    if not expected_parent_ids:
+        return 1.0
+    retrieved_set = set(retrieved_ids)
+    expected_set = set(expected_parent_ids)
+    overlap = retrieved_set & expected_set
+    return len(overlap) / len(expected_set) if expected_set else 0.0
+
+
+def graph_traversal_success(
+    retrieved_ids: list[str],
+    expected_ids: list[str],
+    traversal_type: str,
+) -> float:
+    """Check if graph traversal was successful.
+
+    Args:
+        retrieved_ids: List of retrieved node IDs.
+        expected_ids: List of expected node IDs.
+        traversal_type: Type of traversal (parent, child, neighbor).
+
+    Returns:
+        1.0 if traversal successful, 0.0 otherwise.
+    """
+    if not expected_ids:
+        return 1.0
+    retrieved_set = set(retrieved_ids)
+    expected_set = set(expected_ids)
+    overlap = retrieved_set & expected_set
+    return 1.0 if overlap else 0.0
+
+
 def compute_metrics(retrieved_ids: list[str], relevant_ids: list[str], k: int = 10) -> dict[str, float]:
-    return {
-        f"hit@{k}": float(hit_at_k(retrieved_ids, relevant_ids, k)),
-        f"mrr@{k}": mrr_at_k(retrieved_ids, relevant_ids, k),
-        f"recall@{k}": recall_at_k(retrieved_ids, relevant_ids, k),
-        f"precision@{k}": precision_at_k(retrieved_ids, relevant_ids, k),
-        f"f1@{k}": f1_at_k(retrieved_ids, relevant_ids, k),
-    }
+    """Compute all evaluation metrics at multiple cutoffs.
+
+    Returns metrics for k=1, k=3, and k=k (default 10).
+    """
+    metrics = {}
+
+    # Metrics at k=1 (top result quality)
+    metrics["hit@1"] = float(hit_at_k(retrieved_ids, relevant_ids, 1))
+    metrics["mrr@1"] = mrr_at_k(retrieved_ids, relevant_ids, 1)
+    metrics["recall@1"] = recall_at_k(retrieved_ids, relevant_ids, 1)
+    metrics["precision@1"] = precision_at_k(retrieved_ids, relevant_ids, 1)
+
+    # Metrics at k=3 (short list quality)
+    metrics["hit@3"] = float(hit_at_k(retrieved_ids, relevant_ids, 3))
+    metrics["mrr@3"] = mrr_at_k(retrieved_ids, relevant_ids, 3)
+    metrics["recall@3"] = recall_at_k(retrieved_ids, relevant_ids, 3)
+    metrics["precision@3"] = precision_at_k(retrieved_ids, relevant_ids, 3)
+    metrics["f1@3"] = f1_at_k(retrieved_ids, relevant_ids, 3)
+
+    # Metrics at k (full list quality)
+    metrics[f"hit@{k}"] = float(hit_at_k(retrieved_ids, relevant_ids, k))
+    metrics[f"mrr@{k}"] = mrr_at_k(retrieved_ids, relevant_ids, k)
+    metrics[f"recall@{k}"] = recall_at_k(retrieved_ids, relevant_ids, k)
+    metrics[f"precision@{k}"] = precision_at_k(retrieved_ids, relevant_ids, k)
+    metrics[f"f1@{k}"] = f1_at_k(retrieved_ids, relevant_ids, k)
+
+    return metrics

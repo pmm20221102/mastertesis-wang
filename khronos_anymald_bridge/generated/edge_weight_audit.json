@@ -1,0 +1,13 @@
+{
+  "n_edges": 8833,
+  "weight_vs_metric3d_ratio": {
+    "mean": 0.8256,
+    "median": 0.6124,
+    "p90": 1.6997,
+    "max": 8.0622,
+    "min": 0.0535
+  },
+  "mae_m": 0.799,
+  "close_within_1cm_pct": 1.27,
+  "conclusion": "weight 非物理米制（median ratio=0.6124），geodesic_m 须改名 khronos_graph_cost，另加 metric/projected 长度"
+}

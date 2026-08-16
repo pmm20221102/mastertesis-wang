@@ -1,0 +1,75 @@
+{
+  "natural_language_instruction": "机器人从当前位置出发，先前往【the chair in room 0756】，然后依次前往【the wall-mounted storage unit in room 0759】，然后依次前往【the large office machine in room 0764】，然后依次前往【the small office item in room 0767】，然后依次前往【all the small office items in room 0758】。请严格按照这个顺序导航，每到一个目标后短暂停留，再继续前往下一个地点。",
+  "targets": [
+    {
+      "human_name": "the chair in room 0756",
+      "instruction": "navigate to a chair in room 0756",
+      "llm_intent": {
+        "action": "navigate",
+        "target_text": "chair",
+        "quantifier": "one",
+        "node_type": null,
+        "room_text": "0756"
+      },
+      "target_ref": "R4",
+      "target_id": "5908722711110090756",
+      "waypoint_id": 4647
+    },
+    {
+      "human_name": "the wall-mounted storage unit in room 0759",
+      "instruction": "navigate to a wall-mounted storage unit in room 0759",
+      "llm_intent": {
+        "action": "locate",
+        "target_text": "wall-mounted storage unit",
+        "quantifier": "one",
+        "node_type": null,
+        "room_text": "0759"
+      },
+      "target_ref": "R7",
+      "target_id": "5908722711110090759",
+      "waypoint_id": 6817
+    },
+    {
+      "human_name": "all the small office items in room 0758",
+      "instruction": "navigate to all the small office items in room 0758",
+      "llm_intent": {
+        "action": "locate",
+        "target_text": "small office items",
+        "quantifier": "all",
+        "node_type": null,
+        "room_text": "Room 0758"
+      },
+      "target_ref": "R6",
+      "target_id": "5908722711110090758",
+      "waypoint_id": 8483
+    },
+    {
+      "human_name": "the large office machine in room 0764",
+      "instruction": "navigate to the large office machine in room 0764",
+      "llm_intent": {
+        "action": "navigate",
+        "target_text": "large office machine",
+        "quantifier": "one",
+        "node_type": null,
+        "room_text": "0764"
+      },
+      "target_ref": "R12",
+      "target_id": "5908722711110090764",
+      "waypoint_id": 12136
+    },
+    {
+      "human_name": "the small office item in room 0767",
+      "instruction": "navigate to a small office item in room 0767",
+      "llm_intent": {
+        "action": "locate",
+        "target_text": "small office item",
+        "quantifier": "one",
+        "node_type": null,
+        "room_text": "Room 0767"
+      },
+      "target_ref": "R15",
+      "target_id": "5908722711110090767",
+      "waypoint_id": 22793
+    }
+  ]
+}

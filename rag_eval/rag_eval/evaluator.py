@@ -59,26 +59,31 @@ class Evaluator:
         for r in case_results:
             qt = r.query_type
             if qt not in metrics_by_type:
-                metrics_by_type[qt] = {"hit": 0, "mrr": 0, "recall": 0, "precision": 0, "f1": 0, "count": 0, "graph_accuracy": 0}
-            metrics_by_type[qt]["hit"] += r.metrics.get(f"hit@{self.top_k}", 0)
-            metrics_by_type[qt]["mrr"] += r.metrics.get(f"mrr@{self.top_k}", 0)
-            metrics_by_type[qt]["recall"] += r.metrics.get(f"recall@{self.top_k}", 0)
-            metrics_by_type[qt]["precision"] += r.metrics.get(f"precision@{self.top_k}", 0)
-            metrics_by_type[qt]["f1"] += r.metrics.get(f"f1@{self.top_k}", 0)
+                metrics_by_type[qt] = {
+                    "hit@1": 0, "hit@3": 0, "hit@10": 0,
+                    "mrr@1": 0, "mrr@3": 0, "mrr@10": 0,
+                    "recall@10": 0, "precision@10": 0, "f1@10": 0,
+                    "count": 0, "graph_accuracy": 0,
+                }
+            # Aggregate all metric variants
+            for key in ["hit@1", "hit@3", "hit@10", "mrr@1", "mrr@3", "mrr@10",
+                         "recall@10", "precision@10", "f1@10"]:
+                metrics_by_type[qt][key] += r.metrics.get(key, 0)
             metrics_by_type[qt]["graph_accuracy"] += r.graph_accuracy
             metrics_by_type[qt]["count"] += 1
 
         for qt in metrics_by_type:
             count = metrics_by_type[qt]["count"]
             if count > 0:
-                for key in ["hit", "mrr", "recall", "precision", "f1", "graph_accuracy"]:
-                    metrics_by_type[qt][key] /= count
+                for key in metrics_by_type[qt]:
+                    if key != "count":
+                        metrics_by_type[qt][key] /= count
 
         overall_metrics = {}
         if case_results:
-            for key in ["hit", "mrr", "recall", "precision", "f1"]:
-                k = f"{key}@{self.top_k}"
-                overall_metrics[k] = sum(r.metrics.get(k, 0) for r in case_results) / len(case_results)
+            for key in ["hit@1", "hit@3", "hit@10", "mrr@1", "mrr@3", "mrr@10",
+                         "recall@10", "precision@10", "f1@10"]:
+                overall_metrics[key] = sum(r.metrics.get(key, 0) for r in case_results) / len(case_results)
             overall_metrics["graph_accuracy"] = sum(r.graph_accuracy for r in case_results) / len(case_results)
 
         total_nodes = len(self.graph_gt.nodes)
@@ -107,6 +112,7 @@ class Evaluator:
         hit = _match_relevant(retrieved_ids, case.relevant_ids)
         failure_reason = "" if hit else _determine_failure_reason(retrieved_ids, case.relevant_ids)
 
+        # Graph accuracy (query-type aware)
         ga = 0.0
         if case.relevant_ids and retrieved_chunks:
             ga_scores = []
@@ -120,7 +126,6 @@ class Evaluator:
                     ga_scores.append(score)
                 elif chunk.node_id in case.relevant_ids:
                     ga_scores.append(1.0)
-            ga = sum(ga_scores) / len(ga_scores) if ga_scores else 0.0
             ga = sum(ga_scores) / len(ga_scores) if ga_scores else 0.0
 
         return CaseResult(

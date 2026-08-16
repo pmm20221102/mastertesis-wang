@@ -1,0 +1,15 @@
+{
+  "model": "ministral-3:3b-instruct-2512-q4_K_M",
+  "total_cases": 30,
+  "schema_validity": 1.0,
+  "action_accuracy": 1.0,
+  "target_role_precision": 0.9583,
+  "target_role_recall": 0.8846,
+  "target_role_f1": 0.92,
+  "node_type_provided_rate": 0.0,
+  "node_type_accuracy_when_provided": 0.0,
+  "spurious_role_rate": 0.0333,
+  "room_extraction_accuracy": 1.0,
+  "warm_mean_ms": 1098.8,
+  "warm_median_ms": 872.9
+}

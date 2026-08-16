@@ -1,0 +1,1 @@
+机器人从当前位置出发，先前往【the chair in room 0756】，然后依次前往【the wall-mounted storage unit in room 0759】，然后依次前往【the large office machine in room 0764】，然后依次前往【the small office item in room 0767】，然后依次前往【all the small office items in room 0758】。请严格按照这个顺序导航，每到一个目标后短暂停留，再继续前往下一个地点。

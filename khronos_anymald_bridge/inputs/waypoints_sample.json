@@ -1,0 +1,2992 @@
+{
+   "edges" : [
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "stop_and_go",
+               "planner_name" : "strict_path_follower",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "perceptive_walk"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 37,
+         "id" : 70,
+         "start_node_id" : 36
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "stop_and_go",
+               "planner_name" : "strict_path_follower",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "perceptive_walk"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 36,
+         "id" : 71,
+         "start_node_id" : 37
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 44,
+         "id" : 104,
+         "start_node_id" : 36
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 36,
+         "id" : 105,
+         "start_node_id" : 44
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "stop_and_go",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 44,
+         "id" : 106,
+         "start_node_id" : 41
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "stop_and_go",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 41,
+         "id" : 107,
+         "start_node_id" : 44
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 41,
+         "id" : 110,
+         "start_node_id" : 62
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 62,
+         "id" : 111,
+         "start_node_id" : 41
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 65,
+         "id" : 118,
+         "start_node_id" : 66
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 66,
+         "id" : 119,
+         "start_node_id" : 65
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 62,
+         "id" : 120,
+         "start_node_id" : 65
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 65,
+         "id" : 121,
+         "start_node_id" : 62
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 32,
+         "id" : 122,
+         "start_node_id" : 57
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 57,
+         "id" : 123,
+         "start_node_id" : 32
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 44,
+         "id" : 124,
+         "start_node_id" : 32
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 32,
+         "id" : 125,
+         "start_node_id" : 44
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 66,
+         "id" : 126,
+         "start_node_id" : 67
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 67,
+         "id" : 127,
+         "start_node_id" : 66
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 67,
+         "id" : 128,
+         "start_node_id" : 69
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 69,
+         "id" : 129,
+         "start_node_id" : 67
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 69,
+         "id" : 132,
+         "start_node_id" : 70
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 70,
+         "id" : 133,
+         "start_node_id" : 69
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 70,
+         "id" : 134,
+         "start_node_id" : 72
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 72,
+         "id" : 135,
+         "start_node_id" : 70
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 72,
+         "id" : 136,
+         "start_node_id" : 73
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 73,
+         "id" : 137,
+         "start_node_id" : 72
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 74,
+         "id" : 138,
+         "start_node_id" : 73
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 73,
+         "id" : 139,
+         "start_node_id" : 74
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 75,
+         "id" : 140,
+         "start_node_id" : 74
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 74,
+         "id" : 141,
+         "start_node_id" : 75
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 76,
+         "id" : 142,
+         "start_node_id" : 75
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 75,
+         "id" : 143,
+         "start_node_id" : 76
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 77,
+         "id" : 144,
+         "start_node_id" : 76
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 76,
+         "id" : 145,
+         "start_node_id" : 77
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 78,
+         "id" : 146,
+         "start_node_id" : 77
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 77,
+         "id" : 147,
+         "start_node_id" : 78
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 73,
+         "id" : 148,
+         "start_node_id" : 78
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 78,
+         "id" : 149,
+         "start_node_id" : 73
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 1,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 95,
+         "id" : 154,
+         "start_node_id" : 96
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 1,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 96,
+         "id" : 155,
+         "start_node_id" : 95
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 93,
+         "id" : 156,
+         "start_node_id" : 95
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 95,
+         "id" : 157,
+         "start_node_id" : 93
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 92,
+         "id" : 160,
+         "start_node_id" : 93
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 93,
+         "id" : 161,
+         "start_node_id" : 92
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 92,
+         "id" : 162,
+         "start_node_id" : 91
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 91,
+         "id" : 163,
+         "start_node_id" : 92
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 91,
+         "id" : 164,
+         "start_node_id" : 90
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 90,
+         "id" : 165,
+         "start_node_id" : 91
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 72,
+         "id" : 166,
+         "start_node_id" : 91
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 91,
+         "id" : 167,
+         "start_node_id" : 72
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 73,
+         "id" : 168,
+         "start_node_id" : 90
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 90,
+         "id" : 169,
+         "start_node_id" : 73
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 74,
+         "id" : 170,
+         "start_node_id" : 89
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 89,
+         "id" : 171,
+         "start_node_id" : 74
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 90,
+         "id" : 172,
+         "start_node_id" : 89
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 89,
+         "id" : 173,
+         "start_node_id" : 90
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 89,
+         "id" : 174,
+         "start_node_id" : 88
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 88,
+         "id" : 175,
+         "start_node_id" : 89
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 75,
+         "id" : 176,
+         "start_node_id" : 88
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 88,
+         "id" : 177,
+         "start_node_id" : 75
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 99,
+         "id" : 178,
+         "start_node_id" : 62
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 62,
+         "id" : 179,
+         "start_node_id" : 99
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 100,
+         "id" : 180,
+         "start_node_id" : 99
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 99,
+         "id" : 181,
+         "start_node_id" : 100
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 101,
+         "id" : 182,
+         "start_node_id" : 100
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 2,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 0.5,
+            "version" : 1
+         },
+         "end_node_id" : 100,
+         "id" : 183,
+         "start_node_id" : 101
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 102,
+         "id" : 184,
+         "start_node_id" : 101
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 101,
+         "id" : 185,
+         "start_node_id" : 102
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 103,
+         "id" : 186,
+         "start_node_id" : 102
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 102,
+         "id" : 187,
+         "start_node_id" : 103
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 104,
+         "id" : 188,
+         "start_node_id" : 103
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 103,
+         "id" : 189,
+         "start_node_id" : 104
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 76,
+         "id" : 190,
+         "start_node_id" : 82
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 82,
+         "id" : 191,
+         "start_node_id" : 76
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 82,
+         "id" : 192,
+         "start_node_id" : 84
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 84,
+         "id" : 193,
+         "start_node_id" : 82
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 80,
+         "id" : 194,
+         "start_node_id" : 85
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 85,
+         "id" : 195,
+         "start_node_id" : 80
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 75,
+         "id" : 196,
+         "start_node_id" : 80
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 80,
+         "id" : 197,
+         "start_node_id" : 75
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 88,
+         "id" : 198,
+         "start_node_id" : 87
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 87,
+         "id" : 199,
+         "start_node_id" : 88
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 87,
+         "id" : 200,
+         "start_node_id" : 80
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 80,
+         "id" : 201,
+         "start_node_id" : 87
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 80,
+         "id" : 202,
+         "start_node_id" : 82
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 82,
+         "id" : 203,
+         "start_node_id" : 80
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 85,
+         "id" : 204,
+         "start_node_id" : 84
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 84,
+         "id" : 205,
+         "start_node_id" : 85
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 87,
+         "id" : 206,
+         "start_node_id" : 86
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 86,
+         "id" : 207,
+         "start_node_id" : 87
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 86,
+         "id" : 208,
+         "start_node_id" : 85
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 85,
+         "id" : 209,
+         "start_node_id" : 86
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 111,
+         "id" : 212,
+         "start_node_id" : 84
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 84,
+         "id" : 213,
+         "start_node_id" : 111
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 110,
+         "id" : 214,
+         "start_node_id" : 82
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 82,
+         "id" : 215,
+         "start_node_id" : 110
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 109,
+         "id" : 216,
+         "start_node_id" : 76
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 76,
+         "id" : 217,
+         "start_node_id" : 109
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 107,
+         "id" : 218,
+         "start_node_id" : 77
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 77,
+         "id" : 219,
+         "start_node_id" : 107
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 112,
+         "id" : 220,
+         "start_node_id" : 78
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 78,
+         "id" : 221,
+         "start_node_id" : 112
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 112,
+         "id" : 222,
+         "start_node_id" : 107
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 107,
+         "id" : 223,
+         "start_node_id" : 112
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 107,
+         "id" : 224,
+         "start_node_id" : 109
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 109,
+         "id" : 225,
+         "start_node_id" : 107
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 109,
+         "id" : 226,
+         "start_node_id" : 110
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 110,
+         "id" : 227,
+         "start_node_id" : 109
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 110,
+         "id" : 228,
+         "start_node_id" : 111
+      },
+      {
+         "data" : {
+            "local_planner" : {
+               "mode_name" : "default",
+               "planner_name" : "default",
+               "planner_parameters" : ""
+            },
+            "locomotion_controller" : {
+               "motion_parameters" : "default",
+               "motion_state" : "default"
+            },
+            "max_deviation" : 3,
+            "perception_parameters" : {
+               "nfm_preset" : "autodeduce"
+            },
+            "traversability" : 1,
+            "version" : 1
+         },
+         "end_node_id" : 111,
+         "id" : 229,
+         "start_node_id" : 110
+      }
+   ],
+   "header" : {
+      "frame" : "map",
+      "stamp" : 0
+   },
+   "nodes" : [
+      {
+         "id" : 25,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707483.7146335
+            },
+            "orientation" : [
+               0.99961910595568115,
+               0.0081506068359826593,
+               0.0050890192546224448,
+               0.025871074573665224
+            ],
+            "position" : [ 0.005126953125, -0.04790031909942627, -0.0051152706146240234 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 32,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707666.2157574
+            },
+            "orientation" : [ 0.99949608061801731, 0, 0, 0.031742476734210524 ],
+            "position" : [ -3.3742132186889648, -0.18386168479919435, 0.018565893173217773 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 36,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707687.6153307
+            },
+            "orientation" : [ 0.71628227082911489, 0, 0, 0.69781065375636575 ],
+            "position" : [ -6.1921482086181641, 1.1566618680953979, 0.025722503662109375 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 37,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707688.813704
+            },
+            "orientation" : [
+               0.82911715122876672,
+               0.011254822170657743,
+               0.024082822432426109,
+               0.55844256300884676
+            ],
+            "position" : [ -6.0426692962646484, 2.184974193572998, 0.018361330032348633 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 41,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707834.7159305
+            },
+            "orientation" : [ 0.69893117929267246, 0, 0, -0.71518893071170653 ],
+            "position" : [ -6.1900691986083984, -2.6343807458877575, 0.032023191452026367 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 44,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746707866.6155591
+            },
+            "orientation" : [ 0.70465645674043942, 0, 0, -0.70954864383917282 ],
+            "position" : [ -6.1698860168457035, -0.26000000000000001, 0.018255949020385742 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 57,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746708703.6126328
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -1.0800000000000001, -0.27000000000000002, -0.048242568969726562 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 62,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746710324.7622509
+            },
+            "orientation" : [ 0.70710678118654757, 0, 0, -0.70710678118654746 ],
+            "position" : [ -6.1262284278869643, -4.1453032970428465, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 65,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746710453.9601719
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -4.0326750755310083, -4.1348857879638672, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 66,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746710469.8095133
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -1.7464218139648438, -4.12859354019165, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 67,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712706.0426109
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 1.6099999999999997, -4.4100000000000001, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 69,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712851.7511306
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 3.6776320934295654, -4.4721645355224595, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 70,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712905.4637976
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 5.8799999999999999, -4.4800000000000004, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 72,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712979.8700593
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 9.1122665405273438, -4.7886123657226562, -0.047395706176757812 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 73,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712983.1059813
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 12.972742080688477, -5.232213020324707, 0.021045684814453125 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 74,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712984.5494971
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 17.68487548828125, -5.3757648468017578, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 75,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712988.9220421
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 22.052772521972656, -5.5033159255981445, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 76,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712990.3685334
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 22.209999999999997, -9.548130989074707, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 77,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712992.3158839
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 17.763107299804688, -9.6059198379516602, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 78,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746712993.4881403
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 12.899005889892578, -9.5308084487915039, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 80,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714143.4354451
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 28.200658798217773, -5.5863609313964844, -0.048221588134765625 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 82,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714164.4796748
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 28.350000000000001, -9.5500000000000007, -0.042608261108398438 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 84,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714191.0070679
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 33.57, -9.6199999999999992, -0.046001434326171875 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 85,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714213.0718224
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 33.438945770263672, -5.5853772163391113, -0.046682357788085938 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 86,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714231.0460439
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 33.406780242919922, -2.4735329151153564, -0.048831939697265625 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 87,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714233.679842
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 27.950000000000003, -2.5640766620635986, -0.037080764770507812 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 88,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714241.2871079
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 21.91, -2.6296019554138184, -0.049213409423828125 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 89,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714249.4632843
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 17.47332763671875, -2.5637140274047852, -0.049474716186523438 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 90,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714309.4622958
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 13.050201416015625, -2.6447253227233887, -0.046352386474609375 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 91,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714348.6660383
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 9.0499999999999989, -2.7555463314056396, -0.04579925537109375 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 92,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714386.0284846
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 5.8100728988647461, -2.8382530212402344, -0.046657562255859375 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 93,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714393.4366813
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 3.1553001403808594, -1.4598560333251953, 0 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 95,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714411.6177337
+            },
+            "orientation" : [ 0.67559020761566024, 0, 0, -0.73727733681012408 ],
+            "position" : [ 2.6141886711120605, 0.6853175163269043, -0.048921585083007812 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 96,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714427.5933466
+            },
+            "orientation" : [ 0.70710678118654757, 0, 0, 0.70710678118654746 ],
+            "position" : [ 2.5335490703582764, 7.7295160293579102, 2.0289077758789062 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 99,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714658.3527195
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -7.9713244438171387, -4.4199999999999999, 0.029999999999999999 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 100,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714677.4893274
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -9.9125242233276367, -4.5100000000000007, -0.02 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 101,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714701.9220803
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -12.100340843200684, -4.5100000000000007, -0.046935081481933594 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 102,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714730.5052669
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -17.143524169921875, -4.3000000000000007, -0.046636581420898438 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 103,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714755.4590292
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -21.266960144042969, -4.2800000000000002, -0.049816131591796875 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 104,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1746714761.5564332
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ -27.506935119628906, -4.1300000000000008, -0.047771453857421875 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 107,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408064.1457243
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 17.765726089477539, -13.035673332214358, -0.04589080810546875 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 108,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408073.5247414
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 12.81917667388916, -13.126875877380371, -0.052804946899414062 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 109,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408078.7043252
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 22.343507385253901, -13.282328605651855, -0.050754547119140625 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 110,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408085.2452338
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 28.607705688476557, -13.5933536529541, -0.05384063720703125 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 111,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408087.7721484
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 33.884613037109375, -13.897005081176758, -0.04715728759765625 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      },
+      {
+         "id" : 112,
+         "pose_stamped" : {
+            "header" : {
+               "frame" : "map",
+               "stamp" : 1747408119.8745182
+            },
+            "orientation" : [ 1, 0, 0, 0 ],
+            "position" : [ 12.880569458007812, -13.17718505859375, -0.050563812255859375 ],
+            "tolerance" : [ 0, 0 ]
+         }
+      }
+   ]
+}

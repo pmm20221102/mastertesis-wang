@@ -1,0 +1,21 @@
+{
+  "total_cases": 30,
+  "model": "granite4.1:3b",
+  "intent_gate_success": 0.9333,
+  "semantic_label_hit1": 1.0,
+  "semantic_recall5": 1.0,
+  "semantic_stage_success": 0.9,
+  "grounding_exact_success": 0.9,
+  "joint_exact_success": 0.9,
+  "room_grounding_success": 0.9167,
+  "ambiguous_candidate_f1": 1.0,
+  "set_exact_match": 1.0,
+  "node_type_provided_rate": 0.0,
+  "node_type_correct_rate": 0.0,
+  "node_type_wrong_rate": 0.0,
+  "failure_by_stage": {
+    "intent_location": 2,
+    "semantic_retrieval": 1
+  },
+  "failure_count": 3
+}

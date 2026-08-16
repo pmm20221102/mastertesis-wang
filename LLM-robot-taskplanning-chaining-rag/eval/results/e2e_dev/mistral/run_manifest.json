@@ -1,0 +1,27 @@
+{
+  "created_at": "2026-08-06",
+  "run_command": "python -m eval.e2e.run_e2e_eval --model mistral:latest --repeats 1 --cases e2e_dev_v1.jsonl",
+  "model": "mistral:latest",
+  "repeats": 1,
+  "benchmark": {
+    "file": "/home/ulmmt/Masterthesis-wang/LLM-robot-taskplanning-chaining-rag/eval/cases/e2e_dev_v1.jsonl",
+    "sha256": "c17226ccfcf74339521e0a836c01b0ed7985dda3830295ebe047a3feff9f4a0d"
+  },
+  "evaluator": {
+    "file": "/home/ulmmt/Masterthesis-wang/LLM-robot-taskplanning-chaining-rag/eval/run_e2e_eval.py",
+    "sha256": "205c6bebe895392b5fbd7fc2ae2a875c1aa6b8901a83f33c1f005b1c12cd73e4"
+  },
+  "compiler": {
+    "file": "compile_simple_plan.py",
+    "sha256": "37b89ae2abb8d27d9b4662e4dd27bd95fe1c1ba7e0a5cd04703f8e338759510f"
+  },
+  "intent_parser": {
+    "file": "llm/intent_parser.py"
+  },
+  "semantic_threshold": 0.35,
+  "semantic_top_k": 5,
+  "environment": {
+    "python": "3.12.13 (llm-task-planner)",
+    "chromadb": "1.5.9"
+  }
+}

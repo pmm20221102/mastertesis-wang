@@ -1,0 +1,15 @@
+{
+  "benchmark_status": "pending_manual_review",
+  "note": "Select 20 cases from grounding_benchmark_100_v3 after manual verification",
+  "suggested_distribution": {
+    "simple_navigation": 10,
+    "room_place_relation": 5,
+    "avoid_multi_step": 5
+  },
+  "requirements": [
+    "Grounding fact exists in canonical graph",
+    "Oracle Intent correct",
+    "Expected Plan correct",
+    "Human review passed"
+  ]
+}

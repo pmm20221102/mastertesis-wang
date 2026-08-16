@@ -1,0 +1,514 @@
+INFO: Loaded 60 intent cases (filter: all)
+INFO: Repeat 1/1
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_agg_001: FAIL(quantifier_error) (48517ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_agg_002: OK (24992ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'aggregate': {'operation..., 'node_type': 'room'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'aggregate': {'operation..., 'node_type': 'room'}}}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {"text": "large_static_wall_furniture", "label": "large_static_wall_furniture", "node_type": "object"},
+      "constraints": [
+        {
+          "aggregate": {
+            "operation": "count_in_location",
+            "target_labels": ["large_static_wall_furniture"],
+            "location": {"text": "Room 0757", "node_type": "room"}
+          }
+        }
+      ],
+      "description": "Count large static wall furniture in room 0757"
+    }
+INFO:   [0] intent_v3_agg_003: FAIL(schema_error) (33476ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 22 [type=json_invalid, input_value='{"action": "locate", ......ion": "max_count" ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate", ... aggregate: {"operation": "max_count" ...}}
+INFO:   [0] intent_v3_agg_007: FAIL(schema_error) (34243ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 45 [type=json_invalid, input_value='{"text": "object_7146", "label": "objects", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "object_7146", "label": "objects", ...}
+INFO:   [0] intent_v3_agg_010: FAIL(schema_error) (34617ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"type": "string", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"type": "string", ...}
+INFO:   [0] intent_v3_avd_001: FAIL(schema_error) (35085ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_avd_002: FAIL(schema_error) (34016ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text...}
+INFO:   [0] intent_v3_avd_005: FAIL(schema_error) (35278ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value="{relation: 'avoid', target_text: ...}", input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {relation: 'avoid', target_text: ...}
+INFO:   [0] intent_v3_avd_007: FAIL(schema_error) (35393ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 30 [type=json_invalid, input_value='{"type": "avoid", "entity": {...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"type": "avoid", "entity": {...}}
+INFO:   [0] intent_v3_avd_009: FAIL(schema_error) (35357ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_loc_002: OK (35341ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_loc_007: OK (56039ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_009: FAIL(wrong_target_node_type) (90530ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_011: FAIL(wrong_target_node_type) (57056ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_loc_012: OK (84728ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'text': 'large_static_wa..., 'node_type': 'object'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "text": "large_static_wall_furniture",
+      "label": "wall_furniture", 
+      "node_type": "object"
+    }
+INFO:   [0] intent_v3_loc_014: FAIL(schema_error) (82407ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_loc_015: OK (82458ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 18 [type=json_invalid, input_value='{"text": "person"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "person"...}
+INFO:   [0] intent_v3_ms_002: FAIL(schema_error) (83611ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_ms_003: FAIL(schema_error) (81917ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 17 [type=json_invalid, input_value='{"text": "chair"...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chair"...}
+INFO:   [0] intent_v3_ms_007: FAIL(schema_error) (81975ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 65 [type=json_invalid, input_value='{"action": "locate", "ta..._office_objects", ...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate", "target": {"text": "small_office_objects", ...}}
+INFO:   [0] intent_v3_ms_010: FAIL(schema_error) (82736ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_ms_012: FAIL(schema_error) (81111ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_001: FAIL(wrong_target_label) (78088ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_nav_002: FAIL(wrong_target_label) (82929ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_nav_003: OK (81693ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_nav_004: OK (81238ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_005: FAIL(wrong_target_node_type) (77403ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 6 column 28 [type=json_invalid, input_value='{\n      "action": "navi...   "steps": null\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "navigate",
+      "target": {"text": "the chairs", "label": "chairs", "node_type": "object"},
+      "actor": null,
+      "source": null,
+      "destination": null, // Wait, target IS destination in navigation usually. But schema has both source/dest and target. Example 1 uses 'target' for navigate to object. Example 9 (escort) uses actor + destination. Example 10 (navigate from A to B) uses source + dest.
+      "constraints": [],
+      "description": "Navigate towards the chairs",
+      "steps": null
+    }
+INFO:   [0] intent_v3_nav_010: FAIL(schema_error) (81289ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_nav_011: FAIL(wrong_target_label) (82736ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected `,` or `}` at line 1 column 50 [type=json_invalid, input_value='{"action": "navigate", "...: {"text": "chair"...}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "navigate", "target": {"text": "chair"...}}
+INFO:   [0] intent_v3_nav_012: FAIL(schema_error) (81344ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rel_001: FAIL(wrong_target_label) (81530ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 3 column 53 [type=json_invalid, input_value='{\n          "action": "...nside"...}]}\n        }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+          "action": "locate", 
+          "target": {"text": "small_office_object", ... , "relations": [{"relation": "inside"...}]}
+        }
+INFO:   [0] intent_v3_rel_003: FAIL(schema_error) (83485ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rel_007: FAIL(wrong_target_label) (81650ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'inside', 't...target_label': 'places'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'inside', 't...target_label': 'places'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "actor": null,
+      "target": {
+        "text": "large_static_wall_furniture",
+        "label": "static wall furniture",
+        "node_type": "object"
+      },
+      "constraints": [
+        {
+          "relation": "inside",
+          "target_text": "place_0110",
+          "target_label": "places"
+        }
+      ],
+      "description": "Locate specific furniture inside a place.",
+      "steps": null,
+      "source": null,
+      "destination": null
+    }
+INFO:   [0] intent_v3_rel_008: FAIL(schema_error) (81512ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'connected_t...get_text': 'place_5556'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'connected_t...get_text': 'place_5556'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "small_office_objects",
+        "label": "small_office_object",
+        "node_type": "object"
+      },
+      "constraints": [
+        {"relation": "connected_to", "target_text": "place_5556"}
+      ]
+    }
+INFO:   [0] intent_v3_rel_009: FAIL(schema_error) (83015ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 5 column 9 [type=json_invalid, input_value='{\n      "action": "loca...aints": [ ... ] \n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "large_static_wall_furniture near place_0070", 
+        // Or split? Example 4: text is just 'chair', relation defines the desk.
+        // Let's follow Example 6 structure more closely for relations.
+        "label": "static_wall_furniture",
+        "node_type": "object"
+      },
+      "constraints": [ ... ] 
+    }
+INFO:   [0] intent_v3_rel_013: FAIL(schema_error) (81165ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'inside', 't...target_label': 'places'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'inside', 't...target_label': 'places'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "large_static_wall_furniture",
+        "label": "static wall furniture objects",
+        "node_type": "object"
+      },
+      "constraints": [
+        {"relation": "inside", "target_text": "place_1824", "target_label": "places"}
+      ]
+    }
+INFO:   [0] intent_v3_rel_014: FAIL(schema_error) (80905ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 2 validation errors for TaskIntent
+constraints.0.type
+  Field required [type=missing, input_value={'relation': 'connected_t...get_text': 'place_6274'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+constraints.0.description
+  Field required [type=missing, input_value={'relation': 'connected_t...get_text': 'place_6274'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "small_office_objects connected with place_6274",
+        "label": "small_office_objects",
+        "node_type": "object"
+      },
+      "constraints": [
+        {"relation": "connected_to", "target_text": "place_6274"}
+      ]
+    }
+INFO:   [0] intent_v3_rel_015: FAIL(schema_error) (82807ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+action
+  Field required [type=missing, input_value={'relation': 'inside', 't...t_text': 'place 928841'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+ERROR: Raw response: {"relation": "inside", "target_text": "place 928841"}
+INFO:   [0] intent_v3_rel_018: FAIL(schema_error) (81347ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected value at line 8 column 24 [type=json_invalid, input_value='{\n      "action": "loca...s check Schema.]\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {
+        "text": "the large_static_wall_furniture",
+        "label": "wall_furniture", 
+        "node_type": "object"
+      },
+      "constraints": [ // Wait, schema says target has relations. Constraints is top level? Let's check Schema.]
+    }
+INFO:   [0] intent_v3_rel_019: FAIL(schema_error) (81750ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_001: OK (80784ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 50 [type=json_invalid, input_value='{"action": "locate", "ta...r", ... "room": "201"}}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"action": "locate", "target": {"text": "chair", ... "room": "201"}}
+INFO:   [0] intent_v3_rpc_002: FAIL(schema_error) (81081ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_003: OK (82407ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_004: OK (81080ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_007: FAIL(wrong_target_label) (81327ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 2 [type=json_invalid, input_value='{text...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {text...}
+INFO:   [0] intent_v3_rpc_008: FAIL(schema_error) (83058ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_009: OK (81348ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_rpc_010: FAIL(wrong_target_label) (81501ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_015: FAIL(wrong_target_node_type) (88206ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: expected value at line 4 column 24 [type=json_invalid, input_value='{\n      "action": "loca...mixed).\n      ]\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "locate",
+      "target": {"text": "chairs", "label": "chairs", "node_type": "object"},
+      "constraints": [ // Wait, schema says constraints is array of TaskConstraint. Relations are inside EntityReference? No, looking at Schema:
+        // target has relations and locations.
+        // action/actor/target/source/destination/constraints/description/steps.
+        // Relation constraint definition provided in prompt under EntityReference section (actually it's mixed).
+      ]
+    }
+INFO:   [0] intent_v3_rpc_019: FAIL(schema_error) (83185ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 3 [type=json_invalid, input_value='{ text: "place_9204", la...", node_type: "place" }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: { text: "place_9204", label: "places", node_type: "place" }
+INFO:   [0] intent_v3_sd_001: FAIL(schema_error) (81338ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 3 column 22 [type=json_invalid, input_value='{\n      "action": "navi...laces/locations.\n    }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {
+      "action": "navigate",
+      "actor": null, // Not explicitly mentioned as being escorted or moved by someone else, usually robot acts on itself unless specified like "Escort the person". Here it's just travel instruction for the system/robot. However, looking at Example 10: "Navigate from the office to the kitchen" -> source and destination set. Actor is null.)
+      "target": null, // Navigation with specific source/destination doesn't always need a target object unless there's an intermediate stop or general direction. But wait, Rule says for navigate instructions: Set "target" (where to go) OR "destination". Example 10 sets destination but not target? Let's check Example 10 again.
+      // Example 10: "Navigate from the office to the kitchen" -> {"action": "navigate", "source": {...}, "destination": {...}}. No 'target' field in that example output provided in prompt description (actually it wasn't shown fully but implied). Wait, looking at schema definition: target is EntityReference or null.
+      // In Example 10 logic ("from A to B"), source and destination are set. Target usually refers to an object *at* the location if navigating TO a specific thing, OR sometimes used interchangeably with destination in some contexts. However, strict adherence to "navigate instructions: Set 'target' (where to go) or 'destination'".
+      // Let's look at Example 10 again provided in prompt text? Actually I don't see the full output for Ex 10 in the few-shot list, but I can infer from standard navigation logic. Usually `destination` is preferred for locations when using "from...to..." structure to avoid ambiguity with object targets.
+      // Wait, looking at Example 5: "Navigate to the chair inside Room 201" -> target set (chair), no source/dest? No, it says navigate TO a specific thing.
+      // Let's look at Rule for navigation instructions again: "navigate instructions: Set 'target' (where to go) or 'destination' (final destination)." AND "'from A to B' instructions: Set 'source' ... AND 'destination'".
+      // So if I have "From X to Y", I should set source and destination. Target might be null unless there's a specific object involved. Here it is just places/locations.
+    }
+INFO:   [0] intent_v3_sd_004: FAIL(schema_error) (82568ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious avoid constraint: 
+INFO:   [0] intent_v3_sd_005: FAIL(schema_error) (86663ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_006: FAIL(schema_error) (80333ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 20 [type=json_invalid, input_value='{"text": "chairs", ...}', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: {"text": "chairs", ...}
+INFO:   [0] intent_v3_sd_010: FAIL(schema_error) (81318ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_002: OK (42692ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_set_003: OK (80819ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_005: OK (67549ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+ERROR: Failed to validate TaskIntent: 1 validation error for TaskIntent
+  Invalid JSON: key must be a string at line 1 column 3 [type=json_invalid, input_value='{ text: "all small_offic...t", quantifier: "all" }', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.13/v/json_invalid
+ERROR: Raw response: { text: "all small_office_objects", label: "small_office_objects", node_type: "object", quantifier: "all" }
+INFO:   [0] intent_v3_set_006: FAIL(schema_error) (82263ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Model returned empty content, extracting from thinking field
+INFO:   [0] intent_v3_set_008: OK (81783ms)
+INFO:   Repeat 1 saved to eval/results_new/intent60_qwen35_4b
+INFO: Results saved to eval/results_new/intent60_qwen35_4b
+
+=== Intent Evaluation Summary ===
+{
+  "total_cases": 60,
+  "schema_validity_rate": 0.45,
+  "action_accuracy": 0.45,
+  "raw_action_accuracy_all_cases": 0.45,
+  "raw_action_accuracy_schema_valid_only": 1.0,
+  "raw_json_success_rate": 0.45,
+  "canonicalization_rate": 0.2833333333333333,
+  "avg_rules_per_case": 0.2833333333333333,
+  "role_presence_precision": 0.45,
+  "role_presence_recall": 0.45,
+  "role_presence_f1": 0.45,
+  "spurious_role_rate": 0.0,
+  "location_f1": 0.0,
+  "relation_f1": 0.0,
+  "quantifier_accuracy": 0.85,
+  "non_default_quantifier_accuracy": 0.5,
+  "non_default_quantifier_count": 10,
+  "spurious_quantifier_count": 4,
+  "constraints_accuracy": 0.0,
+  "constraints_case_count": 6,
+  "aggregate_positive_accuracy": 0.2,
+  "aggregate_positive_count": 5,
+  "spurious_aggregate_count": 0,
+  "multi_step_exact_rate": 0.0,
+  "multi_step_case_count": 5,
+  "avg_step_role_accuracy": 0.0,
+  "strict_exact_match_rate": 0.25,
+  "strict_exact_match_count": 15,
+  "surface_exact_match_rate": 0.11666666666666667,
+  "surface_exact_match_count": 7,
+  "failure_breakdown": {
+    "quantifier_error": 1,
+    "schema_error": 33,
+    "wrong_target_node_type": 4,
+    "wrong_target_label": 7
+  },
+  "category_breakdown": {
+    "aggregate": {
+      "total": 5,
+      "action_accuracy": 0.4,
+      "strict_exact_rate": 0.2
+    },
+    "avoid_prefer": {
+      "total": 5,
+      "action_accuracy": 0.0,
+      "strict_exact_rate": 0.0
+    },
+    "locate_target": {
+      "total": 7,
+      "action_accuracy": 0.8571428571428571,
+      "strict_exact_rate": 0.5714285714285714
+    },
+    "multi_step": {
+      "total": 5,
+      "action_accuracy": 0.0,
+      "strict_exact_rate": 0.0
+    },
+    "navigate_target": {
+      "total": 8,
+      "action_accuracy": 0.75,
+      "strict_exact_rate": 0.25
+    },
+    "relation": {
+      "total": 10,
+      "action_accuracy": 0.2,
+      "strict_exact_rate": 0.0
+    },
+    "room_place_constraint": {
+      "total": 10,
+      "action_accuracy": 0.7,
+      "strict_exact_rate": 0.4
+    },
+    "set_quantifier": {
+      "total": 5,
+      "action_accuracy": 0.8,
+      "strict_exact_rate": 0.8
+    },
+    "source_destination": {
+      "total": 5,
+      "action_accuracy": 0.0,
+      "strict_exact_rate": 0.0
+    }
+  },
+  "avg_latency_ms": 71801.17996931076,
+  "model": "qwen3.5:4b",
+  "repeats": 1,
+  "temperature": 0.0
+}

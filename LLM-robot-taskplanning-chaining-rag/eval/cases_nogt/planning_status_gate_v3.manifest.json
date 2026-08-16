@@ -1,0 +1,30 @@
+{
+  "benchmark_status": "development",
+  "benchmark_version": "v3",
+  "benchmark_file_hash": "9a6755e85dc82953",
+  "case_count": 20,
+  "categories": {
+    "ambiguous": 10,
+    "not_found": 5,
+    "unsupported": 5
+  },
+  "seed": 42,
+  "validation": {
+    "no_duplicate_gen_instructions": {
+      "passed": true,
+      "detail": "0 dupes: []"
+    },
+    "all_multi_step_real": {
+      "passed": true,
+      "detail": "15 multi-step cases"
+    },
+    "gate_diversity": {
+      "passed": true,
+      "detail": "20 unique gate instructions"
+    },
+    "escort_guide_consistency": {
+      "passed": true,
+      "detail": "escort/guide instruction matches action"
+    }
+  }
+}

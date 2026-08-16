@@ -1,0 +1,220 @@
+INFO: Loaded 60 intent cases (filter: all)
+INFO: Repeat 1/1
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_agg_001: FAIL(wrong_target_node_type) (3153ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_agg_002: FAIL(wrong_target_node_type) (1081ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_agg_003: FAIL(wrong_target_label) (1104ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_agg_007: FAIL(wrong_target_node_type) (573ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious destination for locate action
+INFO: Removing spurious relation: inside room 201
+INFO:   [0] intent_v3_agg_010: FAIL(wrong_target_label) (957ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_avd_001: FAIL(wrong_target_label) (695ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious avoid constraint: Do not go through the walls
+INFO:   [0] intent_v3_avd_002: FAIL(wrong_target_label) (1215ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_avd_005: FAIL(wrong_target_node_type) (683ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_avd_007: FAIL(wrong_target_label) (780ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_avd_009: FAIL(wrong_target_node_type) (685ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_002: FAIL(wrong_target_node_type) (1235ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_007: FAIL(wrong_target_node_type) (661ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_009: FAIL(wrong_target_node_type) (617ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_011: FAIL(wrong_action) (-528ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_012: FAIL(wrong_target_node_type) (1291ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_014: FAIL(wrong_target_label) (649ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_loc_015: FAIL(wrong_target_node_type) (662ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_ms_002: FAIL(wrong_action) (696ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_ms_003: FAIL(wrong_target_label) (812ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_ms_007: FAIL(missing_role) (1546ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_ms_010: FAIL(wrong_action) (1381ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO: Removing spurious source for locate action
+INFO:   [0] intent_v3_ms_012: FAIL(wrong_action) (810ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_001: FAIL(wrong_target_label) (647ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_002: FAIL(wrong_target_label) (466ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_003: FAIL(wrong_action) (894ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_004: FAIL(wrong_target_label) (1261ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_005: FAIL(wrong_target_node_type) (671ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_010: FAIL(wrong_target_node_type) (1235ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_011: FAIL(wrong_action) (1000ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_nav_012: FAIL(wrong_target_label) (664ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_001: FAIL(wrong_target_label) (704ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_003: FAIL(wrong_action) (1113ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_007: FAIL(wrong_target_label) (730ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_008: FAIL(wrong_target_label) (747ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_009: FAIL(wrong_target_node_type) (720ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_013: FAIL(wrong_target_label) (681ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_014: FAIL(wrong_target_label) (744ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_015: FAIL(wrong_target_node_type) (667ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_018: FAIL(wrong_target_label) (1096ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rel_019: FAIL(wrong_target_label) (590ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_001: FAIL(wrong_action) (1024ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_002: FAIL(wrong_action) (652ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_003: FAIL(wrong_action) (678ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_004: FAIL(spurious_role) (1057ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_007: FAIL(wrong_target_label) (739ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_008: FAIL(wrong_target_node_type) (1029ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_009: FAIL(wrong_target_node_type) (673ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_010: FAIL(wrong_target_label) (1327ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_015: FAIL(wrong_target_node_type) (678ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_rpc_019: FAIL(wrong_target_node_type) (679ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_001: FAIL(missing_role) (530ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_004: FAIL(missing_role) (562ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_005: FAIL(missing_role) (-579ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_006: FAIL(missing_role) (537ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_sd_010: FAIL(missing_role) (567ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_002: OK (467ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_003: FAIL(wrong_target_node_type) (961ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_005: FAIL(wrong_target_node_type) (924ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_006: FAIL(wrong_target_node_type) (590ms)
+INFO: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+INFO:   [0] intent_v3_set_008: OK (409ms)
+INFO:   Repeat 1 saved to eval/results_new/intent60_qwen25_05b
+INFO: Results saved to eval/results_new/intent60_qwen25_05b
+
+=== Intent Evaluation Summary ===
+{
+  "total_cases": 60,
+  "schema_validity_rate": 1.0,
+  "action_accuracy": 0.8333333333333334,
+  "raw_action_accuracy_all_cases": 0.8333333333333334,
+  "raw_action_accuracy_schema_valid_only": 0.8333333333333334,
+  "raw_json_success_rate": 1.0,
+  "canonicalization_rate": 0.9,
+  "avg_rules_per_case": 0.95,
+  "role_presence_precision": 0.9166666666666666,
+  "role_presence_recall": 0.9333333333333333,
+  "role_presence_f1": 0.9222222222222223,
+  "spurious_role_rate": 0.1388888888888889,
+  "location_f1": 1.0,
+  "relation_f1": 0.0,
+  "quantifier_accuracy": 0.8833333333333333,
+  "non_default_quantifier_accuracy": 0.6,
+  "non_default_quantifier_count": 10,
+  "spurious_quantifier_count": 3,
+  "constraints_accuracy": 0.0,
+  "constraints_case_count": 6,
+  "aggregate_positive_accuracy": 0.0,
+  "aggregate_positive_count": 5,
+  "spurious_aggregate_count": 8,
+  "multi_step_exact_rate": 0.0,
+  "multi_step_case_count": 5,
+  "avg_step_role_accuracy": 0.1,
+  "strict_exact_match_rate": 0.03333333333333333,
+  "strict_exact_match_count": 2,
+  "surface_exact_match_rate": 0.03333333333333333,
+  "surface_exact_match_count": 2,
+  "failure_breakdown": {
+    "wrong_target_node_type": 21,
+    "wrong_target_label": 20,
+    "wrong_action": 10,
+    "missing_role": 6,
+    "spurious_role": 1
+  },
+  "category_breakdown": {
+    "aggregate": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "avoid_prefer": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "locate_target": {
+      "total": 7,
+      "action_accuracy": 0.8571428571428571,
+      "strict_exact_rate": 0.0
+    },
+    "multi_step": {
+      "total": 5,
+      "action_accuracy": 0.4,
+      "strict_exact_rate": 0.0
+    },
+    "navigate_target": {
+      "total": 8,
+      "action_accuracy": 0.75,
+      "strict_exact_rate": 0.0
+    },
+    "relation": {
+      "total": 10,
+      "action_accuracy": 0.9,
+      "strict_exact_rate": 0.0
+    },
+    "room_place_constraint": {
+      "total": 10,
+      "action_accuracy": 0.7,
+      "strict_exact_rate": 0.0
+    },
+    "set_quantifier": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.4
+    },
+    "source_destination": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    }
+  },
+  "avg_latency_ms": 814.7992412249247,
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "temperature": 0.0
+}

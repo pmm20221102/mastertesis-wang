@@ -1,0 +1,15 @@
+{
+  "total_cases": 30,
+  "model": "gemma4:e4b",
+  "schema_validity": 1.0,
+  "action_accuracy": 0.9667,
+  "target_role_precision": 1.0,
+  "target_role_recall": 0.8846,
+  "target_role_f1": 0.9388,
+  "node_type_provided_rate": 0.0,
+  "node_type_accuracy_when_provided": 0.0,
+  "spurious_role_rate": 0.0,
+  "room_extraction_accuracy": 0.6667,
+  "warm_mean_ms": 1076.0,
+  "warm_median_ms": 1022.9
+}

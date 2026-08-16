@@ -1,0 +1,36 @@
+{
+  "model": "granite4.1:3b",
+  "repeats": 3,
+  "total_cases": 150,
+  "e2e_strict_success": 0.68,
+  "final_validation_pass": 0.68,
+  "intent_gate_success": 0.82,
+  "semantic_stage_success": 0.82,
+  "grounding_exact_success": 0.8,
+  "planner_strict_success": 0.68,
+  "compiler_success": 0.68,
+  "validator_success": 0.68,
+  "status_gate_accuracy": 1.0,
+  "failure_by_stage": {
+    "intent_location": 3,
+    "intent_role_value": 3,
+    "planner_action": 18,
+    "intent_role": 15,
+    "intent_quantifier": 9
+  },
+  "conditional": {
+    "semantic_given_intent": 1.0,
+    "grounding_given_semantic": 0.9756,
+    "planner_given_grounding": 0.85,
+    "compiler_given_planner": 1.0,
+    "validator_given_compiler": 1.0
+  },
+  "final_compiled_exact_match": 1.0,
+  "error_rate": 0.0,
+  "avg_total_latency_ms": 954.8,
+  "failure_count": 48,
+  "full_instruction_fidelity": 0.68,
+  "fidelity_failure_reasons": {
+    "actor_not_grounded": 42
+  }
+}

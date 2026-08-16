@@ -1,0 +1,89 @@
+{
+  "total_cases": 60,
+  "schema_validity_rate": 1.0,
+  "action_accuracy": 0.8166666666666667,
+  "raw_action_accuracy_all_cases": 0.8166666666666667,
+  "raw_action_accuracy_schema_valid_only": 0.8166666666666667,
+  "raw_json_success_rate": 1.0,
+  "canonicalization_rate": 0.9666666666666667,
+  "avg_rules_per_case": 1.05,
+  "role_presence_precision": 0.925,
+  "role_presence_recall": 0.9333333333333333,
+  "role_presence_f1": 0.925,
+  "spurious_role_rate": 0.1267605633802817,
+  "location_f1": 0.5,
+  "relation_f1": 0.0,
+  "quantifier_accuracy": 0.4166666666666667,
+  "non_default_quantifier_accuracy": 0.8,
+  "non_default_quantifier_count": 10,
+  "spurious_quantifier_count": 33,
+  "constraints_accuracy": 0.0,
+  "constraints_case_count": 6,
+  "aggregate_positive_accuracy": 0.0,
+  "aggregate_positive_count": 5,
+  "spurious_aggregate_count": 8,
+  "multi_step_exact_rate": 0.2,
+  "multi_step_case_count": 5,
+  "avg_step_role_accuracy": 0.0,
+  "strict_exact_match_rate": 0.0,
+  "strict_exact_match_count": 0,
+  "surface_exact_match_rate": 0.0,
+  "surface_exact_match_count": 0,
+  "failure_breakdown": {
+    "wrong_target_node_type": 23,
+    "wrong_target_label": 21,
+    "wrong_action": 11,
+    "missing_role": 5
+  },
+  "category_breakdown": {
+    "aggregate": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "avoid_prefer": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "locate_target": {
+      "total": 7,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "multi_step": {
+      "total": 5,
+      "action_accuracy": 0.4,
+      "strict_exact_rate": 0.0
+    },
+    "navigate_target": {
+      "total": 8,
+      "action_accuracy": 0.75,
+      "strict_exact_rate": 0.0
+    },
+    "relation": {
+      "total": 10,
+      "action_accuracy": 0.9,
+      "strict_exact_rate": 0.0
+    },
+    "room_place_constraint": {
+      "total": 10,
+      "action_accuracy": 0.5,
+      "strict_exact_rate": 0.0
+    },
+    "set_quantifier": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    },
+    "source_destination": {
+      "total": 5,
+      "action_accuracy": 1.0,
+      "strict_exact_rate": 0.0
+    }
+  },
+  "avg_latency_ms": 905.2542924880981,
+  "model": "qwen2.5:0.5b",
+  "repeats": 1,
+  "temperature": 0.0
+}

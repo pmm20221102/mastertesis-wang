@@ -1,0 +1,24 @@
+{
+  "benchmark_status": "final",
+  "benchmark_version": "v4",
+  "benchmark_file": "final_intent_60.jsonl",
+  "benchmark_file_hash": "0a59ab30c7a6e5e2",
+  "case_count": 60,
+  "categories": {
+    "aggregate": 5,
+    "avoid_prefer": 5,
+    "locate_target": 7,
+    "multi_step": 5,
+    "navigate_target": 8,
+    "relation": 10,
+    "room_place_constraint": 10,
+    "source_destination": 5,
+    "set_quantifier": 5
+  },
+  "seed": 42,
+  "exclusions": [
+    "coordinate",
+    "escort_guide"
+  ],
+  "notes": "Manually reviewed subset for thesis evaluation"
+}

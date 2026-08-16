@@ -128,9 +128,9 @@ class RetrievalAdapter:
         self._index_cache: dict[str, dict] | None = None
         self._graph_index: GraphIndex | None = None
 
-    def search(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
+    def search(self, query: str, top_k: int = 10, query_type: str | None = None) -> list[RetrievedChunk]:
         try:
-            raw_results = query_rag(query, self.db_dir, top_k=top_k)
+            raw_results = query_rag(query, self.db_dir, top_k=top_k, query_type=query_type)
         except Exception as e:
             logger.warning(f"RAG query failed: {e}")
             return []
@@ -286,190 +286,11 @@ class RetrievalAdapter:
         return result_chunks[:top_k]
 
     def search_reverse_hierarchical(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
-        """Search for 'where is X?' queries - return parents of matched objects."""
-        graph_idx = self._get_graph_index()
-        index_meta = self._load_index_metadata()
-        result_chunks = []
-        seen_ids = set()
+        """Search for 'where is X?' queries - return parents of matched objects.
 
-        # Try to find node from query by ID
-        for nid in list(graph_idx.parents.keys()):
-            if nid in query or str(nid) in query:
-                parents = graph_idx.get_parents(nid)
-                for parent_id in parents[:3]:
-                    if parent_id not in seen_ids:
-                        meta = index_meta.get(parent_id, {})
-                        parent_chunk = RetrievedChunk(
-                            rank=len(result_chunks) + 1,
-                            score=0.9,
-                            node_id=parent_id,
-                            object_symbol=meta.get("object_symbol", ""),
-                            metadata=meta,
-                            text=f"{meta.get('node_type', 'entity')} {parent_id}.",
-                        )
-                        result_chunks.append(parent_chunk)
-                        seen_ids.add(parent_id)
-                if result_chunks:
-                    return result_chunks[:top_k]
-
-        # Try to find node by label/name
-        query_lower = query.lower()
-        label_matches = []
-        for nid, meta in list(index_meta.items()):
-            label = meta.get("label", "")
-            if label and label.lower() in query_lower:
-                label_matches.append((nid, meta))
-
-        # Return parents of all matching nodes
-        for nid, meta in label_matches:
-            parents = graph_idx.get_parents(nid)
-            for parent_id in parents[:3]:
-                if parent_id not in seen_ids:
-                    parent_meta = index_meta.get(parent_id, {})
-                    parent_chunk = RetrievedChunk(
-                        rank=len(result_chunks) + 1,
-                        score=0.8,
-                        node_id=parent_id,
-                        object_symbol=parent_meta.get("object_symbol", ""),
-                        metadata=parent_meta,
-                        text=f"{parent_meta.get('node_type', 'entity')} {parent_id}.",
-                    )
-                    result_chunks.append(parent_chunk)
-                    seen_ids.add(parent_id)
-
-        if result_chunks:
-            return result_chunks[:top_k]
-
-        # Fallback: use vector search + parent expansion
-        seed_chunks = self.search(query, top_k=min(top_k * 2, 20))
-        for chunk in seed_chunks:
-            nid = chunk.node_id
-            if nid.startswith("rel_"):
-                parts = nid[4:].split("_", 1)
-                if len(parts) == 2:
-                    src_id, tgt_id = parts
-                    for related_id in [src_id, tgt_id]:
-                        parents = graph_idx.get_parents(related_id)
-                        for parent_id in parents[:3]:
-                            if parent_id not in seen_ids:
-                                meta = index_meta.get(parent_id, {})
-                                parent_chunk = RetrievedChunk(
-                                    rank=len(result_chunks) + 1,
-                                    score=0.7,
-                                    node_id=parent_id,
-                                    object_symbol=meta.get("object_symbol", ""),
-                                    metadata=meta,
-                                    text=f"{meta.get('node_type', 'entity')} {parent_id}.",
-                                )
-                                result_chunks.append(parent_chunk)
-                                seen_ids.add(parent_id)
-            else:
-                parents = graph_idx.get_parents(nid)
-                if parents:
-                    for parent_id in parents[:3]:
-                        if parent_id not in seen_ids:
-                            meta = index_meta.get(parent_id, {})
-                            parent_chunk = RetrievedChunk(
-                                rank=len(result_chunks) + 1,
-                                score=0.7,
-                                node_id=parent_id,
-                                object_symbol=meta.get("object_symbol", ""),
-                                metadata=meta,
-                                text=f"{meta.get('node_type', 'entity')} {parent_id}.",
-                            )
-                            result_chunks.append(parent_chunk)
-                            seen_ids.add(parent_id)
-
-        return result_chunks[:top_k]
-
-    def search_neighbor(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
-        """Search for 'what is connected to X?' queries - return neighbors."""
-        graph_idx = self._get_graph_index()
-        index_meta = self._load_index_metadata()
-        result_chunks = []
-        seen_ids = set()
-
-        # Try to find node from query
-        for nid in graph_idx.neighbors:
-            if nid in query or str(nid) in query:
-                neighbors = graph_idx.get_neighbors(nid)
-                for neighbor_id in neighbors[:top_k]:
-                    if neighbor_id not in seen_ids:
-                        meta = index_meta.get(neighbor_id, {})
-                        neighbor_chunk = RetrievedChunk(
-                            rank=len(result_chunks) + 1,
-                            score=0.8,
-                            node_id=neighbor_id,
-                            object_symbol=meta.get("object_symbol", ""),
-                            metadata=meta,
-                            text=f"{meta.get('node_type', 'entity')} {neighbor_id}.",
-                        )
-                        result_chunks.append(neighbor_chunk)
-                        seen_ids.add(neighbor_id)
-                if result_chunks:
-                    return result_chunks[:top_k]
-
-        # Fallback: use relation chunks
-        seed_chunks = self.search(query, top_k=min(top_k * 2, 20))
-        for chunk in seed_chunks:
-            nid = chunk.node_id
-            if nid.startswith("rel_"):
-                parts = nid[4:].split("_", 1)
-                if len(parts) == 2:
-                    src_id, tgt_id = parts
-                    for related_id in [src_id, tgt_id]:
-                        neighbors = graph_idx.get_neighbors(related_id)
-                        for neighbor_id in neighbors[:top_k]:
-                            if neighbor_id not in seen_ids:
-                                meta = index_meta.get(neighbor_id, {})
-                                neighbor_chunk = RetrievedChunk(
-                                    rank=len(result_chunks) + 1,
-                                    score=0.7,
-                                    node_id=neighbor_id,
-                                    object_symbol=meta.get("object_symbol", ""),
-                                    metadata=meta,
-                                    text=f"{meta.get('node_type', 'entity')} {neighbor_id}.",
-                                )
-                                result_chunks.append(neighbor_chunk)
-                                seen_ids.add(neighbor_id)
-
-        return result_chunks[:top_k]
-
-    def search_reverse_hierarchical(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
-        """Search for 'where is X?' queries - return parents of matched objects."""
-        seed_chunks = self.search(query, top_k=min(top_k * 2, 20))
-        if not seed_chunks:
-            return []
-
-        graph_idx = self._get_graph_index()
-        index_meta = self._load_index_metadata()
-        result_chunks = []
-        seen_ids = set()
-
-        for chunk in seed_chunks:
-            nid = chunk.node_id
-            parents = graph_idx.get_parents(nid)
-
-            if parents:
-                for parent_id in parents[:3]:
-                    if parent_id not in seen_ids:
-                        meta = index_meta.get(parent_id, {})
-                        parent_chunk = RetrievedChunk(
-                            rank=len(result_chunks) + 1,
-                            score=chunk.score * 0.9,
-                            node_id=parent_id,
-                            object_symbol=meta.get("object_symbol", ""),
-                            metadata=meta,
-                            text=f"{meta.get('node_type', 'entity')} {parent_id}.",
-                        )
-                        result_chunks.append(parent_chunk)
-                        seen_ids.add(parent_id)
-            else:
-                if nid not in seen_ids and chunk.metadata.get("node_type") != "alias":
-                    result_chunks.append(chunk)
-                    seen_ids.add(nid)
-
-        return result_chunks[:top_k]
+        Uses query_rag() with query_type="reverse_hierarchy" which routes to Entity Resolver.
+        """
+        return self.search(query, top_k=top_k, query_type="reverse_hierarchy")
 
     def search_by_type(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
         """Search for 'find all X' queries - filter by node_type."""
@@ -523,60 +344,14 @@ class RetrievalAdapter:
         if query_type == "type_filter":
             return self.search_by_type(query, top_k)
 
-        return self.search(query, top_k)
+        return self.search(query, top_k, query_type=query_type)
 
     def search_neighbor(self, query: str, top_k: int = 10) -> list[RetrievedChunk]:
-        """Search for 'what is connected to X?' queries - return neighbors."""
-        seed_chunks = self.search(query, top_k=min(top_k * 2, 20))
-        if not seed_chunks:
-            return []
+        """Search for 'what is connected to X?' queries - return neighbors.
 
-        graph_idx = self._get_graph_index()
-        index_meta = self._load_index_metadata()
-        result_chunks = []
-        seen_ids = set()
-
-        for chunk in seed_chunks:
-            nid = chunk.node_id
-
-            if nid.startswith("rel_"):
-                parts = nid[4:].split("_", 1)
-                if len(parts) == 2:
-                    src_id, tgt_id = parts
-                    for related_id in [src_id, tgt_id]:
-                        if related_id not in seen_ids:
-                            neighbors = graph_idx.get_neighbors(related_id)
-                            for neighbor_id in neighbors[:top_k]:
-                                if neighbor_id not in seen_ids:
-                                    meta = index_meta.get(neighbor_id, {})
-                                    neighbor_chunk = RetrievedChunk(
-                                        rank=len(result_chunks) + 1,
-                                        score=chunk.score * 0.8,
-                                        node_id=neighbor_id,
-                                        object_symbol=meta.get("object_symbol", ""),
-                                        metadata=meta,
-                                        text=f"{meta.get('node_type', 'entity')} {neighbor_id}.",
-                                    )
-                                    result_chunks.append(neighbor_chunk)
-                                    seen_ids.add(neighbor_id)
-            else:
-                neighbors = graph_idx.get_neighbors(nid)
-                if neighbors:
-                    for neighbor_id in neighbors[:top_k]:
-                        if neighbor_id not in seen_ids:
-                            meta = index_meta.get(neighbor_id, {})
-                            neighbor_chunk = RetrievedChunk(
-                                rank=len(result_chunks) + 1,
-                                score=chunk.score * 0.8,
-                                node_id=neighbor_id,
-                                object_symbol=meta.get("object_symbol", ""),
-                                metadata=meta,
-                                text=f"{meta.get('node_type', 'entity')} {neighbor_id}.",
-                            )
-                            result_chunks.append(neighbor_chunk)
-                            seen_ids.add(neighbor_id)
-
-        return result_chunks[:top_k]
+        Uses query_rag() with query_type="neighbor" which routes to graph traversal.
+        """
+        return self.search(query, top_k=top_k, query_type="neighbor")
 
     def get_indexed_entity_ids(self) -> set[str]:
         try:

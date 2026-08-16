@@ -1,0 +1,16 @@
+{
+  "total_cases": 30,
+  "model": "gemma4:e4b",
+  "intent_strict_success": 0.9333,
+  "semantic_label_hit1": 0.875,
+  "semantic_retrieval_success": 0.9,
+  "grounding_success": 0.9,
+  "exact_id_match": 0.9,
+  "candidate_f1_matched": 0.875,
+  "set_exact_match": 1.0,
+  "joint_success": 0.9,
+  "failure_by_stage": {
+    "semantic_retrieval": 3
+  },
+  "failure_count": 3
+}

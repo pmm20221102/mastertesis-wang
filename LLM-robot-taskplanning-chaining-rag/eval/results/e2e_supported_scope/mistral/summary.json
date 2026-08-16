@@ -1,0 +1,31 @@
+{
+  "model": "mistral:latest",
+  "repeats": 3,
+  "total_cases": 108,
+  "e2e_strict_success": 0.75,
+  "final_validation_pass": 0.75,
+  "intent_gate_success": 0.75,
+  "semantic_stage_success": 0.75,
+  "grounding_exact_success": 0.75,
+  "planner_strict_success": 0.75,
+  "compiler_success": 0.75,
+  "validator_success": 0.75,
+  "status_gate_accuracy": 1.0,
+  "failure_by_stage": {
+    "intent_quantifier": 15,
+    "intent_role": 12
+  },
+  "conditional": {
+    "semantic_given_intent": 1.0,
+    "grounding_given_semantic": 1.0,
+    "planner_given_grounding": 1.0,
+    "compiler_given_planner": 1.0,
+    "validator_given_compiler": 1.0
+  },
+  "final_compiled_exact_match": 1.0,
+  "error_rate": 0.0,
+  "avg_total_latency_ms": 1149.5,
+  "failure_count": 27,
+  "full_instruction_fidelity": 0.75,
+  "fidelity_failure_reasons": {}
+}

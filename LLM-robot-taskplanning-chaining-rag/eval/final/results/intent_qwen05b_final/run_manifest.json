@@ -1,0 +1,27 @@
+{
+  "model": "qwen2.5:0.5b",
+  "model_digest": "unknown",
+  "repeats": 1,
+  "temperature": 0.0,
+  "benchmark": "eval/final/cases/final_intent_60.jsonl",
+  "benchmark_hash": "0a59ab30c7a6e5e2",
+  "prompt_hash": "c96524e6370c9834",
+  "schema_hash": "836e77c4170e59d2",
+  "config_hash": "472ebd7802db8185",
+  "code_commit": "bf4da77",
+  "total_cases": 60,
+  "total_evaluations": 60,
+  "output_dir": "eval/final/results/intent_qwen05b_final",
+  "started_at": "2026-07-31T22:36:06",
+  "finished_at": "2026-07-31T22:37:02",
+  "duration_seconds": 54.3,
+  "completion_status": "completed",
+  "options": {
+    "temperature": 0.1,
+    "top_p": 0.9,
+    "top_k": 40,
+    "num_ctx": 8192,
+    "repeat_penalty": 1.1,
+    "seed": 42
+  }
+}

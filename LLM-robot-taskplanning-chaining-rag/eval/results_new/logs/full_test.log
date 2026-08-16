@@ -1,0 +1,9 @@
+[13:19] intent60 qwen2.5:0.5b
+[13:20] intent60 qwen2.5:0.5b done (exit 0)
+[13:20] intent60 qwen3.5:4b
+[14:32] intent60 qwen3.5:4b done (exit 0)
+[14:32] intent60 gemma4:e2b-it-qat
+[14:38] intent60 gemma4:e2b-it-qat done (exit 0)
+[14:38] pipeline-structured qwen2.5:0.5b
+[14:41] pipeline qwen2.5:0.5b done (exit 0)
+[14:41] pipeline-structured qwen3.5:4b

@@ -1,0 +1,38 @@
+{
+  "pipeline": "Natural Language → Frozen LLM Intent/Planner → Frozen Semantic RAG → Frozen Graph Grounding → semantic_to_waypoint → waypoint → witness route",
+  "model": {
+    "name": "mistral:latest",
+    "digest": "6577803aa9a036369e481d648a2baebb381ebc6e897f2bb9a766a2aa7bfbc1cf",
+    "size_bytes": 4372824384,
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "llama",
+      "families": [
+        "llama"
+      ],
+      "parameter_size": "7.2B",
+      "quantization_level": "Q4_K_M"
+    }
+  },
+  "inference": {
+    "options": {
+      "temperature": 0.1,
+      "top_p": 0.9,
+      "top_k": 40,
+      "num_ctx": 8192,
+      "repeat_penalty": 1.1,
+      "seed": 42
+    },
+    "ollama_host": "http://127.0.0.1:11434"
+  },
+  "timestamp": "2026-08-11T18:39:16.717564",
+  "datasets": {
+    "canonical_graph": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/office_dense/canonical_graph_v2.json",
+    "semantic_to_waypoint": "/home/ulmmt/Masterthesis-wang/khronos_anymald_bridge/generated/semantic_to_waypoint.json",
+    "waypoints": "/home/ulmmt/Masterthesis-wang/khronos_anymald_bridge/generated/waypoints_sparsified_R3.0.json",
+    "witness": "/home/ulmmt/Masterthesis-wang/khronos_anymald_bridge/generated/witness_paths.json"
+  },
+  "task_plan": "/home/ulmmt/Masterthesis-wang/khronos_anymald_bridge/demo/final_task_plan.json",
+  "ollama_version": "ollama version is 0.32.5"
+}

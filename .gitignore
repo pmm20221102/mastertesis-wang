@@ -71,3 +71,7 @@ mesh.ply
 
 # Windows Zone.Identifier metadata / Windows 下载标记
 *:Zone.Identifier
+
+# Vector DB / 向量库（可重建）
+**/vector_db/
+docker/

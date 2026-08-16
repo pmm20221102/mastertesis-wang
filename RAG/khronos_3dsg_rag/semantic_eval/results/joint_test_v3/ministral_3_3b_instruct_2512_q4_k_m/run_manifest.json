@@ -1,0 +1,34 @@
+{
+  "created_at": "2026-08-06T15:12:28",
+  "run_command": "run_joint_eval_v3.py --model ministral-3:3b-instruct-2512-q4_K_M",
+  "model": "ministral-3:3b-instruct-2512-q4_K_M",
+  "model_config": {
+    "ollama_host": "http://127.0.0.1:11434",
+    "options": {
+      "temperature": 0,
+      "num_ctx": 8192
+    },
+    "semantic_threshold": 0.35,
+    "semantic_top_k": 5
+  },
+  "benchmark": {
+    "file": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/semantic_eval/joint_cases_v3.jsonl",
+    "sha256": "ab62ce07d1b9ce8075ed353a0f74a0ae73e5d3b8fdd791d541eaa4d8c8225976"
+  },
+  "canonical_graph": {
+    "file": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/office_dense/canonical_graph_v2.json",
+    "sha256": "0c5510bdad3338305f4242562dea74a0cf1aa6fa95936065ab9e57e049f1c24d"
+  },
+  "vector_db": {
+    "dir": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/outputs/office_dense/vector_db",
+    "fingerprint": "ae561b1b19c76bda9473be3b33003a2873cdd6cfbf1fea207e5ff9e58f099a67"
+  },
+  "evaluator": {
+    "file": "/home/ulmmt/Masterthesis-wang/RAG/khronos_3dsg_rag/semantic_eval/run_joint_eval_v3.py",
+    "sha256": "5085b9a6f77ad55c107a470ac2f26773f016956009f323f030a1b457450d97ae"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "chromadb": "1.5.9"
+  }
+}

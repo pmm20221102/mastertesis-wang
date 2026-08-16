@@ -1,0 +1,22 @@
+{
+  "model": "mistral:latest",
+  "repeats": 3,
+  "total_cases": 150,
+  "e2e_strict_success": 0.82,
+  "final_validation_pass": 0.82,
+  "intent_gate_success": 0.82,
+  "semantic_stage_success": 0.82,
+  "grounding_exact_success": 0.82,
+  "planner_strict_success": 0.82,
+  "compiler_success": 0.82,
+  "validator_success": 0.82,
+  "status_gate_accuracy": 0.875,
+  "failure_by_stage": {
+    "intent_quantifier": 3,
+    "intent_location": 24
+  },
+  "final_compiled_exact_match": 1.0,
+  "error_rate": 0.0,
+  "avg_total_latency_ms": 1238.6,
+  "failure_count": 27
+}

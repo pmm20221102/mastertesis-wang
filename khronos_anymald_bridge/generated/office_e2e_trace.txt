@@ -1,0 +1,19 @@
+[Intent] PASS
+[Planner] PASS
+[Grounding:start R0] PASS (waypoint 4275)
+[Grounding:R12] PASS
+[Semantic→Waypoint] WP12136
+[WaypointGraph] VALID
+[Route] 4275 → 4262 → 4326 → 5423 → 8335 → 8670 → 9633 → 9646 → 9534 → 11436 → 11228 → 12136 (cost 33.8m)
+[Reached] PASS (n_waypoints=12)
+[Grounding:R4] PASS
+[Semantic→Waypoint] WP4647
+[WaypointGraph] VALID
+[Route] 12136 → 11228 → 11436 → 9534 → 9646 → 9633 → 8670 → 8335 → 5920 → 4647 (cost 28.7m)
+[Reached] PASS (n_waypoints=10)
+[Grounding:R9] PASS
+[Semantic→Waypoint] WP9646
+[WaypointGraph] VALID
+[Route] 4647 → 5920 → 8335 → 8670 → 9633 → 9646 (cost 13.6m)
+[Reached] PASS (n_waypoints=6)
+[TASK] SUCCESS

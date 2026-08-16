@@ -1,0 +1,22 @@
+# ANYmal D waypoint edge 默认策略（计划文档 §15.4）
+#
+# 这些是 ANYmal 私有导航策略字段，Khronos PLACES 不包含。
+# MVP 使用本保守默认值；取值可在接入 ANYmal 接口 / 真机验证时调整。
+# 不自动推断，不自动猜 perceptive_walk / stop_and_go / 其他非默认策略。
+
+local_planner:
+  mode_name: default
+  planner_name: default
+  planner_parameters: ""
+
+locomotion_controller:
+  motion_parameters: default
+  motion_state: default
+
+max_deviation: 3
+traversability: 1
+
+perception_parameters:
+  nfm_preset: autodeduce
+
+version: 1
