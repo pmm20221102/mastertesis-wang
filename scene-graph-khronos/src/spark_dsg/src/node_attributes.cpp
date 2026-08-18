@@ -498,6 +498,8 @@ bool AgentNodeAttributes::is_equal(const NodeAttributes& other) const {
          dbow_values == derived->dbow_values;
 }
 
+bool KhronosObjectAttributes::skip_heavy_fields_ = false;
+
 KhronosObjectAttributes::KhronosObjectAttributes() : mesh(true, false, false) {}
 
 NodeAttributes::Ptr KhronosObjectAttributes::clone() const {
@@ -525,7 +527,9 @@ void KhronosObjectAttributes::serialization_info() {
   serialization::field("last_observed_ns", last_observed_ns);
   serialization::field("trajectory_positions", trajectory_positions);
   serialization::field("trajectory_timestamps", trajectory_timestamps);
-  serialization::field("dynamic_object_points", dynamic_object_points);
+  if (!skip_heavy_fields_) {
+    serialization::field("dynamic_object_points", dynamic_object_points);
+  }
   serialization::field("details", details);
 
   const auto& header = io::GlobalInfo::loadedHeader();

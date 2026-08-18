@@ -52,9 +52,12 @@
 #include "khronos/backend/change_state.h"
 #include "khronos/common/common_types.h"
 
+#include <spark_dsg/node_attributes.h>
+
 namespace khronos {
 
 using hydra::UpdateInfo;
+using spark_dsg::KhronosObjectAttributes;
 using spark_dsg::ObjectNodeAttributes;
 using spark_dsg::PlaceNodeAttributes;
 using spark_dsg::SemanticNodeAttributes;
@@ -254,8 +257,12 @@ bool Backend::saveProposedMerges(const hydra::DataDirectory& log_setup) {
 
 void Backend::save(const hydra::DataDirectory& log_setup) {
   const auto path = log_setup.path();
+
+  // Lightweight save: skip dynamic_object_points to avoid OOM on large scenes.
+  KhronosObjectAttributes::setSkipHeavyFields(true);
   unmerged_graph_->save(path / "shared_dsg.json", false);
   private_dsg_->graph->save(path / "dsg.json", false);
+  KhronosObjectAttributes::setSkipHeavyFields(false);
   const auto mesh = private_dsg_->graph->mesh();
   if (mesh && !mesh->empty()) {
     // mesh implements vertex and face traits
@@ -283,6 +290,7 @@ void Backend::save(const hydra::DataDirectory& log_setup) {
 
   {
     std::lock_guard<std::mutex> lock(map_mutex_);
+    KhronosObjectAttributes::setSkipHeavyFields(true);
     if (map_.save(path / "final.4dmap")) {
       CLOG(1) << "Saved 4D map with " << map_.numTimeSteps() << " time steps to '" << path << "'.";
     }
@@ -305,6 +313,7 @@ void Backend::save(const hydra::DataDirectory& log_setup) {
         dsg->save(maps_path / filename.str(), false);
       }
     }
+    KhronosObjectAttributes::setSkipHeavyFields(false);
 
     if (map_.numTimeSteps() > 0) {
       CLOG(1) << "Saved " << map_.numTimeSteps() << " individual DSGs to '" << maps_path << "'.";

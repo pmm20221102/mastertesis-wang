@@ -1,0 +1,75 @@
+# TartanGround Hospital -> Khronos 自定义 launch（指南 §23-27）
+#
+# 仅启动 Khronos node + 静态 TF。bag 播放单独进行：
+#   ros2 bag play $ROOT/bags/hospital_p2000_smoke --clock --rate 0.5
+#
+# 关键点：
+#   - GT semantics（use_gt_semantics=true），label space/remap 用本项目生成
+#   - extrinsics 来自 ROS TF（input_config 里 type: ros），不叠加 uHumans extrinsics
+#   - 静态 TF world->map->odom（identity）；bag 提供 odom->base_link->camera_optical_frame
+---
+launch:
+  - arg: {name: use_gt_semantics, default: 'true'}
+  - arg: {name: output_dir, default: /home/ulmmt/Masterthesis-wang/tartanground_khronos/reports/khronos_output}
+  - arg: {name: start_visualizer, default: 'true', description: 'headless 跑时关闭 rviz/hydra_visualizer'}
+  # Frames / sensor range
+  - arg: {name: sensor_frame, default: camera_optical_frame}
+  - arg: {name: robot_frame, default: base_link}
+  - arg: {name: sensor_min_range, default: '0.1'}
+  - arg: {name: sensor_max_range, default: '5.0'}
+  # Input topics
+  - arg: {name: rgb_topic, default: /tartanground/front/rgb/image_raw}
+  - arg: {name: rgb_info_topic, default: /tartanground/front/rgb/camera_info}
+  - arg: {name: depth_topic, default: /tartanground/front/depth/image_raw}
+  - arg: {name: label_topic, default: /tartanground/front/semantic/image_raw}
+  # GT label configs
+  - arg:
+      name: labelspace_config
+      default: /home/ulmmt/Masterthesis-wang/tartanground_khronos/tools/tartanground_khronos_bridge/config/tartanground_hospital_label_space.yaml
+      if: $(var use_gt_semantics)
+  - arg:
+      name: label_remap_config
+      default: /home/ulmmt/Masterthesis-wang/tartanground_khronos/tools/tartanground_khronos_bridge/config/tartanground_hospital_remap.yaml
+      if: $(var use_gt_semantics)
+  - let:
+      name: extra_yaml
+      value: '{semantic_label_remap_filepath: $(var label_remap_config)}'
+  # Khronos core node
+  - include:
+      file: $(find-pkg-share khronos_ros)/launch/khronos.launch.yaml
+      arg:
+        - {name: input_config, value: /home/ulmmt/Masterthesis-wang/tartanground_khronos/tools/tartanground_khronos_bridge/config/tartanground_input.yaml}
+        - {name: labelspace_config, value: $(var labelspace_config)}
+        - {name: extra_yaml, value: $(var extra_yaml)}
+        - {name: output_dir, value: $(var output_dir)}
+        - {name: sensor_min_range, value: $(var sensor_min_range)}
+        - {name: sensor_max_range, value: $(var sensor_max_range)}
+        - {name: sensor_frame, value: $(var sensor_frame)}
+        - {name: robot_frame, value: $(var robot_frame)}
+        - {name: rgb_topic, value: $(var rgb_topic)}
+        - {name: rgb_info_topic, value: $(var rgb_info_topic)}
+        - {name: depth_topic, value: $(var depth_topic)}
+        - {name: label_topic, value: $(var label_topic)}
+        - {name: use_gt_frame, value: 'true'}
+        - {name: evaluate, value: 'false'}
+        - {name: start_visualizer, value: $(var start_visualizer)}
+        - {name: rviz_path, value: /tmp/hospital_dsg.rviz}
+        - {name: mapper_config, value: /home/ulmmt/Masterthesis-wang/tartanground_khronos/tools/tartanground_khronos_bridge/config/mapper_voxel010_fixed.yaml}
+  # 静态 TF：world -> map -> odom（identity），完成 TF 树
+  - node:
+      pkg: tf2_ros
+      exec: static_transform_publisher
+      name: map_static_tf
+      args: --child-frame-id map --frame-id world
+  - node:
+      pkg: tf2_ros
+      exec: static_transform_publisher
+      name: odom_static_tf
+      args: --child-frame-id odom --frame-id map
+  # base_link -> camera_optical_frame（R_BASE_OPT；bag 的 /tf_static 不被
+  # play_rosbag 重放，必须由 launch 显式发布，否则 Khronos 找不到 extrinsics）
+  - node:
+      pkg: tf2_ros
+      exec: static_transform_publisher
+      name: base_optical_static_tf
+      args: 0 0 0 0.5 -0.5 0.5 -0.5 base_link camera_optical_frame

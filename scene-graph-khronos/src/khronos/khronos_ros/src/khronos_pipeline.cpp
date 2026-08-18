@@ -48,6 +48,7 @@
 #include <hydra_ros/frontend/ros_frontend_publisher.h>
 #include <khronos/active_window/active_window.h>
 #include <khronos/backend/backend.h>
+#include <spark_dsg/node_attributes.h>
 #include <khronos/utils/khronos_attribute_utils.h>
 #include <khronos_msgs/msg/changes.hpp>
 
@@ -58,6 +59,7 @@
 namespace khronos {
 
 using ChangeMsg = khronos_msgs::msg::Changes;
+using spark_dsg::KhronosObjectAttributes;
 
 KhronosPipeline::Config::Config() : hydra::HydraRosPipeline::Config() {
   active_window = ActiveWindow::Config{};
@@ -138,6 +140,7 @@ bool KhronosPipeline::save(const hydra::DataDirectory& log_setup, bool save_full
   }
 
   // TODO(nathan) not threadsafe!
+  KhronosObjectAttributes::setSkipHeavyFields(true);
   auto dsg = backend_dsg_->graph->clone();
   const auto backend_path = log_setup.path("backend");
 
@@ -158,6 +161,7 @@ bool KhronosPipeline::save(const hydra::DataDirectory& log_setup, bool save_full
   }
 
   dsg->save(backend_path / "dsg_with_mesh", true);
+  KhronosObjectAttributes::setSkipHeavyFields(false);
   CLOG(2) << "[Khronos Pipeline] Saved " << (save_full_state ? "full state" : "evaluation DSG")
           << " to '" << log_setup.path() << "'.";
   return true;

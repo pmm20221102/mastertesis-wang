@@ -425,12 +425,19 @@ struct KhronosObjectAttributes : public ObjectNodeAttributes {
   // Optionally store additional detailed infos if needed.
   std::map<std::string, std::vector<size_t>> details;
 
+  // Lightweight save: when true, skip dynamic_object_points during serialization.
+  static void setSkipHeavyFields(bool skip) { skip_heavy_fields_ = skip; }
+  static bool getSkipHeavyFields() { return skip_heavy_fields_; }
+
  protected:
   std::ostream& fill_ostream(std::ostream& out) const override;
   void serialization_info() override;
   bool is_equal(const NodeAttributes& other) const override;
   // registers derived attributes
   REGISTER_NODE_ATTRIBUTES(KhronosObjectAttributes);
+
+ private:
+  static bool skip_heavy_fields_;
 };
 
 /**
