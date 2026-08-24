@@ -1,12 +1,7 @@
 """Khronos -> ANYmal D RViz2 数据加载与 marker 辅助（jazzy）。
 
-注意：mesh z 范围 1.0..4.25（DSG 坐标系），RViz 半透明 mesh 写 depth，
-mesh 内部的 marker 必然被遮挡。因此导航层统一悬浮到 DISPLAY_Z=4.6
-（mesh 最高点之上），x,y 与 mesh 完全重合，实现 waypoint-mesh 对齐验证。
-
-读取 khronos_anymald_bridge/generated/ 下的产物，供 graph_publisher 和
-mock_robot_node 使用。所有 waypoint/dense 坐标的 z 统一投影到 ground_z
-（projected_for_mock）。
+Office demo 默认把导航层投影到 DISPLAY_Z；Hospital 通过 ``project_z=None``
+保留 waypoint/canonical graph 的原生三维坐标。两者共用同一套发布节点。
 """
 import json
 import math
@@ -20,6 +15,22 @@ from std_msgs.msg import ColorRGBA, Header
 from visualization_msgs.msg import Marker
 
 from .witness_expand import expand_route
+
+
+def floor_offset(floor: int, spacing: float, columns: int = 1) -> tuple[float, float]:
+    columns = max(1, int(columns))
+    return ((floor % columns) * spacing, -(floor // columns) * spacing)
+
+
+def floor_z_bounds(medians: dict[int, float]) -> dict[int, tuple[float, float]]:
+    ordered = sorted(medians.items(), key=lambda item: item[1])
+    bounds = {}
+    for i, (floor, _) in enumerate(ordered):
+        low = -math.inf if i == 0 else (ordered[i - 1][1] + ordered[i][1]) / 2
+        high = math.inf if i + 1 == len(ordered) else (
+            ordered[i][1] + ordered[i + 1][1]) / 2
+        bounds[floor] = (low, high)
+    return bounds
 
 
 def quaternion_from_yaw(yaw: float) -> Quaternion:
@@ -38,48 +49,141 @@ def header(frame: str, stamp=None) -> Header:
 
 
 class BridgeData:
-    """读取 khronos_anymald_bridge/generated 数据。"""
+    """读取 Office generated/ 或 Hospital waypoint_v2/ 数据。"""
 
     def __init__(self, base_dir: str, r: float = 3.0, ground_z: float = 0.0,
-                 frame: str = "map"):
+                 frame: str = "map", data_dir: str | None = None,
+                 canonical_graph: str | None = None,
+                 vertical_transitions: str | None = None,
+                 project_z: float | None = DISPLAY_Z,
+                 floor_model: str | None = None,
+                 floor_spacing: float = 0.0, floor_columns: int = 1,
+                 z_offset: float = 0.0):
         self.base = Path(base_dir)
-        self.gen = self.base / "generated"
+        self.gen = Path(data_dir) if data_dir else self.base / "generated"
         self.r = r
         self.ground_z = ground_z
         self.frame = frame
-        self.sparsified = json.load(
-            open(self.gen / f"waypoints_sparsified_R{r}.json", encoding="utf-8"))
-        self.full = json.load(open(self.gen / "waypoints.json", encoding="utf-8"))
-        self.witness = json.load(open(self.gen / "witness_paths.json", encoding="utf-8"))
-        self.semantic = json.load(
-            open(self.gen / "semantic_to_waypoint.json", encoding="utf-8"))
+        self.project_z = project_z
+        self.floor_spacing = float(floor_spacing)
+        self.floor_columns = max(1, int(floor_columns))
+        self.z_offset = float(z_offset)
+        with open(self.gen / f"waypoints_sparsified_R{r}.json", encoding="utf-8") as f:
+            self.sparsified = json.load(f)
+        with open(self.gen / "witness_paths.json", encoding="utf-8") as f:
+            self.witness = json.load(f)
+        with open(self.gen / "semantic_to_waypoint.json", encoding="utf-8") as f:
+            self.semantic = json.load(f)
         self._spars_pos = {n["id"]: n["pose_stamped"]["position"]
                            for n in self.sparsified["nodes"]}
-        self._full_pos = {n["id"]: n["pose_stamped"]["position"]
-                          for n in self.full["nodes"]}
-        # 原始 z（DSG 同坐标系：waypoints.json 保留原始 z，mesh z=1..4.25，
-        # 与 waypoint 原始 z 一致；sparsified 已 ground 投影到 ground_z）。
-        # RViz 显示用原始 z 实现 waypoint 与 mesh 完全重合。
-        self._orig_z = {}
-        for _n in self.full["nodes"]:
-            _pos = _n["pose_stamped"]["position"]
-            _z = (_pos[2] if isinstance(_pos, list) and len(_pos) >= 3 else
-                  (_pos.get("z") if isinstance(_pos, dict) else None))
-            if _z is not None:
-                self._orig_z[int(_n["id"])] = float(_z)
+        self.floor_model_path = self._existing_path(
+            floor_model, self.gen.parent / "floor_model_v2.json")
+        self._waypoint_floor = {}
+        self._place_floor = {}
+        self.floor_medians = {}
+        if self.floor_model_path:
+            with open(self.floor_model_path, encoding="utf-8") as f:
+                floors = json.load(f)
+            mask = (1 << 56) - 1
+            self._waypoint_floor = {
+                int(wid): int(floor) for wid, floor
+                in floors.get("waypoint_to_floor", {}).items()}
+            self._place_floor = {
+                int(pid) & mask: int(floor) for pid, floor
+                in floors.get("place_to_floor", {}).items()}
+            self.floor_medians = {
+                int(info["floor_id"]): float(info["z_median"])
+                for info in floors.get("floors", [])}
+        self._full_pos = self._load_dense_positions(canonical_graph)
+        self._full_pos.update(self._spars_pos)
+        self.vertical_transitions_path = self._existing_path(
+            vertical_transitions, self.gen.parent / "vertical_transitions_v2.json")
+        if self.vertical_transitions_path:
+            with open(self.vertical_transitions_path, encoding="utf-8") as f:
+                self._add_vertical_witnesses(json.load(f))
+
+    @staticmethod
+    def _existing_path(explicit: str | None, inferred: Path) -> Path | None:
+        path = Path(explicit) if explicit else inferred
+        return path if path.is_file() else None
+
+    @staticmethod
+    def _xyz(position) -> tuple[float, float, float]:
+        if isinstance(position, dict):
+            return (float(position["x"]), float(position["y"]), float(position["z"]))
+        return tuple(float(v) for v in position[:3])
+
+    def _load_dense_positions(self, canonical_graph: str | None) -> dict[int, object]:
+        full_path = self.gen / "waypoints.json"
+        if full_path.is_file():
+            with open(full_path, encoding="utf-8") as f:
+                full = json.load(f)
+            return {int(n["id"]): n["pose_stamped"]["position"]
+                    for n in full["nodes"]}
+
+        canonical_path = self._existing_path(
+            canonical_graph, self.gen.parent / "canonical_graph_v2.json")
+        if not canonical_path:
+            return {}
+        with open(canonical_path, encoding="utf-8") as f:
+            canonical = json.load(f)
+        # Spark-DSG symbol IDs store the layer prefix in the high byte. Witness
+        # paths use the lower 56-bit place index.
+        mask = (1 << 56) - 1
+        return {
+            int(node_id) & mask: node["position"]
+            for node_id, node in canonical.get("nodes", {}).items()
+            if node.get("node_type") == "place" and node.get("position")
+        }
+
+    def _add_vertical_witnesses(self, data: dict) -> None:
+        """Expose validated stair/elevator place trajectories to route expansion."""
+        mask = (1 << 56) - 1
+        for transition in data.get("transitions", []):
+            a = int(transition["entry_waypoint"])
+            b = int(transition["exit_waypoint"])
+            path = [a]
+            path.extend(int(pid) & mask for pid in transition.get("place_path", []))
+            path.append(b)
+            path = [pid for i, pid in enumerate(path) if i == 0 or pid != path[i - 1]]
+            if a > b:
+                path.reverse()
+            self.witness.setdefault(
+                f"({min(a, b)},{max(a, b)})",
+                {"path": path,
+                 "metric_3d_length_m": float(transition.get("cost_m", 0.0)),
+                 "vertical_transition_id": transition.get("id")},
+            )
+
+    def floor_of_z(self, z: float) -> int:
+        if not self.floor_medians:
+            return 0
+        return min(self.floor_medians, key=lambda floor: abs(z - self.floor_medians[floor]))
+
+    def floor_of_waypoint(self, wid: int) -> int:
+        p = self._spars_pos[int(wid)]
+        return self._waypoint_floor.get(int(wid), self.floor_of_z(self._xyz(p)[2]))
+
+    def _display_pos(self, position, floor: int | None = None) -> tuple[float, float, float]:
+        x, y, z = self._xyz(position)
+        floor = self.floor_of_z(z) if floor is None else floor
+        display_z = z if self.project_z is None else float(self.project_z)
+        dx, dy = floor_offset(floor, self.floor_spacing, self.floor_columns)
+        return (x + dx, y + dy, display_z + self.z_offset)
 
     # ---- 位置 ----
     def spars_pos(self, wid) -> tuple | None:
         p = self._spars_pos.get(int(wid))
         if p is None:
             return None
-        return (p[0], p[1], DISPLAY_Z)
+        return self._display_pos(p, self.floor_of_waypoint(int(wid)))
 
     def dense_pos(self, pid) -> tuple | None:
         p = self._full_pos.get(int(pid))
         if p is None:
             return None
-        return (p[0], p[1], DISPLAY_Z)
+        floor = self._waypoint_floor.get(int(pid), self._place_floor.get(int(pid)))
+        return self._display_pos(p, floor)
 
     def waypoint_ids(self) -> list:
         return sorted(self._spars_pos)
@@ -88,13 +192,47 @@ class BridgeData:
         return [(int(e["start_node_id"]), int(e["end_node_id"]))
                 for e in self.sparsified["edges"]]
 
+    def navigation_edges(self) -> list[tuple[int, int]]:
+        return self.edges() + self.vertical_edges()
+
+    def vertical_edges(self) -> list[tuple[int, int]]:
+        return [
+            tuple(int(v) for v in key.strip("()").split(","))
+            for key, witness in self.witness.items()
+            if witness.get("vertical_transition_id")]
+
+    def display_edges(self) -> list[tuple[int, int]]:
+        if not self.floor_spacing:
+            return self.edges()
+        intra_floor = [
+            (a, b) for a, b in self.edges()
+            if self.floor_of_waypoint(a) == self.floor_of_waypoint(b)]
+        return intra_floor + self.vertical_edges()
+
+    def reachable_waypoint_ids(self, start: int) -> set[int]:
+        adjacency = {wid: set() for wid in self._spars_pos}
+        for a, b in self.navigation_edges():
+            adjacency.setdefault(a, set()).add(b)
+            adjacency.setdefault(b, set()).add(a)
+        seen = {int(start)}
+        stack = [int(start)]
+        while stack:
+            current = stack.pop()
+            for neighbor in adjacency.get(current, ()):
+                if neighbor not in seen:
+                    seen.add(neighbor)
+                    stack.append(neighbor)
+        return seen
+
     # ---- witness / stretch ----
     def witness_of(self, a, b) -> dict | None:
         return self.witness.get(f"({min(a, b)},{max(a, b)})")
 
     def stretch_of(self, a, b) -> float | None:
         w = self.witness_of(a, b)
-        return w["stretch"] if w else None
+        if not w:
+            return None
+        return w.get("topology_stretch", w.get("stretch"))
 
     # ---- semantic ----
     def room_anchors(self) -> dict[int, int]:

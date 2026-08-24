@@ -1,0 +1,117 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: GroundGrid
+      Enabled: false
+      Plane Cell Count: 100
+      Cell Size: 1.0
+      Color: 70; 70; 76
+      Alpha: 0.15
+      Value: false
+    - Class: rviz_default_plugins/MarkerArray
+      Name: ActiveFloorMesh
+      Enabled: true
+      Topic: /anymald/khronos_mesh_floors
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: ActiveFloorBorder
+      Enabled: true
+      Topic: /anymald/floors
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: WaypointEdges
+      Enabled: true
+      Topic: /anymald/waypoints/edges
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: ReachableWaypoints
+      Enabled: true
+      Topic: /anymald/waypoints/nodes
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: RoomAnchors
+      Enabled: true
+      Topic: /anymald/room_anchors
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: PlannedRoute
+      Enabled: true
+      Topic: /anymald/route_marker
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: TraversedTrail
+      Enabled: true
+      Topic: /anymald/robot_trail
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: Start
+      Enabled: true
+      Topic: /anymald/start_marker
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: FiveCheckpoints
+      Enabled: true
+      Topic: /anymald/checkpoints
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: CurrentGoal
+      Enabled: true
+      Topic: /anymald/goal_marker
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Name: RobotTrackingHalo
+      Enabled: true
+      Topic: /anymald/mock_robot
+      Queue Size: 10
+      Value: true
+    - Class: rviz_default_plugins/RobotModel
+      Name: ANYmal-D
+      Enabled: true
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+      Visual Enabled: true
+      Collision Enabled: false
+      Alpha: 1.0
+      Update Interval: 0.0
+      Value: true
+  Global Options:
+    Fixed Frame: map
+    Background Color: 8; 10; 14
+    Frame Rate: 30
+  Views:
+    Current:
+      Class: rviz_default_plugins/ThirdPersonFollower
+      Distance: 48
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Name: Active floor 3D overview
+      Pitch: 1.40
+      Target Frame: demo_camera_target
+      Yaw: 0.0
+      Value: Third Person Follower (rviz)
+Window Geometry:
+  Displays:
+    collapsed: false
+  Views:
+    collapsed: false
+  Height: 1000
+  Width: 1600

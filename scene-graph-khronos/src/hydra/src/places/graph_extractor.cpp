@@ -227,8 +227,13 @@ void GraphExtractor::fillParentInfo(const GvdLayer& gvd,
       continue;
     }
 
-    CHECK(tracker.parents.count(node_index))
-        << "bad gvd voxel: " << *voxel << " @ " << node_index.transpose();
+    const auto parents = tracker.parents.find(node_index);
+    if (parents == tracker.parents.end()) {
+      // A compressed node can retain an archived index after its voxel block is
+      // recycled. The new non-Voronoi voxel correctly has no parent entry, so
+      // leave this optional mesh-connection field empty until reassignment.
+      continue;
+    }
 
     // save primary parent first
     const GlobalIndex curr_parent = voxel->parent;
@@ -238,7 +243,7 @@ void GraphExtractor::fillParentInfo(const GvdLayer& gvd,
     }
 
     // save all other basis points
-    for (const auto& parent : tracker.parents.at(node_index)) {
+    for (const auto& parent : parents->second) {
       if (!tracker.parent_vertices.count(parent)) {
         continue;
       }
