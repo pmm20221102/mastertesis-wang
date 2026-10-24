@@ -1,0 +1,26 @@
+{
+  "schema_version": "hospital-khronos-only-nav2-assets-v1",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "condition": "khronos_only_clearance_khronos_global_planes_band005_200_manual_topology",
+  "inputs": {
+    "generator": "experiments/hospital-khronos-only-20261019/generate_khronos_only.py",
+    "generator_sha256": "978f0171179b2bfbbba332e398fe6cadb748a46c090d7a90e40314dccf2ea3a4",
+    "grid_geometry_manifest": "experiments/hospital-khronos-only-20261019/grid_geometry.json",
+    "grid_geometry_manifest_sha256": "13445f3a8547b6b500f9fb808bec1b10326cd858424ac6dd990f15f57912a888",
+    "dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+    "mesh_sha256": "813bb3f534c9385edccbcfc71d3405ec81b5852c23061c68542e15debe40f268"
+  },
+  "occupancy_policy": {
+    "free": "Khronos Place support",
+    "occupied": "Khronos mesh projection",
+    "unknown_elsewhere": true,
+    "mesh_wins_overlap": true,
+    "non_khronos_occupancy_values_used": false
+  },
+  "floors": {
+    "0": {"floor_z_m": -1.2, "width": 238, "height": 339, "resolution_m": 0.1, "origin": [-5.8, -10.4, 0.0], "cells": {"free": 57932, "occupied": 3693, "unknown": 19057}, "map_yaml_sha256": "93f4ca62d0c3063e2c161232d01efa5c6a04dcedbe6decd5a85b9161bede2f4c", "map_pgm_sha256": "da1f3a6893ac7228f5553a8def87c289c30974321f8fda026095199adff8d853"},
+    "1": {"floor_z_m": 2.3, "width": 364, "height": 335, "resolution_m": 0.1, "origin": [-23.1, -20.6, 0.0], "cells": {"free": 41692, "occupied": 6425, "unknown": 73823}, "map_yaml_sha256": "9e4aeef5df2b62e52a8d81b98787b667aa1abc75757299a1c39e393f9bcc13ba", "map_pgm_sha256": "2aaa3c8ad2d5ebed53241d3c164a6383ceb7db6c68cdb7d58c19d7511dc5b9c1"},
+    "2": {"floor_z_m": 5.8, "width": 279, "height": 347, "resolution_m": 0.1, "origin": [-14.6, -23.1, 0.0], "cells": {"free": 52892, "occupied": 8062, "unknown": 35859}, "map_yaml_sha256": "a872426daa84efaddcd3314b77db815d7df6ff9e00eed15057fe71221f2b2f4d", "map_pgm_sha256": "922ce6d62039e304233e3bf7183bfc8b4acecc70b926ed410c059abcede4fe1a"},
+    "3": {"floor_z_m": 9.3, "width": 238, "height": 285, "resolution_m": 0.1, "origin": [-5.6, -24.0, 0.0], "cells": {"free": 41337, "occupied": 6753, "unknown": 19740}, "map_yaml_sha256": "6c4f0886ec0bdb76cd3fa98b6b22fa352eb644f59139f3be0e3c24fdb8bb4a7f", "map_pgm_sha256": "59544040d0d115048e6b5273ff56ed8da7ae82f4959d98eb8a71cffa1e3324d4"}
+  }
+}

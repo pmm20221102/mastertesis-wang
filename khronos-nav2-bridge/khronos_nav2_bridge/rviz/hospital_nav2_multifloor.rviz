@@ -1,0 +1,115 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: nav2_rviz_plugins/Navigation 2
+    Name: Navigation 2
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Map
+      Name: F0 - Hospital P1000
+      Enabled: true
+      Alpha: 1
+      Color Scheme: map
+      Draw Behind: true
+      Topic:
+        Value: /hospital/floor_mosaic/f0/map
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/Map
+      Name: F1 - Hospital P1000
+      Enabled: true
+      Alpha: 1
+      Color Scheme: map
+      Draw Behind: true
+      Topic:
+        Value: /hospital/floor_mosaic/f1/map
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/Map
+      Name: F2 - Hospital P1000
+      Enabled: true
+      Alpha: 1
+      Color Scheme: map
+      Draw Behind: true
+      Topic:
+        Value: /hospital/floor_mosaic/f2/map
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/Map
+      Name: F3 - Hospital P1000
+      Enabled: true
+      Alpha: 1
+      Color Scheme: map
+      Draw Behind: true
+      Topic:
+        Value: /hospital/floor_mosaic/f3/map
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Floors and Paired Stair Portals
+      Enabled: true
+      Topic:
+        Value: /hospital/floor_mosaic/markers
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/Map
+      Name: Global Costmap
+      Enabled: false
+      Alpha: 0.18
+      Color Scheme: costmap
+      Topic:
+        Value: /global_costmap/costmap
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/Map
+      Name: Local Costmap
+      Enabled: false
+      Alpha: 0.35
+      Color Scheme: costmap
+      Topic:
+        Value: /local_costmap/costmap
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
+    - Class: rviz_default_plugins/RobotModel
+      Name: ANYmal C Planar Visual Model
+      Enabled: true
+      Description Source: Topic
+      Description Topic: /robot_description
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: true
+    - Class: rviz_default_plugins/Path
+      Name: Nav2 Global Plan
+      Enabled: true
+      Topic:
+        Value: /plan
+    - Class: rviz_default_plugins/Path
+      Name: Nav2 Local Plan
+      Enabled: true
+      Topic:
+        Value: /local_plan
+  Enabled: true
+  Global Options:
+    Fixed Frame: hospital_floor_mosaic
+    Frame Rate: 30
+    Background Color: 48; 48; 48
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/Measure
+    - Class: nav2_rviz_plugins/GoalTool
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Name: Four Hospital Floors
+      Target Frame: hospital_floor_mosaic
+      Scale: 8
+      X: 77.7
+      Y: 35.7
+Window Geometry:
+  Height: 1000
+  Width: 1700

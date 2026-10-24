@@ -370,6 +370,11 @@ def main():
     parser.add_argument("dsg_path", help="Path to dsg.json")
     parser.add_argument("-o", "--output-dir", default="outputs",
                        help="Output directory (default: outputs)")
+    parser.add_argument(
+        "--semantic-overrides",
+        default="",
+        help="Optional human-confirmed semantic sidecar for unknown object nodes",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -385,7 +390,10 @@ def main():
         sys.exit(1)
 
     print(f"Parsing DSG: {dsg_path}")
-    graph = parse_3dsg(dsg_path)
+    graph = parse_3dsg(
+        dsg_path,
+        semantic_overrides_path=args.semantic_overrides or None,
+    )
     print(f"  Nodes: {len(graph.nodes)}, Edges: {len(graph.edges)}")
 
     print("Exporting canonical graph...")

@@ -6,6 +6,14 @@ A Master's thesis project that combines Large Language Models with Khronos 3D Dy
 
 硕士论文项目，将大语言模型与 Khronos 3D 动态场景图（DSG）结合，用于室内环境中的语义机器人任务规划。系统通过 RAG 增强的场景图数据检索，将自然语言指令转换为可执行的机器人任务链。
 
+> **Current Hospital workflow / 当前医院流程**: the maintained local target is
+> WSL Ubuntu 24.04 + ROS 2 Jazzy. For the reproducible Hospital P1000 RAG build
+> and the natural-language-to-Nav2 plan-only entry point, follow
+> [`RAG/khronos_3dsg_rag/README.md`](RAG/khronos_3dsg_rag/README.md) and
+> [`khronos-nav2-bridge/khronos_nav2_bridge/README_HOSPITAL.md`](khronos-nav2-bridge/khronos_nav2_bridge/README_HOSPITAL.md).
+> The older generic setup and Office examples below are legacy instructions,
+> not the Hospital P1000 run procedure.
+
 ---
 
 ## Table of Contents / 目录

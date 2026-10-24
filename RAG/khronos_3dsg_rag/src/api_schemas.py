@@ -32,7 +32,11 @@ class SceneEntity:
 
 @dataclass
 class EntityReference:
-    """Reference to an entity in natural language."""
+    """Reference to an entity in natural language.
+
+    Rich constraint objects use the API's attribute-based protocol; the RAG DTO
+    does not import planner schemas or validate/compile aggregate operations.
+    """
     reference_id: str
     text: str
     node_type: str | None = None
@@ -41,6 +45,10 @@ class EntityReference:
     room: str | None = None
     attributes: dict[str, str] = field(default_factory=dict)
     position: list[float] | None = None
+    quantifier: Literal["one", "all", "nearest", "farthest", "any"] = "one"
+    locations: list[Any] = field(default_factory=list)
+    relations: list[Any] = field(default_factory=list)
+    aggregate: Any | None = None
 
 
 @dataclass

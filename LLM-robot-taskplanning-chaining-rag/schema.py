@@ -95,10 +95,10 @@ class Constraints(BaseModel):
 
 
 class PlanDraftStep(BaseModel):
-    """LLM output step - no target_id allowed.
+    """LLM2 output step, grounded in the node IDs supplied by RAG.
 
-    This is what the LLM should output. The system deterministically
-    compiles target_ref to actual target_id.
+    The model selects an ID only from the per-request evidence allowlist;
+    candidate IDs remain explicit when instance selection is deferred.
 
     Valid target_ref values:
     - Top-level roles: "actor", "target", "source", "destination"
@@ -116,6 +116,9 @@ class PlanDraftStep(BaseModel):
     action: AllowedAction
     target_type: TargetType
     target_ref: str = ""  # Required for executable actions; "" only for no-ref actions
+    target_id: Optional[str] = None
+    candidate_node_ids: list[str] = Field(default_factory=list)
+    selection_policy: Optional[Literal["deferred_to_nav2"]] = None
     role_refs: Optional[dict[str, str]] = None  # P0 #31: multi-role support
     description: str
     executor: ExecutorType
@@ -215,6 +218,11 @@ class TaskStep(BaseModel):
             For multi-role actions like escort_to: {"actor": "actor", "destination": "destination"}.
         role_ids: Dict mapping role names to resolved node IDs (P0 #31).
             Populated by the system from role_refs, not by the LLM directly.
+        candidate_node_ids: Exact RAG candidates for a semantic target whose concrete
+            instance is deferred until Nav2 planning. This does not select an instance.
+        role_candidate_node_ids: Candidate node sets for multi-role actions such as
+            escort/guide. Populated by the system, never by the LLM.
+        selection_policy: Deferred instance-selection policy for Nav2.
         description: Short human-readable description of this step.
         executor: The subsystem responsible for executing this step.
         constraints: Navigation and behavioral constraints for this step.
@@ -227,6 +235,9 @@ class TaskStep(BaseModel):
     target_id: Optional[str] = None
     role_refs: Optional[dict[str, str]] = None  # P0 #31: multi-role
     role_ids: Optional[dict[str, str]] = None   # P0 #31: resolved multi-role
+    candidate_node_ids: list[str] = Field(default_factory=list)
+    role_candidate_node_ids: dict[str, list[str]] = Field(default_factory=dict)
+    selection_policy: Optional[Literal["deferred_to_nav2"]] = None
     description: str
     executor: ExecutorType
     constraints: Constraints = Field(default_factory=Constraints)
@@ -290,6 +301,8 @@ class PipelineResult(BaseModel):
     grounded_task: Optional[dict] = None
     task_plan: Optional[dict] = None
     raw_plan_draft: Optional[dict] = None  # P0 #36: raw plan before compilation
+    planning_attempts: list[dict] = Field(default_factory=list)
+    intent_parse_attempts: list[dict] = Field(default_factory=list)
     validation_errors: list[str] = Field(default_factory=list)
     latency_ms: dict[str, float] = Field(default_factory=dict)
     error: Optional[str] = None

@@ -38,6 +38,8 @@ from grounding.orchestrator import GroundingResult  # noqa: E402
 from api_schemas import ResolutionResult, ResolutionCandidate  # noqa: E402
 from planner_schemas.intent import EntityReference  # noqa: E402
 
+SCORER_VERSION = "simple_planner_metrics_v2"
+METRIC_CONTRACT_VERSION = "simple_completeness_v3"
 DEFAULT_MODEL = "mistral:latest"
 CASES = Path(__file__).resolve().parent / "cases" / "planner_benchmark_50_v3_simple.jsonl"
 OUT_BASE = Path(__file__).resolve().parent / "results" / "planner_v3_simple"
@@ -144,7 +146,8 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
     instruction = case["instruction"]
     og = case["oracle_grounding"]
     t0 = time.time()
-    base = {"case_id": case["case_id"], "category": case.get("category"), "instruction": instruction}
+    base = {"case_id": case["case_id"], "category": case.get("category"), "instruction": instruction,
+            "scorer_version": SCORER_VERSION, "metric_contract_version": METRIC_CONTRACT_VERSION}
 
     # status gate：不调用 Planner
     if "pipeline_status" in og:
@@ -167,6 +170,13 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
     exp_steps = expected.get("steps", [])
     exp_actions = [s["action"] for s in exp_steps]
     exp_refs = [s.get("ref") for s in exp_steps]
+    # Defaults remain scoreable when generation or compilation fails.
+    base.update({
+        "status_correct": False, "action_exact_sequence": False, "action_ordered": False,
+        "role_ref_accuracy": 0.0 if exp_refs else None, "role_ref_total": len(exp_refs),
+        "compiled_exact_match": False if case.get("expected_compiled_plan") is not None else None,
+        "failure_stage": None,
+    })
 
     gt = build_grounded_task(og, instruction)
     mock = build_mock_grounding(gt)
@@ -180,15 +190,15 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
 
     try:
         # first pass
-        draft = generate_simple_plan(instruction, gt, model, config)
         attempt_count += 1
+        draft = generate_simple_plan(instruction, gt, model, config)
         first_pass_errors = []
     except Exception as e:
         first_pass_errors = [str(e)]
         # repair（最多 1 次）：只提供 allowed actions + refs + schema error
         try:
-            draft = generate_simple_plan(instruction, gt, model, config, errors=first_pass_errors)
             attempt_count += 1
+            draft = generate_simple_plan(instruction, gt, model, config, errors=first_pass_errors)
             repair_rate = 1
             repair_errors = []
         except Exception as e2:
@@ -198,6 +208,9 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
                 "planner_invoked": True, "predicted_status": "system_error",
                 "expected_status": exp_status, "status_gate_correct": False,
                 "error": f"Schema failed: {first_pass_errors + repair_errors}",
+                "schema_valid": False, "strict_symbolic_success": False,
+                "failure_stage": "schema",
+                "compiled_validation_pass": False,
                 "attempt_count": attempt_count, "repair_rate": repair_rate,
                 "first_pass_errors": first_pass_errors, "repair_errors": repair_errors,
                 "final_symbolic_plan": None, "final_compiled_plan": None,
@@ -205,10 +218,6 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
                 "latency_ms": (time.time() - t0) * 1000,
             })
             return base
-
-    # compile（确定性）
-    plan = compile_simple_plan(draft, gt)
-    errors = _validate_grounded_plan(plan, mock, grounded_task=gt)
 
     # ---- LLM symbolic metrics ----
     pred_actions = [s.action for s in draft.steps]
@@ -232,12 +241,37 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
 
     schema_valid = True
     strict_symbolic = bool(status_correct and action_exact and ref_accuracy == 1.0)
+    base.update({
+        "planner_invoked": True, "predicted_status": draft.status, "expected_status": exp_status,
+        "status_correct": status_correct, "status_gate_correct": status_correct,
+        "schema_valid": schema_valid, "action_exact_sequence": action_exact, "action_ordered": action_ordered,
+        "predicted_actions": pred_actions, "expected_actions": exp_actions,
+        "role_ref_accuracy": ref_accuracy, "role_ref_total": ref_total,
+        "strict_symbolic_success": strict_symbolic,
+        "first_pass_errors": first_pass_errors, "repair_errors": repair_errors,
+        "attempt_count": attempt_count, "repair_rate": repair_rate,
+        "final_symbolic_plan": json.loads(draft.model_dump_json()),
+    })
+    plan = None
+    failure_stage = "compiler"
+    try:
+        plan = compile_simple_plan(draft, gt)
+        failure_stage = "validator"
+        errors = _validate_grounded_plan(plan, mock, grounded_task=gt)
+    except Exception as exc:
+        base.update({
+            "compiled_validation_pass": False, "error": str(exc),
+            "failure_stage": failure_stage, "validation_errors": [str(exc)],
+            "final_compiled_plan": json.loads(plan.model_dump_json()) if plan else None,
+            "latency_ms": (time.time() - t0) * 1000,
+        })
+        return base
 
     # ---- Final compiled metrics ----
     compiled_valid = (not errors and plan.status == "valid")
     exp_compiled = case.get("expected_compiled_plan")
-    compiled_exact = None
-    if exp_compiled and compiled_valid:
+    compiled_exact = False if exp_compiled is not None else None
+    if exp_compiled is not None and compiled_valid:
         ec_steps = exp_compiled.get("steps", [])
         if len(ec_steps) == len(plan.task_chain):
             compiled_exact = all(
@@ -275,6 +309,7 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
         "compiled_exact_match": compiled_exact,
         "hallucinated_ids": hallucinated, "emitted_ids": emitted_ids,
         "error": None if compiled_valid else (errors or None),
+        "failure_stage": None if compiled_valid else "validator",
         "validation_errors": errors,
         "first_pass_errors": first_pass_errors, "repair_errors": repair_errors,
         "attempt_count": attempt_count, "repair_rate": repair_rate,
@@ -285,16 +320,8 @@ def evaluate_case(case: dict, model: str, config: dict) -> dict:
     return base
 
 
-def run_eval(model: str, repeats: int, output_dir: Path):
-    cases = [json.loads(l) for l in open(CASES, encoding="utf-8") if l.strip()]
-    config = dict(CONFIG_BASE)
-    results = []
-    for repeat in range(repeats):
-        for case in cases:
-            r = evaluate_case(case, model, config)
-            r["repeat"] = repeat
-            results.append(r)
-
+def compute_summary(results: list[dict], model: str, repeats: int) -> dict:
+    """Keep homogeneous metric contracts separate, including unversioned history."""
     n = len(results)
     inv = [r for r in results if r.get("planner_invoked")]
     gates = [r for r in results if not r.get("planner_invoked")]
@@ -302,7 +329,7 @@ def run_eval(model: str, repeats: int, output_dir: Path):
     def rate(rs, key, only_invoked=False):
         pool = rs if not only_invoked else [r for r in rs if r.get("planner_invoked")]
         vals = [r for r in pool if r.get(key) is not None]
-        return sum(1 for r in vals if r[key]) / len(vals) if vals else None
+        return sum(float(r[key]) for r in vals) / len(vals) if vals else None
 
     summary = {
         "model": model, "repeats": repeats, "total_cases": n,
@@ -315,7 +342,10 @@ def run_eval(model: str, repeats: int, output_dir: Path):
         "symbolic_ordered_action_coverage": rate(inv, "action_ordered", only_invoked=True),
         "symbolic_role_ref_accuracy": rate(inv, "role_ref_accuracy", only_invoked=True),
         "symbolic_strict_success": rate(inv, "strict_symbolic_success", only_invoked=True),
-        "first_pass_success": rate([r for r in inv if r.get("repair_rate") is None], "strict_symbolic_success"),
+        "first_pass_success": sum(bool(r.get("strict_symbolic_success")) and not r.get("first_pass_errors")
+                                  and r.get("repair_rate") is None for r in inv) / len(inv) if inv else None,
+        "first_pass_denominator": len(inv),
+        "scorer_version": SCORER_VERSION,
         "post_repair_success": rate([r for r in inv if r.get("repair_rate") is not None], "strict_symbolic_success"),
         "repair_rate": (sum(1 for r in inv if r.get("repair_rate") is not None) / len(inv)) if inv else None,
         # Final compiled
@@ -328,11 +358,44 @@ def run_eval(model: str, repeats: int, output_dir: Path):
         "avg_latency_ms": sum(r["latency_ms"] for r in results) / n if n else 0,
     }
 
+    versions = {(r.get("scorer_version", "legacy_unversioned"),
+                 r.get("metric_contract_version", "legacy_contract")) for r in results}
+    summary["scorer_version"] = next(iter(versions))[0] if len(versions) == 1 else "mixed"
+    summary["metric_contract_version"] = next(iter(versions))[1] if len(versions) == 1 else "mixed"
+    summary["score_versions_compatible"] = len(versions) <= 1
+    if len(versions) > 1:
+        by_version = {}
+        for version in sorted(versions):
+            subset = [r for r in results if (
+                r.get("scorer_version", "legacy_unversioned"),
+                r.get("metric_contract_version", "legacy_contract")) == version]
+            by_version[" / ".join(version)] = compute_summary(subset, model, repeats)
+        for key in summary:
+            if key not in {"model", "repeats", "total_cases", "planner_invoked_count",
+                           "pre_set_status_count", "first_pass_denominator", "total_emitted_ids",
+                           "scorer_version", "metric_contract_version", "score_versions_compatible"}:
+                summary[key] = None
+        summary["summaries_by_version"] = by_version
+    return summary
+
+
+def run_eval(model: str, repeats: int, output_dir: Path):
+    cases = [json.loads(l) for l in open(CASES, encoding="utf-8") if l.strip()]
+    config = dict(CONFIG_BASE)
+    results = []
+    for repeat in range(repeats):
+        for case in cases:
+            r = evaluate_case(case, model, config)
+            r["repeat"] = repeat
+            results.append(r)
+
+    summary = compute_summary(results, model, repeats)
     output_dir.mkdir(parents=True, exist_ok=True)
     with open(output_dir / "per_case_results.jsonl", "w", encoding="utf-8") as f:
         for r in results:
             f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
-    failures = [r for r in results if r.get("error") or not r.get("compiled_validation_pass", True)]
+    failures = [r for r in results if r.get("error") or not r.get("compiled_validation_pass", True)
+                or (r.get("planner_invoked") and not r.get("strict_symbolic_success", False))]
     with open(output_dir / "failures.jsonl", "w", encoding="utf-8") as f:
         for r in failures:
             f.write(json.dumps(r, ensure_ascii=False, default=str) + "\n")
@@ -357,6 +420,7 @@ def _write_manifest(output_dir: Path, model: str, repeats: int):
         "created_at": "2026-08-06",
         "run_command": f"python -m eval.run_planner_simple_eval --model {model} --repeats {repeats}",
         "mode": "oracle_grounding_simple",
+        "scorer_version": SCORER_VERSION, "metric_contract_version": METRIC_CONTRACT_VERSION,
         "model": model, "repeats": repeats,
         "benchmark": {"file": str(CASES), "sha256": hashlib.sha256(bm).hexdigest()},
         "evaluator": {"file": str(Path(__file__).resolve()), "sha256": hashlib.sha256(self_code).hexdigest()},

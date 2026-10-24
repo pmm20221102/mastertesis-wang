@@ -52,6 +52,9 @@ class GroundingResult:
         self.status: str = "ready"
         self.errors: list[str] = []
         self._status_priority: int = 1
+        self._required_references: set[str] = set()
+        self._required_constraints: set[str] = set()
+        self.condition_constraints: list[dict] = []
 
     def add_result(self, key: str, result: ResolutionResult, is_required: bool = True) -> None:
         """Add a resolution result for a reference.
@@ -63,6 +66,10 @@ class GroundingResult:
                 can change the overall status.
         """
         self.references[key] = result
+        if is_required:
+            self._required_references.add(key)
+        else:
+            self._required_references.discard(key)
 
         # Only required references can change the overall blocking status
         if is_required:
@@ -75,17 +82,18 @@ class GroundingResult:
             if result.status in ("ambiguous", "not_found"):
                 self.errors.append(f"'{key}' ({result.reference.text}): {result.status}")
 
-    def add_constraint_result(self, key: str, result: ResolutionResult) -> None:
-        """Add a constraint resolution result (optional, doesn't block planning)."""
+    def add_constraint_result(self, key: str, result: ResolutionResult, is_required: bool = False) -> None:
+        """Add a constraint; hard avoid failures block, soft preferences do not."""
         self.constraints[key] = result
+        if is_required:
+            self._required_constraints.add(key)
+        else:
+            self._required_constraints.discard(key)
+        self.recompute_status()
 
     def get_resolved_ids(self) -> set[str]:
-        """Get all resolved node IDs from references."""
-        ids = set()
-        for result in self.references.values():
-            if result.status == "resolved" and result.selected:
-                ids.add(result.selected.node_id)
-        return ids
+        """Get all selected node IDs, including explicit set queries."""
+        return self.get_all_resolved_ids()
 
     def get_resolved_id_by_role(self, role: str) -> str | None:
         """Get resolved node ID for a specific role."""
@@ -98,24 +106,30 @@ class GroundingResult:
         """Get all node IDs that should be avoided."""
         ids = set()
         for key, result in self.constraints.items():
-            if "avoid" in key and result.status == "resolved" and result.selected:
-                ids.add(result.selected.node_id)
+            if "avoid" in key and result.status in ("resolved", "resolved_set"):
+                ids.update(c.node_id for c in result.selected_many)
+                if result.selected:
+                    ids.add(result.selected.node_id)
         return ids
 
     def get_constraint_prefer_ids(self) -> set[str]:
         """Get all node IDs that should be preferred."""
         ids = set()
         for key, result in self.constraints.items():
-            if "prefer" in key and result.status == "resolved" and result.selected:
-                ids.add(result.selected.node_id)
+            if "prefer" in key and result.status in ("resolved", "resolved_set"):
+                ids.update(c.node_id for c in result.selected_many)
+                if result.selected:
+                    ids.add(result.selected.node_id)
         return ids
 
     def get_constraint_ids(self) -> set[str]:
         """Get all resolved node IDs from constraints (avoid, prefer, etc.)."""
         ids = set()
         for result in self.constraints.values():
-            if result.status == "resolved" and result.selected:
-                ids.add(result.selected.node_id)
+            if result.status in ("resolved", "resolved_set"):
+                ids.update(c.node_id for c in result.selected_many)
+                if result.selected:
+                    ids.add(result.selected.node_id)
         return ids
 
     def get_all_resolved_ids(self) -> set[str]:
@@ -141,7 +155,11 @@ class GroundingResult:
         self.status = "ready"
         self.errors = []
 
-        for key, result in self.references.items():
+        required = [(key, value) for key, value in self.references.items()
+                    if key in self._required_references]
+        required += [(key, value) for key, value in self.constraints.items()
+                     if key in self._required_constraints]
+        for key, result in required:
             new_priority = STATUS_PRIORITY.get(result.status, 0)
             if new_priority > self._status_priority:
                 self._status_priority = new_priority
@@ -181,9 +199,11 @@ class GroundingResult:
                 key: {
                     "status": result.status,
                     "selected_node_id": result.selected.node_id if result.selected else None,
+                    "selected_node_ids": [c.node_id for c in result.selected_many],
                 }
                 for key, result in self.constraints.items()
             },
+            "condition_constraints": self.condition_constraints,
             "errors": self.errors,
         }
 
@@ -260,32 +280,27 @@ class GroundingOrchestrator:
             resolution = self._resolve_with_room_context(ref, room_context)
 
             # Apply relation filtering if present
-            if ref.relations and resolution.status in ("resolved", "ambiguous"):
+            if ref.relations and resolution.status in ("resolved", "resolved_set", "ambiguous"):
                 resolution = self._apply_relation_filter(ref, resolution)
 
             # Apply quantifier if present
             if ref.quantifier != "one" and resolution.status in ("resolved", "ambiguous"):
                 resolution = self._apply_quantifier(ref, resolution)
 
-            result.add_result(key, resolution)
+            result.add_result(key, resolution, is_required=not bool(intent.steps)
+                              and intent.action not in ("wait", "ask_clarification", "unsupported"))
 
             if resolution.status == "resolved":
                 logger.info(f"  Resolved to: {resolution.selected.node_id}")
+            elif resolution.status == "resolved_set":
+                logger.info(f"  Resolved set: {len(resolution.selected_many)} entities")
             elif resolution.status == "ambiguous":
                 logger.info(f"  Ambiguous: {len(resolution.candidates)} candidates")
             else:
                 logger.info(f"  Not found: {resolution.reason}")
 
-        # Step 3: Handle aggregate constraints
-        for i, constraint in enumerate(intent.constraints):
-            if constraint.target_text:
-                ref = EntityReference(
-                    text=constraint.target_text,
-                    label=constraint.target_label,
-                )
-                key = f"constraint_{constraint.type}_{i}"
-                resolution = self.rag.resolve_entity(ref)
-                result.add_constraint_result(key, resolution)
+        # Step 3: Preserve constraint keys and distinguish hard/soft requirements.
+        self._ground_constraints(intent.constraints, result)
 
         # Step 4: Handle aggregate queries on target
         if intent.target and intent.target.aggregate:
@@ -352,7 +367,27 @@ class GroundingOrchestrator:
 
         For example, "object near desk" filters to objects that are neighbors of desk.
         """
-        if not ref.relations or not resolution.candidates:
+        if not ref.relations:
+            return resolution
+
+        if hasattr(self.rag, "_apply_relation_constraints"):
+            # Production SceneGraphRAG has already enforced all relation filters
+            # on the complete eligible pool. Never rerank the surviving subset
+            # with a competing legacy neighbor implementation.
+            return resolution
+
+        if any(r.relation in ("near", "nearest_to", "farthest_from") for r in ref.relations):
+            # Legacy adapters cannot prove complete-pool distance semantics.
+            # Fail closed, never substitute neighbor edges or pick an arbitrary
+            # candidate through the subsequent any-quantifier fallback.
+            resolution.status, resolution.selected = "not_found", None
+            resolution.candidates, resolution.selected_many = [], []
+            resolution.reason = "Backend lacks the complete canonical relative-ranking contract"
+            return resolution
+
+        if not resolution.candidates:
+            resolution.candidates = list(resolution.selected_many)
+        if not resolution.candidates:
             return resolution
 
         for relation in ref.relations:
@@ -401,22 +436,18 @@ class GroundingOrchestrator:
                     c for c in resolution.candidates
                     if c.node_id in neighbor_ids
                 ]
-            elif relation.relation == "inside":
-                # Filter to children of target (things inside the target)
-                children = self.rag.get_children(target_node_id)
-                child_ids = {c.node_id for c in children}
-                resolution.candidates = [
-                    c for c in resolution.candidates
-                    if c.node_id in child_ids
-                ]
-            elif relation.relation == "contains":
-                # Filter to parents of target (things that contain the target)
-                parents = self.rag.get_parents(target_node_id)
-                parent_ids = {p.node_id for p in parents}
-                resolution.candidates = [
-                    c for c in resolution.candidates
-                    if c.node_id in parent_ids
-                ]
+            elif relation.relation in ("inside", "contains", "parent_of", "child_of"):
+                walk = (self.rag.get_parents if relation.relation in ("contains", "parent_of")
+                        else self.rag.get_children)
+                allowed_ids = {target_node_id} if relation.relation == "inside" else set()
+                pending, visited = [target_node_id], {target_node_id}
+                while pending:
+                    for node in walk(pending.pop()):
+                        allowed_ids.add(node.node_id)
+                        if relation.relation in ("inside", "contains") and node.node_id not in visited:
+                            visited.add(node.node_id)
+                            pending.append(node.node_id)
+                resolution.candidates = [c for c in resolution.candidates if c.node_id in allowed_ids]
             elif relation.relation == "connected_to":
                 # Filter to neighbors of target
                 neighbors = self.rag.get_neighbors(target_node_id)
@@ -430,13 +461,21 @@ class GroundingOrchestrator:
             if not resolution.candidates:
                 resolution.status = "not_found"
                 resolution.selected = None
+                resolution.selected_many = []
                 resolution.reason = f"No candidates match relation '{relation.relation}' with '{relation.target_text}'"
+            elif ref.quantifier == "all":
+                resolution.status = "resolved_set"
+                resolution.selected_many = list(resolution.candidates)
+                resolution.selected = resolution.candidates[0]
+                resolution.reason = None
             elif len(resolution.candidates) == 1:
                 resolution.status = "resolved"
+                resolution.selected_many = []
                 resolution.selected = resolution.candidates[0]
                 resolution.reason = None
             else:
                 resolution.status = "ambiguous"
+                resolution.selected, resolution.selected_many = None, []
                 resolution.reason = f"Multiple candidates match relation constraint"
 
         return resolution
@@ -456,7 +495,7 @@ class GroundingOrchestrator:
             return resolution
 
         # If API already resolved (e.g., nearest fast path), don't override
-        if resolution.status in ("resolved", "resolved_set", "ambiguous"):
+        if resolution.status in ("resolved", "resolved_set"):
             return resolution
 
         if ref.quantifier == "all":
@@ -465,9 +504,22 @@ class GroundingOrchestrator:
             resolution.selected = resolution.candidates[0]  # Primary
             resolution.selected_many = resolution.candidates  # All candidates for set evaluation
             resolution.reason = f"Resolved {len(resolution.candidates)} entities (quantifier: all)"
-        elif ref.quantifier == "nearest":
-            # Sort by position if available, otherwise use score
-            if resolution.candidates[0].position and ref.position:
+        elif ref.quantifier in ("nearest", "farthest"):
+            import math
+            if not ref.position or len(ref.position) < 3 or not all(math.isfinite(value) for value in ref.position):
+                resolution.status = "not_found"
+                resolution.selected = None
+                resolution.reason = "Nearest query requires a finite reference position"
+                return resolution
+            resolution.candidates = [candidate for candidate in resolution.candidates
+                                     if candidate.position and len(candidate.position) >= 3
+                                     and all(math.isfinite(value) for value in candidate.position)]
+            if not resolution.candidates:
+                resolution.status = "not_found"
+                resolution.selected = None
+                resolution.reason = "Nearest query has no positioned candidates"
+                return resolution
+            if ref.position:
                 # Calculate distance to each candidate
                 import math
                 ref_pos = ref.position
@@ -475,8 +527,7 @@ class GroundingOrchestrator:
                     if c.position:
                         return math.sqrt(sum((a - b) ** 2 for a, b in zip(ref_pos, c.position)))
                     return float('inf')
-                resolution.candidates.sort(key=dist)
-            # else sort by score (already sorted)
+                resolution.candidates.sort(key=dist, reverse=ref.quantifier == "farthest")
             resolution.status = "resolved"
             resolution.selected = resolution.candidates[0]
         elif ref.quantifier == "any":
@@ -500,10 +551,27 @@ class GroundingOrchestrator:
 
         aggregate = target_ref.aggregate
 
+        # Canonical categories must all be supported. Never keep an unrelated
+        # generic room selection when an aggregate asks for an unknown class.
+        from semantic_labels import normalize_label
+        all_objects = self.rag.search_by_type("object", top_k=None)
+        if not all_objects:
+            all_objects = self.rag.search_by_type("objects", top_k=None)
+        ontology = sorted({obj.label for obj in all_objects})
+        labels = [normalize_label(label, ontology) for label in aggregate.target_labels]
+        if not labels or any(label is None for label in labels):
+            existing = result.references.get("target")
+            if existing is not None:
+                existing.status, existing.selected = "not_found", None
+                existing.candidates, existing.selected_many = [], []
+                existing.reason = "Aggregate includes an unknown or ambiguous category"
+            return
+        target_labels = {label.lower() for label in labels}
+
         # Get all rooms (v2 type index uses singular: "room")
-        rooms = self.rag.search_by_type("room", top_k=50)
+        rooms = self.rag.search_by_type("room", top_k=None)
         if not rooms:
-            rooms = self.rag.search_by_type("rooms", top_k=50)
+            rooms = self.rag.search_by_type("rooms", top_k=None)
         if not rooms:
             return
 
@@ -511,14 +579,13 @@ class GroundingOrchestrator:
         room_counts = {}
         for room in rooms:
             # Get all objects that belong to this room (via room_id field)
-            all_objects = self.rag.search_by_type("object", top_k=500)
+            all_objects = self.rag.search_by_type("object", top_k=None)
             if not all_objects:
-                all_objects = self.rag.search_by_type("objects", top_k=500)
+                all_objects = self.rag.search_by_type("objects", top_k=None)
             count = sum(
                 1 for obj in all_objects
                 if obj.room_id == room.node_id
-                and any(label.lower() in obj.label.lower()
-                        for label in aggregate.target_labels)
+                and obj.label.lower() in target_labels
             )
             if count > 0:
                 room_counts[room.node_id] = (room, count)
@@ -564,9 +631,9 @@ class GroundingOrchestrator:
             loc_node_id = aggregate.location.node_id
             loc_type = aggregate.location.node_type
 
-            all_objects = self.rag.search_by_type("object", top_k=500)
+            all_objects = self.rag.search_by_type("object", top_k=None)
             if not all_objects:
-                all_objects = self.rag.search_by_type("objects", top_k=500)
+                all_objects = self.rag.search_by_type("objects", top_k=None)
 
             count = 0
             for obj in all_objects:
@@ -576,7 +643,7 @@ class GroundingOrchestrator:
                 if loc_type == "place" and obj.place_id != loc_node_id:
                     continue
                 # Check label match
-                if any(label.lower() in obj.label.lower() for label in aggregate.target_labels):
+                if obj.label.lower() in target_labels:
                     count += 1
 
             # Return result with aggregate_value
@@ -644,32 +711,41 @@ class GroundingOrchestrator:
                 reason=f"Aggregate: {aggregate.operation} of {aggregate.target_labels} = {count}",
             )
 
-    def _ground_multi_step(
-        self,
-        steps: list,
-        result: GroundingResult,
-    ) -> None:
-        """Ground multi-step intents.
+    def _ground_constraints(self, constraints, result: GroundingResult, prefix: str = "") -> None:
+        for index, constraint in enumerate(constraints):
+            key = f"{prefix}constraint_{constraint.type}_{index}"
+            if constraint.type == "condition":
+                result.condition_constraints.append({
+                    "ref": key, "key": key, "type": "condition",
+                    "description": constraint.description,
+                })
+            if constraint.target_text:
+                reference = EntityReference(text=constraint.target_text, label=constraint.target_label)
+                resolution = self.rag.resolve_entity(reference)
+            elif constraint.type == "avoid":
+                reference = EntityReference(text=constraint.description, label=constraint.target_label)
+                resolution = ResolutionResult(
+                    status="not_found", reference=reference,
+                    reason="Hard avoid constraint has no entity reference")
+            else:
+                continue
+            result.add_constraint_result(key, resolution, is_required=constraint.type == "avoid")
 
-        Each step has its own actor/target/source/destination that need grounding.
-        """
-        for i, step in enumerate(steps):
-            step_key = f"step_{i}"
-
-            # Ground step's target
-            if step.target:
-                resolution = self.rag.resolve_entity(step.target)
-                result.add_result(f"{step_key}_target", resolution, is_required=False)
-
-            # Ground step's actor
-            if step.actor:
-                resolution = self.rag.resolve_entity(step.actor)
-                result.add_result(f"{step_key}_actor", resolution, is_required=False)
-
-            # Ground step's destination
-            if step.destination:
-                resolution = self.rag.resolve_entity(step.destination)
-                result.add_result(f"{step_key}_destination", resolution, is_required=False)
+    def _ground_multi_step(self, steps: list, result: GroundingResult) -> None:
+        """Resolve each step's four roles and constraints without dropping required failures."""
+        for index, step in enumerate(steps):
+            required = step.action not in ("wait", "ask_clarification", "unsupported")
+            for role in ("actor", "target", "source", "destination"):
+                reference = getattr(step, role)
+                if reference is None:
+                    continue
+                resolution = self._resolve_with_room_context(reference, None)
+                if reference.relations and resolution.status in ("resolved", "resolved_set", "ambiguous"):
+                    resolution = self._apply_relation_filter(reference, resolution)
+                if reference.quantifier != "one" and resolution.status in ("resolved", "ambiguous"):
+                    resolution = self._apply_quantifier(reference, resolution)
+                result.add_result(f"step_{index}_{role}", resolution, is_required=required)
+            self._ground_constraints(step.constraints, result, prefix=f"step_{index}_")
 
     def ground_references(
         self,

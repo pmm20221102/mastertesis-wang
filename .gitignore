@@ -75,3 +75,17 @@ mesh.ply
 # Vector DB / 向量库（可重建）
 **/vector_db/
 docker/
+
+# Local Hospital P1000 source snapshot and reproducible build outputs.
+# Keep these available locally; they are large/private inputs or rebuildable artifacts.
+/datasets/Hospital-workstation-backup-20261006/
+/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024*/
+/RAG/khronos_3dsg_rag/outputs/hospital_p1000_manual_semantic_overlay_20261012/
+/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v4_NOT_FOR_USE.md
+/khronos-nav2-bridge/khronos_nav2_bridge/vendor/llm_rag_compat/rag/outputs/
+/khronos-nav2-bridge/khronos_nav2_bridge/artifacts/
+/khronos-nav2-bridge/khronos_nav2_bridge/generated/*
+!/khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/
+!/khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/**
+/experiments/hospital-khronos-only-20261019/output/
+/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/

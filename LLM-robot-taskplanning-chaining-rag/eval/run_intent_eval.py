@@ -14,6 +14,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
+import hashlib
 import json
 import logging
 import sys
@@ -26,6 +28,51 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from planner_schemas.intent import TaskIntent, EntityReference
 
 logger = logging.getLogger(__name__)
+SCORER_VERSION = "intent_whole_fields_v2"
+PROVENANCE_VERSION = "intent_runtime_provenance_v1"
+SUMMARY_CONTRACT_VERSION = "intent_summary_contracts_v1"
+
+
+def _provenance_hash(value: Any) -> str:
+    return hashlib.sha256(json.dumps(value, sort_keys=True, default=str).encode()).hexdigest()
+
+
+def _runtime_provenance(config: dict, parser_path: str, model: str) -> dict:
+    options = copy.deepcopy(config.get("options", {}))
+    return {
+        "provenance_version": PROVENANCE_VERSION, "parser_path": parser_path,
+        "model": model,
+        "request_contract": {"think": False, "schema_sha256": _provenance_hash(TaskIntent.model_json_schema())}
+                            if parser_path == "llm_eval" else None,
+        "host": config.get("ollama_host") or None, "options": options,
+        "options_sha256": _provenance_hash(options),
+        "config_sha256": _provenance_hash(config),
+        "server_defaults": "not_verified",
+    }
+
+
+def _model_digest_metadata(model: str, host: str, enabled: bool) -> tuple[str, dict]:
+    """An exact-name metadata lookup is optional; never infer or truncate a digest."""
+    if not enabled:
+        return "unknown", {"status": "not_verified", "reason": "lookup_disabled", "source": None}
+    verification = {"status": "not_verified", "source": "ollama.list",
+                    "scope": "post_run_metadata_only", "queried_model": model,
+                    "queried_host": host, "queried_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    try:
+        from ollama import Client
+        response = Client(host=host, timeout=10).list()
+        models = response.get("models", []) if isinstance(response, dict) else response.models
+        for item in models:
+            name = (item.get("model") or item.get("name")) if isinstance(item, dict) else (
+                getattr(item, "model", None) or getattr(item, "name", None))
+            if name == model:
+                digest = item.get("digest") if isinstance(item, dict) else getattr(item, "digest", None)
+                if digest:
+                    return digest, {**verification, "status": "verified"}
+                return "unknown", {**verification, "reason": "digest_missing"}
+        return "unknown", {**verification, "reason": "requested_model_not_found"}
+    except Exception as exc:
+        return "unknown", {**verification, "reason": "query_failed", "error_type": type(exc).__name__}
 
 
 # --- Normalization ---
@@ -359,17 +406,20 @@ def evaluate_intent_case(
     oracle = case["oracle_intent"]
 
     start_time = time.time()
+    parser_path = "not_verified"
 
     try:
         # Parse with eval_mode to get raw + canonicalized
         result = parse_intent_with_llm(instruction, model=model, config=config, eval_mode=True)
 
         if isinstance(result, dict):
+            parser_path = "llm_eval"
             raw_json = result["raw_lmm_output"]
             predicted = intent_to_dict(result["canonicalized_intent"])
             thinking_text = result.get("thinking_text")
         else:
             # Fallback for fast path (no LLM call)
+            parser_path = "fast_path"
             raw_json = intent_to_dict(result)
             predicted = raw_json
             thinking_text = None
@@ -380,7 +430,7 @@ def evaluate_intent_case(
         rules_applied = []
         if raw_json and raw_json.get("action") != predicted.get("action"):
             rules_applied.append("action_override")
-        if raw_json and raw_json.get("target", {}).get("quantifier") != predicted.get("target", {}).get("quantifier"):
+        if raw_json and (raw_json.get("target") or {}).get("quantifier") != (predicted.get("target") or {}).get("quantifier"):
             rules_applied.append("quantifier_fix")
         # Check for removed spurious roles
         for role in ["source", "destination", "actor"]:
@@ -554,7 +604,11 @@ def evaluate_intent_case(
         "step_semantic_exact": step_semantic_exact,
         "step_role_accuracy": step_role_accuracy,
         # Strict (semantic vs surface)
-        "strict_exact_match": strict_exact,
+        "strict_exact_match": strict_exact,  # legacy weaker metric retained
+        "strict_intent_match": schema_valid and _whole_intent_match(predicted, oracle),
+        "scorer_version": SCORER_VERSION,
+        "provenance_version": PROVENANCE_VERSION,
+        "runtime_provenance": _runtime_provenance(config, parser_path, model),
         "surface_exact_match": surface_exact,
         # Failure
         "failure_category": failure_category,
@@ -572,6 +626,54 @@ def evaluate_intent_case(
     }
 
 
+def _semantic_value(value, field=""):
+    """Normalize semantic strings; preserve IDs and order-sensitive trajectories."""
+    if isinstance(value, str):
+        return value if field in ("node_id", "target_node_id") else _normalize_text(value)
+    if isinstance(value, dict):
+        return {key: _semantic_value(item, key) for key, item in value.items()}
+    if isinstance(value, list):
+        values = [_semantic_value(item) for item in value]
+        if field in ("relations", "locations", "constraints", "target_labels"):
+            return sorted(values, key=lambda item: json.dumps(item, sort_keys=True))
+        return values
+    return value
+
+
+def _whole_reference_match(pred, expected):
+    if pred is None or expected is None:
+        return pred is None and expected is None
+    if not _compare_entity_ref(pred, expected)["semantic_match"]:
+        return False
+    # Surface text is not identity when the oracle provides a canonical label.
+    keys = ("name", "attributes", "position", "quantifier", "locations", "relations", "aggregate")
+    return all(_semantic_value(pred.get(key), key) == _semantic_value(expected.get(key), key)
+               for key in keys)
+
+
+def _whole_intent_match(predicted, expected):
+    """Compare every semantic schema field, including ordered steps and constraints."""
+    try:
+        pred = TaskIntent.model_validate(predicted).model_dump(mode="json")
+        exp = TaskIntent.model_validate(expected).model_dump(mode="json")
+    except Exception:
+        return False
+
+    def step_match(left, right):
+        return (left["action"] == right["action"]
+                and all(_whole_reference_match(left.get(role), right.get(role))
+                        for role in ("actor", "target", "source", "destination"))
+                and _semantic_value(left.get("constraints", []), "constraints")
+                == _semantic_value(right.get("constraints", []), "constraints"))
+
+    if not step_match(pred, exp):
+        return False
+    psteps, esteps = pred.get("steps"), exp.get("steps")
+    if psteps is None or esteps is None:
+        return psteps is None and esteps is None
+    return len(psteps) == len(esteps) and all(step_match(p, e) for p, e in zip(psteps, esteps))
+
+
 # --- Summary ---
 
 def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, Any]:
@@ -579,6 +681,44 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
     total = len(results)
     if total == 0:
         return {}
+
+    def contract_key(row):
+        trace = row.get("runtime_provenance") or {}
+        runtime_key = row.get("runtime_contract_sha256")
+        if runtime_key is None:
+            runtime_key = (_provenance_hash({"model": trace.get("model"),
+                                            "config_sha256": trace.get("config_sha256")})
+                           if trace else "legacy_runtime_unknown")
+        return (row.get("scorer_version", "legacy_unversioned"),
+                row.get("provenance_version", "legacy_provenance_unknown"), runtime_key)
+
+    contracts = {contract_key(row) for row in results}
+    if len(contracts) > 1:
+        grouped = {}
+        for contract in sorted(contracts):
+            subset = [row for row in results if contract_key(row) == contract]
+            grouped[json.dumps(contract)] = compute_intent_summary(subset, cases)
+        # Preserve every public metric field, but expose comparable rates only in each group.
+        summary = {key: None for key in next(iter(grouped.values()))}
+        scorer_versions = {key[0] for key in contracts}
+        provenance_versions = {key[1] for key in contracts}
+        runtime_contracts = {key[2] for key in contracts}
+        summary.update({
+            "total_cases": total,
+            "scorer_version": next(iter(scorer_versions)) if len(scorer_versions) == 1 else "mixed",
+            "provenance_version": next(iter(provenance_versions)) if len(provenance_versions) == 1 else "mixed",
+            "runtime_contract_sha256": next(iter(runtime_contracts)) if len(runtime_contracts) == 1 else "mixed",
+            "summary_contract_version": SUMMARY_CONTRACT_VERSION,
+            "score_versions_compatible": len({key[:2] for key in contracts}) == 1,
+            "runtime_contracts_compatible": len(runtime_contracts) == 1,
+            "aggregation_allowed": False, "summaries_by_contract": grouped,
+        })
+        return summary
+
+    versions = {r.get("scorer_version", "legacy_unversioned") for r in results}
+    scorer_version = next(iter(versions)) if len(versions) == 1 else "mixed"
+    whole_available = scorer_version == SCORER_VERSION and all("strict_intent_match" in r for r in results)
+    whole_count = sum(bool(r.get("strict_intent_match")) for r in results)
 
     # Schema validity
     schema_valid_count = sum(1 for r in results if r["schema_valid"])
@@ -679,6 +819,15 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
 
     return {
         "total_cases": total,
+        "provenance_version": next(iter(contracts))[1],
+        "runtime_contract_sha256": next(iter(contracts))[2],
+        "summary_contract_version": SUMMARY_CONTRACT_VERSION,
+        "score_versions_compatible": True, "runtime_contracts_compatible": True,
+        "aggregation_allowed": True,
+        "scorer_version": scorer_version,
+        "strict_intent_match_rate": whole_count / total if whole_available else None,
+        "strict_intent_match_count": whole_count if whole_available else None,
+        "strict_intent_denominator": total if whole_available else None,
         "schema_validity_rate": schema_valid_count / total,
         # Action accuracy (post-canonicalization, all cases)
         "action_accuracy": action_correct / total,
@@ -721,6 +870,10 @@ def compute_intent_summary(results: list[dict], cases: list[dict]) -> dict[str, 
 
 def write_intent_summary_md(summary: dict, path: Path) -> None:
     """Write intent evaluation summary as markdown."""
+    if summary.get("aggregation_allowed") is False:
+        path.write_text("# Intent Parser Evaluation Report\n\nMixed contracts cannot be combined.\n"
+                        "See summaries_by_contract in summary.json for separate metrics.\n", encoding="utf-8")
+        return
     lines = [
         "# Intent Parser Evaluation Report",
         "",
@@ -785,16 +938,43 @@ def run_intent_evaluation(
     temperature: float = 0,
     output_dir: str | None = None,
     category_filter: str | None = None,
+    verify_model_digest: bool = False,
+    invocation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Run intent evaluation."""
     import time as _time
     run_start_time = _time.strftime("%Y-%m-%dT%H:%M:%S")
-    from main_rag import load_config, CONFIG_PATH
+    from main_rag import load_config, CONFIG_PATH, get_ollama_host
 
     config = load_config(CONFIG_PATH)
+    loaded_config_sha256 = _provenance_hash(config)
+    config_source = {"path": str(Path(CONFIG_PATH).resolve()),
+                     "loaded_config_sha256": loaded_config_sha256}
+    try:
+        config_source.update({"file_sha256": hashlib.sha256(Path(CONFIG_PATH).read_bytes()).hexdigest(),
+                              "file_status": "captured"})
+    except OSError as exc:
+        config_source.update({"file_sha256": None, "file_status": "not_verified",
+                              "file_reason": "file_not_found" if isinstance(exc, FileNotFoundError) else "read_failed"})
     # Override temperature
     config["options"] = config.get("options", {})
     config["options"]["temperature"] = temperature
+    # Resolve once and pass this same host/config to every parser call.
+    config["ollama_host"] = config.get("ollama_host") or get_ollama_host(config)
+    options_before_parser = copy.deepcopy(config["options"])
+    run_arguments = {"model": model, "repeats": repeats, "temperature": temperature,
+                     "category_filter": category_filter, "benchmark_path": str(benchmark_path),
+                     "output_dir": str(output_dir) if output_dir else None,
+                     "verify_model_digest": verify_model_digest}
+    from llm.intent_parser import INTENT_SYSTEM_PROMPT
+    benchmark_sha256 = hashlib.sha256(Path(benchmark_path).read_bytes()).hexdigest()
+    runtime_contract_sha256 = _provenance_hash({
+        "model": model, "config": config, "scorer_version": SCORER_VERSION,
+        "provenance_version": PROVENANCE_VERSION, "think": False,
+        "prompt_sha256": hashlib.sha256(INTENT_SYSTEM_PROMPT.encode()).hexdigest(),
+        "schema_sha256": _provenance_hash(TaskIntent.model_json_schema()),
+        "benchmark_sha256": benchmark_sha256, "category_filter": category_filter,
+    })
 
     # Load benchmark
     cases = []
@@ -822,6 +1002,7 @@ def run_intent_evaluation(
         repeat_results = []
         for i, case in enumerate(cases):
             result = evaluate_intent_case(case, model, config)
+            result["runtime_contract_sha256"] = runtime_contract_sha256
             result["repeat"] = repeat
             all_results.append(result)
             repeat_results.append(result)
@@ -841,6 +1022,8 @@ def run_intent_evaluation(
             summary["model"] = model
             summary["repeats"] = repeats
             summary["temperature"] = temperature
+            summary["provenance_version"] = PROVENANCE_VERSION
+            summary["runtime_config_sha256"] = _provenance_hash(config)
 
             with open(out / "summary.json", "w", encoding="utf-8") as f:
                 json.dump(summary, f, indent=2, ensure_ascii=False)
@@ -865,6 +1048,8 @@ def run_intent_evaluation(
     summary["model"] = model
     summary["repeats"] = repeats
     summary["temperature"] = temperature
+    summary["provenance_version"] = PROVENANCE_VERSION
+    summary["runtime_config_sha256"] = _provenance_hash(config)
 
     # Repeat stability (if multiple repeats)
     if repeats > 1:
@@ -903,30 +1088,29 @@ def run_intent_evaluation(
                     "repeat": r["repeat"],
                     "raw_output": r["raw_output"],
                     "schema_valid": r["schema_valid"],
+                    "provenance_version": PROVENANCE_VERSION,
+                    "runtime_provenance": r["runtime_provenance"],
                 }, ensure_ascii=False) + "\n")
 
         # Run manifest (complete provenance)
-        import hashlib
         import time as _time
 
-        with open(benchmark_path, "rb") as f:
-            bench_hash = hashlib.sha256(f.read()).hexdigest()[:16]
+        bench_hash = benchmark_sha256[:16]
 
         # Prompt hash
         from llm.intent_parser import INTENT_SYSTEM_PROMPT
-        prompt_hash = hashlib.sha256(INTENT_SYSTEM_PROMPT.encode()).hexdigest()[:16]
+        prompt_sha256 = hashlib.sha256(INTENT_SYSTEM_PROMPT.encode()).hexdigest()
+        prompt_hash = prompt_sha256[:16]
 
         # Schema hash
-        from planner_schemas.intent import TaskIntent
-        schema_hash = hashlib.sha256(
+        schema_sha256 = hashlib.sha256(
             json.dumps(TaskIntent.model_json_schema(), sort_keys=True).encode()
-        ).hexdigest()[:16]
+        ).hexdigest()
+        schema_hash = schema_sha256[:16]
 
         # Config hash
-        config = load_config(CONFIG_PATH)
-        config_hash = hashlib.sha256(
-            json.dumps(config, sort_keys=True, default=str).encode()
-        ).hexdigest()[:16]
+        runtime_config_sha256 = _provenance_hash(config)
+        config_hash = runtime_config_sha256[:16]
 
         # Code commit (best effort)
         try:
@@ -940,19 +1124,28 @@ def run_intent_evaluation(
             code_commit = "unknown"
 
         # Model digest (if available via Ollama)
-        model_digest = "unknown"
-        try:
-            from ollama import Client
-            from main_rag import get_ollama_host
-            client = Client(host=get_ollama(config), timeout=10)
-            for m in client.list().get("models", []):
-                if m.get("model") == model:
-                    model_digest = m.get("digest", "unknown")[:16]
-                    break
-        except Exception:
-            pass
+        model_digest, digest_verification = _model_digest_metadata(
+            model, config["ollama_host"], verify_model_digest)
 
         manifest = {
+            "provenance_version": PROVENANCE_VERSION, "scorer_version": SCORER_VERSION,
+            "summary_contract_version": SUMMARY_CONTRACT_VERSION,
+            "runtime_contract_sha256": runtime_contract_sha256,
+            "config_source": config_source,
+            "benchmark_sha256": benchmark_sha256, "prompt_sha256": prompt_sha256,
+            "schema_sha256": schema_sha256,
+            "runtime_config_sha256": runtime_config_sha256,
+            "runtime_options_sha256": _provenance_hash(config["options"]),
+            "runtime_adjustments": {"options": {
+                key: {"before": options_before_parser.get(key), "after": config["options"].get(key)}
+                for key in options_before_parser.keys() | config["options"].keys()
+                if options_before_parser.get(key) != config["options"].get(key)}},
+            "runtime_adjustments_source": "parser_mutation",
+            "run_arguments": run_arguments,
+            "invocation": invocation or {"source": "python_api", "explicit_overrides": None},
+            "runtime_defaults_verification": "server_defaults_not_verified",
+            "ollama_host": config["ollama_host"],
+            "model_digest_verification": digest_verification,
             "model": model,
             "model_digest": model_digest,
             "repeats": repeats,
@@ -971,9 +1164,12 @@ def run_intent_evaluation(
             "duration_seconds": round(sum(r.get("latency_ms", 0) for r in all_results) / 1000, 1) if all_results else 0,
             "completion_status": "completed",
             "options": config.get("options", {}),
+            "evaluator_source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         }
         with open(out / "run_manifest.json", "w", encoding="utf-8") as f:
             json.dump(manifest, f, indent=2)
+        with open(out / "summary.json", "w", encoding="utf-8") as f:
+            json.dump(summary, f, indent=2, ensure_ascii=False)
 
         logger.info(f"Results saved to {out}")
 
@@ -988,6 +1184,8 @@ def main():
     parser.add_argument("--temperature", type=float, default=0, help="Temperature")
     parser.add_argument("--output", help="Output directory")
     parser.add_argument("--category", help="Filter to specific category")
+    parser.add_argument("--verify-model-digest", action="store_true",
+                        help="Query Ollama metadata for an exact model digest (default: not verified)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -999,6 +1197,12 @@ def main():
         temperature=args.temperature,
         output_dir=args.output,
         category_filter=args.category,
+        verify_model_digest=args.verify_model_digest,
+        invocation={"source": "cli", "explicit_overrides": {
+            name: getattr(args, name.replace("-", "_"))
+            for name in ("benchmark", "model", "repeats", "temperature", "output", "category", "verify-model-digest")
+            if any(("--" + name).startswith(token.split("=", 1)[0])
+                   for token in sys.argv[1:] if token.startswith("--") and token != "--")}},
     )
 
     print("\n=== Intent Evaluation Summary ===")

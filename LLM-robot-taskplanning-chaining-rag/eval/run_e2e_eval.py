@@ -251,10 +251,15 @@ def run_e2e(instruction: str, model: str, config: dict, canonical: dict) -> dict
     return pred
 
 
+SCORER_VERSION = "office_e2e_role_values_v2"
+EVALUATION_SCOPE = "restricted_office"
+
+
 def evaluate_e2e(pred: dict, case: dict) -> dict:
     """对照 Ground Truth 评分。接收 predicted + ground truth（仅评分用）。"""
     r = {"case_id": case["case_id"], "category": case.get("category"), "instruction": case["instruction"],
-         "failure_stage": None, "all_errors": [], "stage_scores": {}}
+         "failure_stage": None, "all_errors": [], "stage_scores": {},
+         "scorer_version": SCORER_VERSION, "evaluation_scope": EVALUATION_SCOPE}
     exp_intent = case.get("oracle_intent", {})
     exp_sem = case.get("expected_semantic")
     exp_ground = case.get("expected_grounding", {})
@@ -283,7 +288,7 @@ def evaluate_e2e(pred: dict, case: dict) -> dict:
         _exp = exp_intent.get(_role)
         _pred = getattr(intent, _role, None)
         if _exp:
-            _ev = _norm_room(getattr(_exp, "text", ""))
+            _ev = _norm_room(_exp.get("text", "") if isinstance(_exp, dict) else getattr(_exp, "text", ""))
             _pv = _norm_room(getattr(_pred, "text", "")) if _pred is not None else None
             if _ev and _ev != _pv:
                 g["role_value_ok"] = False
@@ -313,6 +318,7 @@ def evaluate_e2e(pred: dict, case: dict) -> dict:
         r["stage_scores"]["quantifier_ok"] = g["quantifier_ok"]
         r["stage_scores"]["location_ok"] = g["location_ok"]
         r["stage_scores"]["role_ok"] = g["role_ok"]
+        r["stage_scores"]["role_value_ok"] = g["role_value_ok"]
         if not g["intent_success"]:
             r["failure_stage"] = "intent_action"
         elif not g["quantifier_ok"]:
@@ -330,6 +336,7 @@ def evaluate_e2e(pred: dict, case: dict) -> dict:
     r["stage_scores"]["quantifier_ok"] = g["quantifier_ok"]
     r["stage_scores"]["location_ok"] = g["location_ok"]
     r["stage_scores"]["role_ok"] = g["role_ok"]
+    r["stage_scores"]["role_value_ok"] = g["role_value_ok"]
 
     # ---- Semantic ----
     sem = pred.get("semantic") or {}
@@ -507,6 +514,7 @@ def run_eval(model: str, repeats: int, cases_path: Path, output_dir: Path):
 
     summary = {
         "model": model, "repeats": repeats, "total_cases": n,
+        "scorer_version": SCORER_VERSION, "evaluation_scope": EVALUATION_SCOPE,
         "e2e_strict_success": round(e2e, 4),
         "final_validation_pass": round(stage_rates["validator_success"], 4),
         "intent_gate_success": round(stage_rates["intent_success"], 4),

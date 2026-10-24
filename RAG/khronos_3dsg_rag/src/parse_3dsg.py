@@ -254,7 +254,61 @@ def _parse_flat_format(data: dict) -> SceneGraph:
     return graph
 
 
-def parse_3dsg(path: str | Path) -> SceneGraph:
+def _apply_semantic_overrides(graph: SceneGraph, overrides_path: str | Path) -> None:
+    """Apply confirmed fine labels in memory without changing raw DSG attributes."""
+    with Path(overrides_path).open("r", encoding="utf-8") as stream:
+        payload = json.load(stream)
+    if not isinstance(payload, dict):
+        raise ValueError("semantic override document must be a JSON object")
+    if payload.get("schema_version") != "hospital_object_semantic_overrides_v1":
+        raise ValueError("unsupported semantic override schema_version")
+    items = payload.get("items")
+    if not isinstance(items, list):
+        raise ValueError("semantic overrides must contain an items list")
+
+    seen: set[str] = set()
+    prepared: list[tuple[SceneNode, str]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            raise ValueError("semantic override entries must be objects")
+        node_id = str(item.get("object_node_id", "")).strip()
+        label = str(item.get("fine_label_name", "")).strip()
+        if not node_id or not label:
+            raise ValueError("semantic override requires object_node_id and fine_label_name")
+        label_type = item.get("label_type")
+        label_id = item.get("fine_label_id")
+        if label_type == "fine_ontology":
+            if isinstance(label_id, bool) or not isinstance(label_id, int) or not 1 <= label_id <= 109:
+                raise ValueError(f"ontology label for node {node_id} requires a valid fine_label_id")
+        elif label_type == "human_custom":
+            if label_id is not None:
+                raise ValueError(f"custom label for node {node_id} must have fine_label_id=null")
+        else:
+            raise ValueError(f"semantic override for node {node_id} has invalid label_type")
+        if node_id in seen:
+            raise ValueError(f"duplicate semantic override for node {node_id}")
+        seen.add(node_id)
+        if item.get("annotation_status") != "human_confirmed":
+            raise ValueError(f"semantic override for node {node_id} is not human_confirmed")
+        node = graph.node_index.get(node_id)
+        if node is None:
+            raise ValueError(f"semantic override node {node_id} is missing from DSG")
+        if node.layer != 2 or node.raw_attrs.get("semantic_label") != 4294967295:
+            raise ValueError(f"semantic override node {node_id} is not unknown object layer data")
+        if item.get("original_semantic_label") != 4294967295:
+            raise ValueError(f"semantic override source for node {node_id} is not unknown")
+        prepared.append((node, label))
+
+    for node, label in prepared:
+        node.label = label
+        if not node.name:
+            node.name = label
+
+
+def parse_3dsg(
+    path: str | Path,
+    semantic_overrides_path: str | Path | None = None,
+) -> SceneGraph:
     """Auto-detect format and parse 3DSG JSON.
 
     Returns a SceneGraph with nodes, edges, and node_index populated.
@@ -262,17 +316,23 @@ def parse_3dsg(path: str | Path) -> SceneGraph:
     data = load_json(path)
 
     # Detect SPARK-DSG format by checking for characteristic keys
+    graph = None
     if "nodes" in data and isinstance(data["nodes"], list) and len(data["nodes"]) > 0:
         first = data["nodes"][0]
         if isinstance(first, dict) and "layer" in first and "attributes" in first:
             logger.info("Detected SPARK-DSG format (Khronos / Hydra)")
-            return _parse_spark_dsg(data)
+            graph = _parse_spark_dsg(data)
 
     # Flat format with entities + relations
-    if "entities" in data and isinstance(data["entities"], list):
+    elif "entities" in data and isinstance(data["entities"], list):
         logger.info("Detected flat format (entities + relations)")
-        return _parse_flat_format(data)
+        graph = _parse_flat_format(data)
 
-    # Fallback: try flat format anyway
-    logger.warning("Unknown format, attempting flat parse")
-    return _parse_flat_format(data)
+    else:
+        # Fallback: try flat format anyway
+        logger.warning("Unknown format, attempting flat parse")
+        graph = _parse_flat_format(data)
+
+    if semantic_overrides_path is not None:
+        _apply_semantic_overrides(graph, semantic_overrides_path)
+    return graph

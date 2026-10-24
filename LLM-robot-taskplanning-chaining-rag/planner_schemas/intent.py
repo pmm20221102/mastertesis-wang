@@ -15,7 +15,7 @@ class LocationConstraint(BaseModel):
 
 class RelationConstraint(BaseModel):
     """Constraint on entity relationship."""
-    relation: Literal["inside", "contains", "near", "connected_to", "parent_of", "child_of"]
+    relation: Literal["inside", "contains", "near", "nearest_to", "farthest_from", "connected_to", "parent_of", "child_of"]
     target_text: str = ""
     target_node_id: str | None = None
     target_label: str | None = None
@@ -51,7 +51,7 @@ class EntityReference(BaseModel):
     relations: list[RelationConstraint] = Field(default_factory=list)
     attributes: dict[str, str] = Field(default_factory=dict)
     position: list[float] | None = None
-    quantifier: Literal["one", "all", "nearest", "any"] = "one"
+    quantifier: Literal["one", "all", "nearest", "farthest", "any"] = "one"
     aggregate: AggregateConstraint | None = None
 
 

@@ -1,0 +1,108 @@
+{
+  "schema_version": "region-waypoint-eval-v1",
+  "models": [
+    "qwen3.5:4b",
+    "ministral-3:3b-instruct-2512-q4_K_M",
+    "qwen3.5:2b",
+    "qwen3:4b",
+    "granite4.1:3b",
+    "gemma4:e4b",
+    "mistral:latest"
+  ],
+  "reachable_room_ids": [
+    "5908722711110090752",
+    "5908722711110090754",
+    "5908722711110090755",
+    "5908722711110090756",
+    "5908722711110090757",
+    "5908722711110090769",
+    "5908722711110090771"
+  ],
+  "coverage_limit_reason": "Only these seven mapped rooms have a footprint-safe target within 0.8 m of the navigation-start connected free-space component.",
+  "cases": [
+    {
+      "case_id": "region-route-01",
+      "route_bucket": "short",
+      "instruction": "Navigate to room 0752, then navigate to room 0754, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090752", "5908722711110090754"],
+      "waypoint_ids": [4275, 3145]
+    },
+    {
+      "case_id": "region-route-02",
+      "route_bucket": "short",
+      "instruction": "Navigate to room 0755, then navigate to the chair in room 0756, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090755", "5908722711110090756"],
+      "waypoint_ids": [4326, 4647]
+    },
+    {
+      "case_id": "region-route-03",
+      "route_bucket": "short",
+      "instruction": "Navigate to room 0757, then navigate to room 0769, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090757", "5908722711110090769"],
+      "waypoint_ids": [5502, 24607]
+    },
+    {
+      "case_id": "region-route-04",
+      "route_bucket": "short",
+      "instruction": "Navigate to room 0771, then navigate to room 0752, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090771", "5908722711110090752"],
+      "waypoint_ids": [28196, 4275]
+    },
+    {
+      "case_id": "region-route-05",
+      "route_bucket": "short",
+      "instruction": "Navigate to room 0754, then navigate to room 0755, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090754", "5908722711110090755"],
+      "waypoint_ids": [3145, 4326]
+    },
+    {
+      "case_id": "region-route-06",
+      "route_bucket": "short",
+      "instruction": "Navigate to the chair in room 0756, then navigate to room 0757, and stop at each waypoint.",
+      "expected_room_ids": ["5908722711110090756", "5908722711110090757"],
+      "waypoint_ids": [4647, 5502]
+    },
+    {
+      "case_id": "region-route-07",
+      "route_bucket": "medium",
+      "instruction": "Navigate in this order to room 0752, then room 0755, then room 0757, stopping at every waypoint.",
+      "expected_room_ids": ["5908722711110090752", "5908722711110090755", "5908722711110090757"],
+      "waypoint_ids": [4275, 4326, 5502]
+    },
+    {
+      "case_id": "region-route-08",
+      "route_bucket": "medium",
+      "instruction": "Navigate in this order to room 0754, then room 0756, then room 0769, stopping at every waypoint.",
+      "expected_room_ids": ["5908722711110090754", "5908722711110090756", "5908722711110090769"],
+      "waypoint_ids": [3145, 4647, 24607]
+    },
+    {
+      "case_id": "region-route-09",
+      "route_bucket": "medium",
+      "instruction": "Navigate in this order to room 0771, then room 0757, then room 0755, stopping at every waypoint.",
+      "expected_room_ids": ["5908722711110090771", "5908722711110090757", "5908722711110090755"],
+      "waypoint_ids": [28196, 5502, 4326]
+    },
+    {
+      "case_id": "region-route-10",
+      "route_bucket": "medium",
+      "instruction": "Navigate in this order to room 0769, then room 0756, then room 0752, stopping at every waypoint.",
+      "expected_room_ids": ["5908722711110090769", "5908722711110090756", "5908722711110090752"],
+      "waypoint_ids": [24607, 4647, 4275]
+    },
+    {
+      "case_id": "region-route-11",
+      "route_bucket": "long",
+      "instruction": "Follow this route in order: room 0752, room 0754, room 0755, and room 0756. Stop at all four waypoints.",
+      "expected_room_ids": ["5908722711110090752", "5908722711110090754", "5908722711110090755", "5908722711110090756"],
+      "waypoint_ids": [4275, 3145, 4326, 4647]
+    },
+    {
+      "case_id": "region-route-12",
+      "route_bucket": "long",
+      "instruction": "Follow this route in order: room 0771, room 0769, room 0757, and room 0752. Stop at all four waypoints.",
+      "expected_room_ids": ["5908722711110090771", "5908722711110090769", "5908722711110090757", "5908722711110090752"],
+      "waypoint_ids": [28196, 24607, 5502, 4275]
+    }
+  ]
+}

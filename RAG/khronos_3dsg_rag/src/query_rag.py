@@ -129,6 +129,7 @@ def graph_lookup(
     query: str,
     query_type: str,
     top_k: int = 10,
+    where_filter: dict | None = None,
 ) -> list[dict[str, Any]]:
     """Direct graph traversal retrieval without embedding.
 
@@ -136,6 +137,8 @@ def graph_lookup(
     For hierarchy: find node, return its children.
     For neighbor: find node, return its neighbors.
     For spatial: find nodes by position distance.
+
+    Metadata filters restrict returned documents, not traversal seeds or topology.
     """
     collection = load_vector_db(db_dir)
     adj_index = _build_adjacency_index(collection)
@@ -143,6 +146,9 @@ def graph_lookup(
     # Get all documents for result construction
     all_docs = collection.get(include=["documents", "metadatas"])
     doc_map: dict[str, tuple[str, dict]] = {}
+    # Delegate filter semantics to Chroma, just as vector queries do.
+    allowed_doc_ids = set(collection.get(where=where_filter, include=[])["ids"]) if where_filter else None
+    output_docs: dict[str, tuple[str, dict]] = {} if where_filter else doc_map
     for i, doc_id in enumerate(all_docs.get("ids", [])):
         meta = all_docs["metadatas"][i] if i < len(all_docs["metadatas"]) else {}
         text = all_docs["documents"][i] if i < len(all_docs["documents"]) else ""
@@ -150,10 +156,10 @@ def graph_lookup(
         node_id = meta.get("node_id", "")
         if not node_id and "_" in doc_id:
             node_id = doc_id.split("_", 1)[1] if doc_id.count("_") == 1 else doc_id
-        if node_id:
-            doc_map[node_id] = (text, meta)
-        else:
-            doc_map[doc_id] = (text, meta)
+        key = node_id or doc_id
+        doc_map[key] = (text, meta)
+        if allowed_doc_ids is not None and doc_id in allowed_doc_ids:
+            output_docs[key] = (text, meta)
 
     # Use Entity Resolver for reverse_hierarchy queries
     if query_type == "reverse_hierarchy":
@@ -163,8 +169,8 @@ def graph_lookup(
         results: list[dict[str, Any]] = []
         for pc in parent_candidates:
             pid = pc["node_id"]
-            if pid in doc_map:
-                text, meta = doc_map[pid]
+            if pid in output_docs:
+                text, meta = output_docs[pid]
                 results.append({
                     "rank": len(results) + 1,
                     "score": pc["score"],
@@ -186,10 +192,10 @@ def graph_lookup(
     seen_ids: set[str] = set()
 
     def _add_result(node_id: str, score: float):
-        if node_id in seen_ids or node_id not in doc_map:
+        if node_id in seen_ids or node_id not in output_docs:
             return
         seen_ids.add(node_id)
-        text, meta = doc_map[node_id]
+        text, meta = output_docs[node_id]
         results.append({
             "rank": len(results) + 1,
             "score": round(score, 4),
@@ -230,7 +236,7 @@ def graph_lookup(
         if position:
             # Get all positions from metadata, use 2D distance (ignore z)
             scored: list[tuple[float, str]] = []
-            for nid, (_, meta) in doc_map.items():
+            for nid, (_, meta) in output_docs.items():
                 bb_center = meta.get("bounding_box_center", "")
                 if isinstance(bb_center, str):
                     try:
@@ -256,6 +262,8 @@ def graph_lookup(
         if query_type == "reverse_hierarchy":
             # Return parents of seed
             parents = info.get("parents", [])
+            if where_filter:
+                parents = [nid for nid in parents if nid in output_docs]
             for pid in parents[:top_k]:
                 _add_result(pid, 0.9)
             # If no parents, return the seed itself
@@ -265,18 +273,23 @@ def graph_lookup(
         elif query_type == "hierarchy":
             # Return children of seed
             children = info.get("children", [])
+            if where_filter:
+                children = [nid for nid in children if nid in output_docs]
             for cid in children[:top_k]:
                 _add_result(cid, 0.9)
 
         elif query_type == "neighbor":
             # Return neighbors of seed
             neighbors = info.get("neighbors", [])
+            if where_filter:
+                neighbors = [nid for nid in neighbors if nid in output_docs]
             for nid in neighbors[:top_k]:
                 _add_result(nid, 0.8)
 
     # If no results from graph traversal, fall back to seed nodes themselves
     if not results:
-        for seed in seed_nodes[:top_k]:
+        fallback_seeds = [nid for nid in seed_nodes if nid in output_docs] if where_filter else seed_nodes
+        for seed in fallback_seeds[:top_k]:
             _add_result(seed, 0.5)
 
     # Apply graph-aware ranking
@@ -341,7 +354,7 @@ def query_rag(
 
     # Route to appropriate retrieval strategy
     if query_type in ("reverse_hierarchy", "hierarchy", "neighbor", "spatial"):
-        results = graph_lookup(db_dir, query, query_type, top_k)
+        results = graph_lookup(db_dir, query, query_type, top_k, where_filter=where_filter)
         if results:
             return results
         # Fall through to vector search if graph lookup returns nothing

@@ -68,7 +68,8 @@ def compile_simple_plan(draft: SimplePlanDraft, grounded_task: dict) -> TaskPlan
         node_type = "unknown"
         if ref_data is not None:
             target_id = str(ref_data["node_id"]) if ref_data.get("node_id") else None
-            node_type = str(ref_data.get("node_type") or "unknown")
+            canonical_type = str(ref_data.get("node_type") or "unknown").lower().rstrip("s")
+            node_type = {"place": "area", "agent": "person"}.get(canonical_type, canonical_type)
 
         constraints = Constraints(avoid=[], prefer=[], conditions=[])
         role_refs: dict[str, str] | None = None

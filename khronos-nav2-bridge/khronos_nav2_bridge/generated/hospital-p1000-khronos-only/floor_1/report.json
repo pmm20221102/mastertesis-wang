@@ -1,0 +1,13 @@
+{
+  "schema_version": "hospital-khronos-only-map-report-v1",
+  "condition": "khronos_only_clearance_khronos_global_planes_band005_200_manual_topology",
+  "floor": 1,
+  "floor_z_m": 2.3,
+  "grid": {"width": 364, "height": 335, "resolution_m": 0.1, "origin": [-23.1, -20.6, 0.0]},
+  "cells": {"free": 41692, "occupied": 6425, "unknown": 73823},
+  "map_yaml_sha256": "9e4aeef5df2b62e52a8d81b98787b667aa1abc75757299a1c39e393f9bcc13ba",
+  "map_pgm_sha256": "2aaa3c8ad2d5ebed53241d3c164a6383ceb7db6c68cdb7d58c19d7511dc5b9c1",
+  "free_source": "Khronos Place support",
+  "occupied_source": "Khronos mesh projection",
+  "non_khronos_occupancy_values_used": false
+}

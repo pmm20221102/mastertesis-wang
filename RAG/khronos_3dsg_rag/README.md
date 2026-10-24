@@ -63,6 +63,64 @@ khronos_3dsg_rag/
 
 ## 规范图 v2 / Canonical Graph v2
 
+### 人工细语义补标（可选） / Optional Human-Confirmed Fine-Semantic Overrides
+
+Hospital P1000 unknown object labels can be supplied as a separate, provenance-tracked sidecar. The parser applies only entries marked `human_confirmed` to matching object-layer nodes whose original Khronos `semantic_label` is the unknown sentinel `4294967295`. Raw DSG attributes are not changed. Fine-label IDs remain in the sidecar; the RAG parser uses the fine-label name as the node label because these IDs are not Khronos semantic-label IDs.
+
+Export a separate canonical graph for the structured `SceneGraphRAG` index:
+
+```bash
+python src/export_canonical_graph.py /path/to/hospital/full-data/dsg.json \
+  --semantic-overrides /path/to/hospital-object-semantic-overrides.json \
+  --output-dir outputs/hospital_p1000_manual_semantic_overlay
+```
+
+The single-input builder below writes both the canonical graph and optional Chroma vector DB in the same output folder when the sidecar is supplied (do not use `--all` for this dataset-specific file):
+
+```bash
+python src/main.py build \
+  --input /path/to/hospital/full-data/dsg.json \
+  --semantic-overrides /path/to/hospital-object-semantic-overrides.json \
+  --output outputs/hospital_p1000_manual_semantic_overlay
+```
+
+Non-confirmed entries, missing/non-object nodes, or nodes whose source label is not the unknown sentinel fail closed.
+
+### Reproducible Hospital P1000 build
+
+The reproducible build converts the human review CSV into a hashed semantic
+sidecar, exports the canonical graph and documents, and builds a pinned vector
+index. It never edits the source DSG or review CSV. The command refuses to
+overwrite an existing output directory; choose a new output name for each
+build. The manifest records input hashes, software versions, embedding model
+revision/device, artifact hashes, and the semantic build ID. A separate stable
+logical digest covers every Chroma document, metadata record, and stored vector;
+runtime SQLite metadata changes do not invalidate the content check.
+
+```bash
+cd /path/to/Masterthesis-wang
+python3 RAG/khronos_3dsg_rag/src/main.py \
+  --config RAG/khronos_3dsg_rag/config.yaml build \
+  --reproducible \
+  --dataset hospital-p1000 \
+  --input /path/to/hospital/full-data/dsg.json \
+  --review-csv /path/to/hospital-object-review-2026-10-12.csv \
+  --embedding-model paraphrase-multilingual-MiniLM-L12-v2 \
+  --embedding-model-revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
+  --embedding-device cpu \
+  --output RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5
+```
+
+The 27 GB source snapshot and reviewed CSV are local inputs and are intentionally
+not stored in Git. Replace their input paths when rebuilding on another machine.
+The v5 vector database itself is rebuildable and is intentionally excluded from
+the source commit; this output path matches the default Nav2 planner profile.
+
+The pinned embedding model runs on CPU so the GPU remains available to Ollama.
+Rebuilding requires the pinned model revision to be available locally or
+downloadable. Do not overwrite or relabel an existing run; compare its manifest
+and source hashes first.
+
 ### 导出方式 / Export Method
 
 直接从 raw DSG 导出，不经过 ChromaDB 或 RAG chunk metadata：

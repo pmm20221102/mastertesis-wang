@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+import argparse,json,pathlib
+def main():
+ ap=argparse.ArgumentParser(); ap.add_argument('--projection',required=True); ap.add_argument('--navfn',required=True); ap.add_argument('--output',required=True); a=ap.parse_args(); p=json.loads(pathlib.Path(a.projection).read_text()); n=json.loads(pathlib.Path(a.navfn).read_text()); missions=n.get('missions',[]); attempted=sum(len(x.get('waypoints',[])) for x in missions if x.get('status')=='succeeded'); successes=sum(x.get('successes',0) for x in missions if x.get('status')=='succeeded'); denom=sum(len(x.get('waypoints',[])) for x in missions); out={'schema_version':'waypoint-eval-report-v1','projection':p,'navfn':n,'waypoint_success_rate':successes/denom if denom else None,'mission_success_rate':sum(x.get('status')=='succeeded' for x in missions)/len(missions) if missions else None,'denominators':{'waypoints':denom,'missions':len(missions)},'failure_categories':n.get('failure_categories',{})}; pathlib.Path(a.output).write_text(json.dumps(out,indent=2)+'\n')
+if __name__=='__main__': main()

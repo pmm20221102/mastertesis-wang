@@ -31,9 +31,42 @@ from main_rag import (
     load_config,
     CONFIG_PATH,
 )
-from schema import PipelineResult, ACTION_EXECUTOR_MAP, ACTION_TARGET_REFS
+from schema import PipelineResult, PlanDraft, ACTION_EXECUTOR_MAP, ACTION_TARGET_REFS
 
 logger = logging.getLogger(__name__)
+SCORER_VERSION = "pipeline_contracts_v2"
+METRIC_CONTRACT_VERSION = "pipeline_completeness_v3"
+
+
+def _grounding_evidence(case: dict) -> tuple[dict, bool, list[str]]:
+    """Determine exact-score eligibility from GT, independently of prediction."""
+    expected = dict(case.get("expected_grounding") or {})
+    roles = ("actor", "target", "source", "destination")
+    for role in roles:
+        if isinstance(expected.get(role), dict):
+            expected[role] = dict(expected[role])
+    # Existing benchmark evidence describes the target, never another role.
+    target = expected.get("target") or {}
+    evidence = case.get("ground_truth_evidence") or {}
+    if target.get("status") == "ambiguous" and "candidate_node_ids" not in target:
+        if evidence.get("candidate_node_ids") is not None:
+            target["candidate_node_ids"] = evidence["candidate_node_ids"]
+    reasons = []
+    for role in roles:
+        item = expected.get(role)
+        if item is None:
+            continue
+        status = item.get("status", "resolved")
+        if status in ("resolved", "resolved_set"):
+            if item.get("node_id") is None and item.get("node_ids") is None:
+                reasons.append(role + ":missing_entity_gt")
+        elif status == "ambiguous":
+            if item.get("candidate_node_ids") is None:
+                reasons.append(role + ":missing_candidate_gt")
+    if not any(expected.get(role) is not None for role in roles):
+        if expected.get("node_ids") is None and expected.get("pipeline_status") not in ("not_found", "unsupported"):
+            reasons.append("missing_exact_gt")
+    return expected, not reasons, reasons
 
 
 def load_cases(cases_path: str | Path) -> list[dict[str, Any]]:
@@ -149,7 +182,7 @@ def evaluate_grounding_case(
     from llm.intent_parser import intent_to_dict
 
     instruction = case["instruction"]
-    expected = case.get("expected_grounding", {})
+    expected, grounding_evaluable, unevaluable_reasons = _grounding_evidence(case)
 
     start_time = time.time()
 
@@ -234,10 +267,10 @@ def evaluate_grounding_case(
 
         # Check node IDs (N/A if not specified)
         node_ids_correct = None
-        if "node_ids" in expected and expected["node_ids"]:
+        if "node_ids" in expected:
             expected_ids = set(expected["node_ids"])
             resolved_ids = grounding.get_resolved_ids()
-            node_ids_correct = bool(expected_ids & resolved_ids)
+            node_ids_correct = expected_ids == resolved_ids
 
         # --- Set query metrics ---
         set_metrics = None
@@ -331,6 +364,41 @@ def evaluate_grounding_case(
         elif primary_tag == "relation":
             grounding_case_success = pipeline_status_correct
 
+        # Exact success requires every declared role to match, not just pipeline status.
+        for role, metrics in role_metrics.items():
+            role_expected = expected.get(role) or {}
+            if role_expected.get("status") == "ambiguous":
+                resolution = grounding.references.get(role)
+                predicted_candidates = {c.node_id for c in resolution.candidates} if resolution else set()
+                candidate_gt = role_expected.get("candidate_node_ids")
+                metrics["expected_candidate_node_ids"] = candidate_gt
+                metrics["predicted_candidate_node_ids"] = sorted(predicted_candidates)
+                metrics["candidate_set_correct"] = (
+                    predicted_candidates == set(candidate_gt) if candidate_gt is not None else None)
+            if "node_ids" in role_expected:
+                resolution = grounding.references.get(role)
+                selected = set()
+                if resolution:
+                    selected.update(c.node_id for c in resolution.selected_many)
+                    if resolution.selected:
+                        selected.add(resolution.selected.node_id)
+                metrics["node_id_correct"] = selected == set(role_expected["node_ids"])
+                metrics["expected_node_ids"] = role_expected["node_ids"]
+        statuses_exact = all(metrics.get("status_correct") is True for metrics in role_metrics.values())
+        id_evidence = [metrics.get("node_id_correct") for metrics in role_metrics.values()
+                       if metrics.get("expected_status") in ("resolved", "resolved_set")]
+        grounding_case_success = (
+            grounding_evaluable and pipeline_status_correct and statuses_exact
+            and all(value is True for value in id_evidence)
+            and all(metrics.get("candidate_set_correct") is True for metrics in role_metrics.values()
+                    if metrics.get("expected_status") == "ambiguous")
+            and (node_ids_correct is not False)
+            and (set_metrics is None or set_metrics["exact_set_match"])
+            and (spatial_metrics is None or spatial_metrics["target_id_correct"] is True)
+        )
+        if expected_pipeline_status == "ready" and not role_metrics and node_ids_correct is None:
+            grounding_case_success = False  # No entity ground truth cannot prove exact grounding.
+
         # --- Case failure detection ---
         case_failure = any([
             not pipeline_status_correct,
@@ -344,6 +412,10 @@ def evaluate_grounding_case(
 
         return {
             "case_id": case["case_id"],
+            "scorer_version": SCORER_VERSION,
+            "metric_contract_version": METRIC_CONTRACT_VERSION,
+            "grounding_evaluable": grounding_evaluable,
+            "grounding_unevaluable_reasons": unevaluable_reasons,
             "instruction": instruction,
             "parsed_intent": parsed_intent,
             "tags": tags,
@@ -368,12 +440,24 @@ def evaluate_grounding_case(
         elapsed_ms = (time.time() - start_time) * 1000
         return {
             "case_id": case["case_id"],
+            "scorer_version": SCORER_VERSION,
+            "metric_contract_version": METRIC_CONTRACT_VERSION,
+            "grounding_evaluable": grounding_evaluable,
+            "grounding_unevaluable_reasons": unevaluable_reasons,
             "instruction": instruction,
             "parsed_intent": None,
             "predicted_pipeline_status": "system_error",
             "expected_pipeline_status": expected.get("pipeline_status", "ready"),
             "pipeline_status_correct": False,
-            "role_metrics": {},
+            "role_metrics": {role: {"expected_status": item.get("status", "resolved"),
+                "predicted_status": None, "status_correct": False,
+                "expected_node_id": item.get("node_id"), "predicted_node_id": None,
+                "expected_node_ids": item.get("node_ids"), "node_id_correct": False,
+                "expected_candidate_node_ids": item.get("candidate_node_ids"),
+                "candidate_set_correct": False if item.get("candidate_node_ids") is not None else None}
+                for role, item in expected.items() if role in ("actor", "target", "source", "destination")
+                and isinstance(item, dict)},
+            "grounding_case_success": False, "case_failure": True,
             "role_status_accuracy": None,
             "role_entity_id_accuracy": None,
             "node_ids_correct": False,
@@ -581,6 +665,18 @@ def evaluate_planning_case(
     """Evaluate a single planning case with comprehensive metrics."""
     instruction = case["instruction"]
     expected = case.get("expected_plan", {})
+    planning_evaluable = bool(expected)
+    expected_step_ref_total = sum("target_ref" in step for step in expected.get("expected_steps", []))
+    oracle_constraints = (case.get("oracle_grounding") or {}).get("constraints")
+    avoid_evaluable = "expected_avoid_ids" in expected or oracle_constraints is not None
+    prefer_evaluable = "expected_prefer_ids" in expected or oracle_constraints is not None
+    expected_avoid_ids = set(expected.get("expected_avoid_ids", [
+        c["node_id"] for c in (oracle_constraints or [])
+        if c.get("type") == "avoid" and c.get("node_id")]))
+    expected_prefer_ids = set(expected.get("expected_prefer_ids", [
+        c.get("value") or c.get("label") or c.get("node_id") for c in (oracle_constraints or [])
+        if c.get("type") == "prefer"]))
+    expected_prefer_ids.discard(None)
 
     start_time = time.time()
 
@@ -613,7 +709,13 @@ def evaluate_planning_case(
         status_correct = predicted_status == expected_status
 
         # P0 #36: raw plan draft validity
-        raw_plan_valid = raw_plan_draft is not None and raw_plan_draft.get("status") != "system_error"
+        raw_plan_valid = False
+        if raw_plan_draft is not None:
+            try:
+                PlanDraft.model_validate(raw_plan_draft)
+                raw_plan_valid = True
+            except ValueError:
+                pass
         raw_plan_had_errors = bool(validation_errors)
 
         # Extract predicted actions and target_refs
@@ -684,7 +786,7 @@ def evaluate_planning_case(
         wrong_role_ids = []    # In grounding but wrong role
 
         for eid in emitted_ids:
-            if all_graph_ids and eid not in all_graph_ids:
+            if all_graph_ids is not None and eid not in all_graph_ids:
                 hallucinated_ids.append(eid)
             elif eid not in grounding_ids:
                 ungrounded_ids.append(eid)
@@ -693,23 +795,16 @@ def evaluate_planning_case(
         step_target_ref_correct_count = 0
         step_target_ref_total = 0
         if "expected_steps" in expected:
-            for i, step in enumerate(task_chain):
-                if i < len(expected["expected_steps"]):
-                    exp_step = expected["expected_steps"][i]
-                    exp_target_ref = exp_step.get("target_ref")
-                    exp_target_id = exp_step.get("target_id")
-                    pred_target_ref = step.get("target_ref")
-                    pred_target_id = step.get("target_id")
-
-                    # P0 #35: compare target_ref itself
-                    if exp_target_ref:
-                        step_target_ref_total += 1
-                        if pred_target_ref == exp_target_ref:
-                            step_target_ref_correct_count += 1
-
-                    if exp_target_id and pred_target_id and pred_target_id != exp_target_id:
-                        if pred_target_id in grounding_ids:
-                            wrong_role_ids.append(pred_target_id)
+            for index, exp_step in enumerate(expected["expected_steps"]):
+                step = task_chain[index] if index < len(task_chain) else {}
+                exp_target_ref, exp_target_id = exp_step.get("target_ref"), exp_step.get("target_id")
+                pred_target_ref, pred_target_id = step.get("target_ref"), step.get("target_id")
+                if "target_ref" in exp_step:
+                    step_target_ref_total += 1
+                    if index < len(task_chain) and pred_target_ref == exp_target_ref:
+                        step_target_ref_correct_count += 1
+                if exp_target_id and pred_target_id != exp_target_id and pred_target_id in grounding_ids:
+                    wrong_role_ids.append(pred_target_id)
 
         # P0 #35: target_ref accuracy
         step_target_ref_accuracy = (
@@ -718,7 +813,6 @@ def evaluate_planning_case(
         )
 
         # P0 #38: constraint accuracy
-        expected_avoid_ids = set(expected.get("expected_avoid_ids", []))
         predicted_avoid_ids = set()
         for step in task_chain:
             constr = step.get("constraints", {})
@@ -727,8 +821,13 @@ def evaluate_planning_case(
                     predicted_avoid_ids.add(aid)
         constraint_avoid_correct = (
             expected_avoid_ids == predicted_avoid_ids
-            if expected_avoid_ids else None
+            if avoid_evaluable else None
         )
+
+        predicted_prefer_ids = {value for step in task_chain
+                               for value in (step.get("constraints") or {}).get("prefer", [])}
+        constraint_prefer_correct = (predicted_prefer_ids == expected_prefer_ids
+                                    if prefer_evaluable else None)
 
         # P0 #31: role_refs correctness
         role_refs_correct = None
@@ -741,6 +840,9 @@ def evaluate_planning_case(
 
         return {
             "case_id": case["case_id"],
+            "scorer_version": SCORER_VERSION,
+            "metric_contract_version": METRIC_CONTRACT_VERSION,
+            "planning_evaluable": planning_evaluable,
             "instruction": instruction,
             "predicted_status": predicted_status,
             "expected_status": expected_status,
@@ -762,8 +864,11 @@ def evaluate_planning_case(
             # P0 #35: per-step target_ref accuracy
             "step_target_ref_accuracy": step_target_ref_accuracy,
             "step_target_ref_total": step_target_ref_total,
+            "step_target_ref_correct_count": step_target_ref_correct_count,
             # P0 #38: constraint accuracy
             "constraint_avoid_correct": constraint_avoid_correct,
+            "constraint_prefer_correct": constraint_prefer_correct,
+            "graph_id_check_available": all_graph_ids is not None,
             "expected_avoid_ids": list(expected_avoid_ids),
             "predicted_avoid_ids": list(predicted_avoid_ids),
             # P0 #31: role_refs
@@ -784,6 +889,9 @@ def evaluate_planning_case(
         elapsed_ms = (time.time() - start_time) * 1000
         return {
             "case_id": case["case_id"],
+            "scorer_version": SCORER_VERSION,
+            "metric_contract_version": METRIC_CONTRACT_VERSION,
+            "planning_evaluable": planning_evaluable,
             "instruction": instruction,
             "predicted_status": "system_error",
             "expected_status": expected.get("status", "valid"),
@@ -797,7 +905,14 @@ def evaluate_planning_case(
             "predicted_actions": [],
             "predicted_target_refs": [],
             "predicted_target_ids": [],
-            "target_ids_correct": None,
+            "target_ids_correct": False if expected.get("expected_target_ids") is not None else None,
+            "step_target_ref_total": expected_step_ref_total,
+            "step_target_ref_correct_count": 0,
+            "step_target_ref_accuracy": 0.0 if expected_step_ref_total else None,
+            "constraint_avoid_correct": False if avoid_evaluable else None,
+            "constraint_prefer_correct": False if prefer_evaluable else None,
+            "role_refs_correct": False if (expected.get("expected_steps") or [{}])[0].get("role_refs") else None,
+            "graph_id_check_available": all_graph_ids is not None,
             "emitted_ids": [],
             "grounding_ids": [],
             "hallucinated_ids": [],
@@ -1006,6 +1121,22 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
         "model": results["model"],
         "repeats": results["repeats"],
     }
+    versions = {(row.get("scorer_version", "legacy_unversioned"),
+                 row.get("metric_contract_version", "legacy_contract"))
+                for key in ("grounding_results", "planning_results") for row in results.get(key, [])}
+    summary["scorer_version"] = next(iter(versions))[0] if len(versions) == 1 else "mixed"
+    summary["metric_contract_version"] = next(iter(versions))[1] if len(versions) == 1 else "mixed"
+    summary["score_versions_compatible"] = len(versions) <= 1
+    if len(versions) > 1:
+        summary.update({"grounding": None, "planning": None, "summaries_by_version": {}})
+        for version in sorted(versions):
+            subset = dict(results)
+            for key in ("grounding_results", "planning_results"):
+                subset[key] = [row for row in results.get(key, []) if (
+                    row.get("scorer_version", "legacy_unversioned"),
+                    row.get("metric_contract_version", "legacy_contract")) == version]
+            summary["summaries_by_version"][" / ".join(version)] = compute_summary(subset, cases)
+        return summary
 
     # Build case_id -> tags lookup for category breakdown
     case_categories: dict[str, str] = {}
@@ -1038,7 +1169,7 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
                 # Count spurious roles (predicted but not expected)
                 if predicted_present and not expected_present:
                     spurious_roles += 1
-                total_predicted_roles += 1
+                total_predicted_roles += int(predicted_present)
 
                 # Count expected role status accuracy
                 if expected_present:
@@ -1047,7 +1178,7 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
                         role_status_correct += 1
 
                 # Count role entity-ID accuracy (only when expected_node_id exists)
-                if expected_present and metrics.get("expected_node_id") is not None:
+                if expected_present and (metrics.get("expected_node_id") is not None or metrics.get("expected_node_ids") is not None):
                     role_id_evaluated += 1
                     if metrics.get("node_id_correct") is True:
                         role_entity_id_correct += 1
@@ -1064,6 +1195,21 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             "error_rate": errors / total if total > 0 else 0,
             "avg_latency_ms": avg_latency,
         }
+        evaluable = [r for r in grounding if r.get("grounding_evaluable")]
+        candidate_metrics = [m for r in grounding for m in r.get("role_metrics", {}).values()
+                             if m.get("expected_candidate_node_ids") is not None]
+        summary["grounding"].update({
+            "grounding_exact_evaluated_count": len(evaluable),
+            "grounding_exact_unevaluable_count": sum(r.get("grounding_evaluable") is False for r in grounding),
+            "grounding_evaluability_unknown_count": sum("grounding_evaluable" not in r for r in grounding),
+            "grounding_exact_evaluated_success_rate": (
+                sum(bool(r.get("grounding_case_success")) for r in evaluable) / len(evaluable)
+                if evaluable else None),
+            "candidate_set_evaluated_count": len(candidate_metrics),
+            "candidate_set_accuracy": (
+                sum(m.get("candidate_set_correct") is True for m in candidate_metrics) / len(candidate_metrics)
+                if candidate_metrics else None),
+        })
 
         # Category-level breakdown
         if case_categories:
@@ -1072,7 +1218,7 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             for r in grounding:
                 cat = case_categories.get(r["case_id"], "unknown")
                 cat_metrics[cat]["total"] += 1
-                if r.get("pipeline_status_correct"):
+                if r.get("grounding_case_success"):
                     cat_metrics[cat]["correct"] += 1
                 if r.get("error"):
                     cat_metrics[cat]["errors"] += 1
@@ -1100,7 +1246,7 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             exact_id_cases = [r for r in grounding if case_categories.get(r["case_id"]) == "exact_id"]
             nl_cases = [r for r in grounding if case_categories.get(r["case_id"]) not in ("exact_id", "not_found")]
             if exact_id_cases:
-                exact_correct = sum(1 for r in exact_id_cases if r.get("pipeline_status_correct"))
+                exact_correct = sum(1 for r in exact_id_cases if r.get("grounding_case_success"))
                 summary["grounding"]["exact_id_accuracy"] = exact_correct / len(exact_id_cases)
                 summary["grounding"]["exact_id_count"] = len(exact_id_cases)
             if nl_cases:
@@ -1189,24 +1335,24 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             sum(r["step_target_ref_accuracy"] for r in step_ref_cases) / len(step_ref_cases)
             if step_ref_cases else None
         )
+        step_ref_denominator = sum(r.get("step_target_ref_total", 0) for r in step_ref_cases)
+        step_ref_correct_count = sum(r.get("step_target_ref_correct_count", 0) for r in step_ref_cases)
+        step_ref_counts_available = all("step_target_ref_correct_count" in r for r in step_ref_cases)
 
         # P0 #38: constraint accuracy (avoid + prefer)
         constraint_cases = [r for r in planning if r.get("constraint_avoid_correct") is not None]
         constraint_correct = sum(1 for r in constraint_cases if r["constraint_avoid_correct"])
 
         # P0 #33: prefer constraint accuracy
-        prefer_cases = [r for r in planning if any(
-            c.get("type") == "prefer" for c in (r.get("grounded_task") or {}).get("constraints", [])
-            if isinstance(c, dict)
-        )]
-        prefer_correct = sum(1 for r in prefer_cases if r.get("constraint_avoid_correct"))
+        prefer_cases = [r for r in planning if r.get("constraint_prefer_correct") is not None]
+        prefer_correct = sum(1 for r in prefer_cases if r.get("constraint_prefer_correct"))
 
         # P0 #31: role_refs accuracy
         role_refs_cases = [r for r in planning if r.get("role_refs_correct") is not None]
         role_refs_correct = sum(1 for r in role_refs_cases if r["role_refs_correct"])
 
         # ID safety metrics (N/A if all_graph_ids not available)
-        has_graph_ids = any(r.get("emitted_ids") for r in planning)
+        has_graph_ids = all(r.get("graph_id_check_available", False) for r in planning if r.get("emitted_ids"))
         total_emitted = sum(len(r.get("emitted_ids", [])) for r in planning)
         total_hallucinated = sum(len(r.get("hallucinated_ids", [])) for r in planning)
         total_ungrounded = sum(len(r.get("ungrounded_ids", [])) for r in planning)
@@ -1235,6 +1381,14 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             # P0 #35: step target_ref accuracy
             "step_target_ref_accuracy": avg_step_ref_accuracy,
             "step_target_ref_evaluated_count": len(step_ref_cases),
+            "step_target_ref_denominator": step_ref_denominator,
+            "step_target_ref_correct_count": step_ref_correct_count if step_ref_counts_available else None,
+            "step_target_ref_micro_accuracy": (
+                step_ref_correct_count / step_ref_denominator
+                if step_ref_denominator and step_ref_counts_available else None),
+            "planning_evaluated_count": sum(bool(r.get("planning_evaluable")) for r in planning),
+            "planning_unevaluable_count": sum(r.get("planning_evaluable") is False for r in planning),
+            "planning_evaluability_unknown_count": sum("planning_evaluable" not in r for r in planning),
             # P0 #38: constraint accuracy
             "constraint_avoid_accuracy": constraint_correct / len(constraint_cases) if constraint_cases else None,
             "constraint_avoid_evaluated_count": len(constraint_cases),
@@ -1245,7 +1399,7 @@ def compute_summary(results: dict[str, Any], cases: list[dict] | None = None) ->
             "role_refs_accuracy": role_refs_correct / len(role_refs_cases) if role_refs_cases else None,
             "role_refs_evaluated_count": len(role_refs_cases),
             # ID safety (N/A if no emitted IDs)
-            "hallucinated_id_rate": total_hallucinated / total_emitted if total_emitted > 0 else None,
+            "hallucinated_id_rate": total_hallucinated / total_emitted if total_emitted > 0 and has_graph_ids else None,
             "ungrounded_id_rate": total_ungrounded / total_emitted if total_emitted > 0 else None,
             "wrong_role_id_rate": total_wrong_role / total_emitted if total_emitted > 0 else None,
             "total_emitted_ids": total_emitted,
@@ -1269,10 +1423,15 @@ def write_summary_md(summary: dict[str, Any], path: Path) -> None:
         f"**Mode**: {summary.get('mode', 'unknown')}",
         f"**Model**: {summary.get('model', 'unknown')}",
         f"**Repeats**: {summary.get('repeats', 1)}",
+        f"**Scorer / metric contract**: {summary.get('scorer_version', 'legacy_unversioned')} / {summary.get('metric_contract_version', 'legacy_contract')}",
         "",
     ]
 
-    if "grounding" in summary:
+    if summary.get("score_versions_compatible") is False:
+        lines.extend(["Mixed scorer contracts cannot be combined.",
+                      "See summaries_by_version in summary.json for separate metrics.", ""])
+
+    if summary.get("grounding") is not None:
         g = summary["grounding"]
         lines.extend([
             "## Grounding Metrics",
@@ -1321,7 +1480,7 @@ def write_summary_md(summary: dict[str, Any], path: Path) -> None:
                 "",
             ])
 
-    if "planning" in summary:
+    if summary.get("planning") is not None:
         p = summary["planning"]
         lines.extend([
             "## Planning Metrics",

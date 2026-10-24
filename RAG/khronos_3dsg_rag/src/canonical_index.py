@@ -292,21 +292,28 @@ class CanonicalGraphIndex:
         If A is neighbor of B, then B should be neighbor of A.
         """
         # Complete parent-child edges
+        # Membership sets are local; keep the original lists and append order.
+        child_members = defaultdict(set, ((nid, set(ids)) for nid, ids in self.children.items()))
         for nid, parent_ids in list(self.parents.items()):
             for pid in parent_ids:
-                if nid not in self.children.get(pid, []):
+                if nid not in child_members[pid]:
                     self.children[pid].append(nid)
+                    child_members[pid].add(nid)
 
+        parent_members = defaultdict(set, ((nid, set(ids)) for nid, ids in self.parents.items()))
         for nid, child_ids in list(self.children.items()):
             for cid in child_ids:
-                if nid not in self.parents.get(cid, []):
+                if nid not in parent_members[cid]:
                     self.parents[cid].append(nid)
+                    parent_members[cid].add(nid)
 
         # Complete neighbor edges (symmetric)
+        neighbor_members = defaultdict(set, ((nid, set(ids)) for nid, ids in self.neighbors.items()))
         for nid, neighbor_ids in list(self.neighbors.items()):
             for nid2 in neighbor_ids:
-                if nid not in self.neighbors.get(nid2, []):
+                if nid not in neighbor_members[nid2]:
                     self.neighbors[nid2].append(nid)
+                    neighbor_members[nid2].add(nid)
 
     def _compute_ancestors(self) -> None:
         """Compute room_id, place_id, building_id for all nodes."""

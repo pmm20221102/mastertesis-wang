@@ -1,0 +1,5 @@
+repository: https://github.com/ANYbotics/anymal_c_simple_description
+commit: 87b68511622f0f17e78d9ddca7d862f150a93fb4
+source_file: urdf/anymal.urdf
+license: BSD-3-Clause (LICENSE retained verbatim)
+vendored_assets: all DAE files referenced by urdf/anymal.urdf

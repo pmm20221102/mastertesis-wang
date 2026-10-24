@@ -1,0 +1,13 @@
+# Merge this fragment into the existing Nav2 costmap parameters.
+# Append khronos_tsdf_static to the existing plugins list; do not replace it.
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      track_unknown_space: true
+      khronos_tsdf_static:
+        plugin: nav2_costmap_2d::StaticLayer
+        map_topic: /khronos_nav2/occupancy
+        map_subscribe_transient_local: true
+        subscribe_to_updates: false
+        use_maximum: true
+        trinary_costmap: true
