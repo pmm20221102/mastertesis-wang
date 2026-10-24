@@ -3,7 +3,7 @@
 This package is the ROS 2/Nav2 endpoint for the Hospital P1000 planner. The
 default software flow is:
 
-`English instruction → local LLM1 intent → verified Hospital RAG grounding → ordered candidate mission → Nav2 path-only route selection`
+`English instruction -> local LLM1 intent -> verified Hospital RAG grounding -> ordered candidate mission -> Nav2 path-only route selection`
 
 The task-chain adapter is deterministic by default. The LLM2 chain generator
 is retained for controlled comparison (`--task-chain-backend llm2`). A
@@ -33,10 +33,9 @@ source install/setup.bash
 ollama pull gemma4:e2b-it-qat
 ```
 
-Build the reproducible RAG index from the local DSG and reviewed CSV using the
-command in [`RAG/khronos_3dsg_rag/README.md`](../../RAG/khronos_3dsg_rag/README.md).
-The command must use the explicit RAG config and the v5 output path, which is
-the planner's default. The Chroma index is rebuildable and is not committed.
+For the complete English-only workflow, including the exact RAG rebuild
+command, follow the repository-root [`README.md`](../../README.md). The Chroma
+index is rebuildable and is not committed.
 
 ## Start Nav2 and request a path
 
