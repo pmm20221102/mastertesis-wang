@@ -1,7 +1,0 @@
-# RAG evaluation on the NEW khronos_office_new DSG (1858 nodes, 6205 edges)
-dataset: office
-db_dir: ../RAG/khronos_3dsg_rag/outputs/khronos_office_new/vector_db
-rag_jsonl: ../RAG/khronos_3dsg_rag/outputs/khronos_office_new/rag_documents.jsonl
-top_k: 10
-seed: 42
-output_dir: data/reports/round_35_new_dsg

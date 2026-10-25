@@ -3,9 +3,9 @@
   "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
   "condition": "khronos_only_clearance_khronos_global_planes_band005_200_manual_topology",
   "inputs": {
-    "generator": "experiments/hospital-khronos-only-20261019/generate_khronos_only.py",
+    "generator": "experiment/map-generation/generate_khronos_only.py",
     "generator_sha256": "978f0171179b2bfbbba332e398fe6cadb748a46c090d7a90e40314dccf2ea3a4",
-    "grid_geometry_manifest": "experiments/hospital-khronos-only-20261019/grid_geometry.json",
+    "grid_geometry_manifest": "experiment/map-generation/grid_geometry.json",
     "grid_geometry_manifest_sha256": "13445f3a8547b6b500f9fb808bec1b10326cd858424ac6dd990f15f57912a888",
     "dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
     "mesh_sha256": "813bb3f534c9385edccbcfc71d3405ec81b5852c23061c68542e15debe40f268"

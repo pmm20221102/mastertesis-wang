@@ -1,0 +1,221 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-025",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "failed",
+  "events": [],
+  "reached_stops": [],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "31fd7ec68346cb9a6e7165c3da9f2f803b15064b8ccbb5ea75e2c493ce44b10f",
+  "candidate_route_selection": {
+    "status": "preflight_state_restore_failed",
+    "reason": "ValueError: cost must be an integer in the range 0..255",
+    "evaluated_sequence_count": 1,
+    "rejected_sequences": [
+      {
+        "target_ids": [
+          "5908722711110090754",
+          "5908722711110090753"
+        ],
+        "reason": "ValueError: cost must be an integer in the range 0..255",
+        "route_actions": [
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "pose": {
+              "frame_id": "map",
+              "x": -3.25,
+              "y": 1.55,
+              "yaw": -1.7674839804789269
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_1/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.95,
+              "y": 2.45,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.75,
+              "y": 2.25,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_2/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "pose": {
+              "frame_id": "map",
+              "x": 8.45,
+              "y": -3.35,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_stop",
+            "stop_index": 0,
+            "target_id": "5908722711110090754",
+            "floor_id": 2,
+            "goal": {
+              "x": -8.35,
+              "y": -10.75,
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "orientation_source": "point_robot_cell_projection"
+            }
+          },
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F2_TO_F1_MAIN",
+            "floor_id": 2,
+            "pose": {
+              "frame_id": "map",
+              "x": 8.45,
+              "y": -3.35,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F2_TO_F1_MAIN",
+            "floor_id": 1,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_1/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F2_TO_F1_MAIN",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.75,
+              "y": 2.25,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_stop",
+            "stop_index": 1,
+            "target_id": "5908722711110090753",
+            "floor_id": 1,
+            "goal": {
+              "x": -7.350000000000001,
+              "y": -11.350000000000001,
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "orientation_source": "point_robot_cell_projection"
+            }
+          }
+        ],
+        "segment_results": [
+          {
+            "kind": "portal_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "path_length_m": 19.608408630674877
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "from_floor": 0,
+            "to_floor": 1,
+            "status": "succeeded"
+          },
+          {
+            "kind": "portal_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "path_length_m": 0.35355323043532194
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F1_TO_F2_MAIN",
+            "from_floor": 1,
+            "to_floor": 2,
+            "status": "succeeded"
+          },
+          {
+            "kind": "candidate_goal",
+            "stop_index": 0,
+            "target_id": "5908722711110090754",
+            "floor_id": 2,
+            "path_length_m": 31.862734673326745,
+            "projection": {
+              "method": "point_robot_cell_projection",
+              "distance_m": 0.5239,
+              "cell": [
+                62,
+                123
+              ],
+              "start_connected": true
+            }
+          },
+          {
+            "kind": "portal_entry",
+            "transition_id": "F2_TO_F1_MAIN",
+            "floor_id": 2,
+            "path_length_m": 31.94444959119119
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F2_TO_F1_MAIN",
+            "from_floor": 2,
+            "to_floor": 1,
+            "status": "succeeded"
+          },
+          {
+            "kind": "candidate_goal",
+            "stop_index": 1,
+            "target_id": "5908722711110090753",
+            "floor_id": 1,
+            "path_length_m": 15.116682997871873,
+            "projection": {
+              "method": "point_robot_cell_projection",
+              "distance_m": 0.5981,
+              "cell": [
+                157,
+                92
+              ],
+              "start_connected": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "failure_stage": "preflight_state_restore_failed",
+  "error": "ValueError: cost must be an integer in the range 0..255",
+  "duration_s": 2.938
+}

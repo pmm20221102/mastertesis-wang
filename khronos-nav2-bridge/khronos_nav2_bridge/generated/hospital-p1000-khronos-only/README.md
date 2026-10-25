@@ -7,7 +7,7 @@ for F0-F3. Their PGM/YAML hashes are pinned in
 
 The maps were generated from Khronos Place support and the projected Khronos
 mesh. The grid geometry is recorded in
-`experiments/hospital-khronos-only-20261019/grid_geometry.json`; it contains
+`experiment/map-generation/grid_geometry.json`; it contains
 only floor extents, resolution, and origin plus source hashes. No depth-map
 occupancy pixels or SLAM occupancy output are consumed. Regenerating map pixels
 requires the local Hospital P1000 DSG and mesh inputs, which are intentionally
@@ -22,11 +22,11 @@ the source snapshot under the ignored `datasets/Hospital-workstation-backup-2026
 directory, run from the repository root with a new output path:
 
 ```bash
-python3 experiments/hospital-khronos-only-20261019/generate_khronos_only.py
+python3 experiment/map-generation/generate_khronos_only.py
 ```
 
 The default output is the ignored directory
-`experiments/hospital-khronos-only-20261019/output/hospital-p1000-khronos-only-generated/`;
+`experiment/map-generation/output/hospital-p1000-khronos-only-generated/`;
 the script uses the adjacent geometry-only manifest and refuses to overwrite a
 non-empty output directory. This is also the source of the repaired DSG used by
 the optional four-floor room-label mosaic. The committed maps are the verified

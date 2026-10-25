@@ -1,6 +1,0 @@
-dataset: mock_office
-db_dir: ../RAG/khronos_3dsg_rag/outputs/mock_office/vector_db
-rag_jsonl: ../RAG/khronos_3dsg_rag/outputs/mock_office/rag_documents.jsonl
-top_k: 10
-seed: 42
-output_dir: data/reports

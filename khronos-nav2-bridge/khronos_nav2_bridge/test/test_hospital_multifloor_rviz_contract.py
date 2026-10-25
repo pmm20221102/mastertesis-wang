@@ -82,8 +82,8 @@ def test_multifloor_rviz_default_inputs_are_workspace_relative():
     launch = (PACKAGE / "launch/hospital_nav2_multifloor_rviz.launch.py").read_text(
         encoding="utf-8")
     assert "hospital-p1000-khronos-only" in launch
-    assert 'KHRONOS_DSG = "experiments/hospital-khronos-only-20261019/output/' in launch
-    assert 'HC031_F0_DEMO = "experiments/hospital-four-floor-rviz-demo-20261023/' in launch
+    assert 'KHRONOS_DSG = "experiment/map-generation/output/' in launch
+    assert 'HC031_F0_DEMO = "experiment/four-floor-demo/' in launch
 
 
 if __name__ == "__main__":

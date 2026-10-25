@@ -1,0 +1,717 @@
+{
+  "benchmark_id": "hospital-p1000-composite-60-v1-20261014",
+  "canonical_graph_sha256_after": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+  "completed_at_utc": "2026-10-20T17:38:25.706972+00:00",
+  "condition_order_by_task": {
+    "HC-001": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-002": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-003": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-004": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-005": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-006": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-007": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-008": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-009": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-010": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-011": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-012": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-013": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-014": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-015": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-016": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-017": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-018": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-019": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-020": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-021": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-022": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-023": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-024": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-025": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-026": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-027": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-028": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-029": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-030": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-031": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-032": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-033": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-034": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-035": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-036": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-037": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-038": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-039": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-040": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-041": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-042": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-043": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-044": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-045": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-046": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-047": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-048": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-049": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-050": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-051": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-052": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-053": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-054": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-055": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-056": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ],
+    "HC-057": [
+      [
+        "full",
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2"
+      ]
+    ],
+    "HC-058": [
+      [
+        "no_llm1",
+        "raw_dsg",
+        "no_llm2",
+        "full"
+      ]
+    ],
+    "HC-059": [
+      [
+        "raw_dsg",
+        "no_llm2",
+        "full",
+        "no_llm1"
+      ]
+    ],
+    "HC-060": [
+      [
+        "no_llm2",
+        "full",
+        "no_llm1",
+        "raw_dsg"
+      ]
+    ]
+  },
+  "diagnostic_excluded_from_aggregate": false,
+  "evaluation_status": "composite_ablation_single_pass",
+  "execution_source_sha256": {
+    "LLM-robot-taskplanning-chaining-rag/grounding/__init__.py": "99cd8e3abdb8fac042ba5fd60eb6784015e10ca62ef95aaa5b059f3f9163a64e",
+    "LLM-robot-taskplanning-chaining-rag/grounding/orchestrator.py": "eec477da602cec730c283beb275b8fe094937d66ff99a5b39f0bb7ada5d93a9b",
+    "LLM-robot-taskplanning-chaining-rag/llm/__init__.py": "4bd2b29ad26bb59bb5710c5150c131b5de3ec9e5c6226fa59907dff0228793f7",
+    "LLM-robot-taskplanning-chaining-rag/llm/intent_audit_evidence.py": "7e5a7e5adb3510e51222ddf3edbabf40d8229c33b71d4a7fbf0ba06e081a7cc9",
+    "LLM-robot-taskplanning-chaining-rag/llm/intent_contract.py": "67616095f1c1a41c41cecd9108c1633de1504f1f653db0e7468a3ecafa22e2b3",
+    "LLM-robot-taskplanning-chaining-rag/llm/intent_parser.py": "5805a4e07f4105e064be758282611a281d9fb1ed391138bb173023800c8bd9e8",
+    "LLM-robot-taskplanning-chaining-rag/llm/plan_contract.py": "16582b2cd7453539a022739a3bef620805cf6dc7b017fa9e1b269d5c27916518",
+    "LLM-robot-taskplanning-chaining-rag/main_rag.py": "03af8abeee3538e6d5bfcb0823ff9f9c8662fcce27d63f9a423646647c99f876",
+    "LLM-robot-taskplanning-chaining-rag/planner_schemas/__init__.py": "017282562e25e8893060a32c343cc1dfebb4b7f8589babeb1740ea9a67de223e",
+    "LLM-robot-taskplanning-chaining-rag/planner_schemas/intent.py": "6ad2aabf9a4565e68ca88838840fe291dfae6af6f4b5e21d5776810afaa53673",
+    "LLM-robot-taskplanning-chaining-rag/planner_schemas/taskchain_intent.py": "09ba91417246c3b0102ead92edb8ee0b7cf787c4923551dd5834668a2f8ca97d",
+    "LLM-robot-taskplanning-chaining-rag/prompt.py": "3832e34f0ba83ed990d2c66b3e0e53d149f7bfe8f452256716768d7fa6e66c47",
+    "LLM-robot-taskplanning-chaining-rag/rag_retriever.py": "484a39ae1a9696c18e72ab0d0a7d17877a1528d53d9c93542cf9537b7fdf93d9",
+    "LLM-robot-taskplanning-chaining-rag/schema.py": "21c5937eb02f243c496cfef5396ba7a9a0dfd59d24357f3c037db3c9683cdec6",
+    "RAG/khronos_3dsg_rag/src/api_schemas.py": "88ce2c5f4a6f60a57dd1dd7a8712d242c9c8d9a5414e51fb2c67f08a3ef1761f",
+    "RAG/khronos_3dsg_rag/src/build_vector_db.py": "f7a02d9f1d1a7a66c2227b1380456514423e2db366ea327569239d3a6c8bb882",
+    "RAG/khronos_3dsg_rag/src/canonical_index.py": "1b050d9abf3274f712c1905004ad22abf3b051212b24fa1bfc701fc69b3b45fb",
+    "RAG/khronos_3dsg_rag/src/entity_resolver.py": "8ea4b6576d3e5adffca17fb664d03ffe7e86bec30265735678ed7a5709fc6b40",
+    "RAG/khronos_3dsg_rag/src/graph_ranker.py": "c72c0531b905902519b636d25bbceb608d6081844432f6953080e9a236356a4c",
+    "RAG/khronos_3dsg_rag/src/query_rag.py": "5ba863ec58aa48e26bd6dbb17752a4cdc1b3e542ec441fae394aa573710544b2",
+    "RAG/khronos_3dsg_rag/src/scene_graph_api.py": "8a1fbf7dbf4dd97259be8746d2c2bd72b1ace6ad08478225285c27f5ec6e1d02",
+    "RAG/khronos_3dsg_rag/src/schemas.py": "283921c26c5d0726c93b0d67ed2681db153fde49ccdcca8c8f9d4ee338bb19ea",
+    "RAG/khronos_3dsg_rag/src/semantic_labels.py": "e398ae84d3e7bdd1ba04a50f99fea84da64d7b1e9b8928759696ecb620dd31c4",
+    "experiments/hospital-taskchain-ablations-v1-20261013/run_ablation.py": "3ab745ee7fd1e6d0374bc97c61d70cdfd3039ff0c9c5cd6951b93aa2fddab123",
+    "experiments/hospital-taskchain-ablations-v1-20261013/taskchain_ablation_pipeline.py": "32bfccb6af031ba8b6dc19623852f8a66f468cb5ec872e25a64d95ed3e5314ac",
+    "experiments/hospital-taskchain-ablations-v1-20261013/variant_execution.py": "30ef2b5cbaf343952172058a7efc75a13d4c386b005998ba07d2f4ff52ff1624"
+  },
+  "experiment_code_sha256": {
+    "run_ablation.py": "3ab745ee7fd1e6d0374bc97c61d70cdfd3039ff0c9c5cd6951b93aa2fddab123",
+    "taskchain_ablation_pipeline.py": "32bfccb6af031ba8b6dc19623852f8a66f468cb5ec872e25a64d95ed3e5314ac",
+    "variant_execution.py": "30ef2b5cbaf343952172058a7efc75a13d4c386b005998ba07d2f4ff52ff1624"
+  },
+  "experiment_code_sha256_after": {
+    "run_ablation.py": "3ab745ee7fd1e6d0374bc97c61d70cdfd3039ff0c9c5cd6951b93aa2fddab123",
+    "taskchain_ablation_pipeline.py": "32bfccb6af031ba8b6dc19623852f8a66f468cb5ec872e25a64d95ed3e5314ac",
+    "variant_execution.py": "30ef2b5cbaf343952172058a7efc75a13d4c386b005998ba07d2f4ff52ff1624"
+  },
+  "gold_read": false,
+  "gpu_info": [
+    {
+      "memory_total_mib": "6144",
+      "name": "NVIDIA GeForce RTX 3060 Laptop GPU",
+      "uuid": "GPU-b0fb38bd-d738-2c55-f8d4-eff915e4e005"
+    }
+  ],
+  "gpu_verification_policy": {
+    "claim_limit": "VRAM residency is evidence of GPU memory use, not proof of full model offload or per-token GPU execution",
+    "pass_condition": "locked model digest is present and size_vram_bytes > 0 for every chat call",
+    "required_for_llm_trials": true,
+    "source": "Ollama GET /api/ps after every chat response"
+  },
+  "graph_sha256": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+  "intent_prompt_profile": "hospital_taskchain_surface_v1",
+  "intent_prompt_sha256": "9e2ed2e20fe96698b7d57ba91436e5a06ebd0287cf94e6aa2e9a4ba1497f67c7",
+  "intent_schema_sha256": "bb8dbd6379edbefe4c85e9821632c2fdb5dacebc9ab7723f77b5857c9e30baf2",
+  "llm_token_usage_policy": {
+    "calls": "counts attempted chat requests, including failures",
+    "failed_request_tokens": "marked incomplete and unknown; not represented as known zero"
+  },
+  "model": "gemma4:e2b-it-qat",
+  "model_digest": "07ea59a474013479c8b6b802bef095c40e964a1d776ba02f264c0e30e1aede0c",
+  "model_options": {
+    "num_ctx": 8192,
+    "repeat_penalty": 1.1,
+    "seed": 42,
+    "temperature": 0.1,
+    "top_k": 40,
+    "top_p": 0.9
+  },
+  "planner_source_sha256": {
+    "intent_parser.py": "5805a4e07f4105e064be758282611a281d9fb1ed391138bb173023800c8bd9e8",
+    "main_rag.py": "03af8abeee3538e6d5bfcb0823ff9f9c8662fcce27d63f9a423646647c99f876",
+    "taskchain_intent.py": "09ba91417246c3b0102ead92edb8ee0b7cf787c4923551dd5834668a2f8ca97d"
+  },
+  "post_run_integrity_errors": [],
+  "public_tasks_sha256": "edc92900e2b45f10ae25d86d364eb7f783ba054f91f13cb42bc23f48dae65946",
+  "rag_database_file_sha256": {
+    "1af63347-7d5d-4320-bc2d-d717b2961269/data_level0.bin": "0e3d9a9905f15e3d833d68a407051d8f91391fc3dcd9c414dfd3abef08017c1a",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/header.bin": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/index_metadata.pickle": "48ac075da85b6483d410d83c35dd5245f8de4d9d724ad2b366fedfc495821cd2",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/length.bin": "d0fe7e4401b91a5e26ddc254006840a96ad18e6a75529cf5896ea8b8b02a7e75",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/link_lists.bin": "298bccb86a15fe2a0ec173eeae3f27f8a4a371ae629da552455064674bc6acca",
+    "chroma.sqlite3": "1c9d670514827cce1f18a07832232bc65b87e70cb430bfaddebc4454c2c032a8"
+  },
+  "rag_database_file_sha256_after": {
+    "1af63347-7d5d-4320-bc2d-d717b2961269/data_level0.bin": "0e3d9a9905f15e3d833d68a407051d8f91391fc3dcd9c414dfd3abef08017c1a",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/header.bin": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/index_metadata.pickle": "48ac075da85b6483d410d83c35dd5245f8de4d9d724ad2b366fedfc495821cd2",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/length.bin": "d0fe7e4401b91a5e26ddc254006840a96ad18e6a75529cf5896ea8b8b02a7e75",
+    "1af63347-7d5d-4320-bc2d-d717b2961269/link_lists.bin": "298bccb86a15fe2a0ec173eeae3f27f8a4a371ae629da552455064674bc6acca",
+    "chroma.sqlite3": "1c9d670514827cce1f18a07832232bc65b87e70cb430bfaddebc4454c2c032a8"
+  },
+  "rag_database_runtime_snapshot_file_sha256_after": {
+    "canonical_graph_v2.json": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+    "rag_documents.jsonl": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/data_level0.bin": "0e3d9a9905f15e3d833d68a407051d8f91391fc3dcd9c414dfd3abef08017c1a",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/header.bin": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/index_metadata.pickle": "48ac075da85b6483d410d83c35dd5245f8de4d9d724ad2b366fedfc495821cd2",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/length.bin": "d0fe7e4401b91a5e26ddc254006840a96ad18e6a75529cf5896ea8b8b02a7e75",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/link_lists.bin": "298bccb86a15fe2a0ec173eeae3f27f8a4a371ae629da552455064674bc6acca",
+    "vector_db/chroma.sqlite3": "bf8d5fb2684236dff6b1ebdd519f909f45825c7cf90f6c053c66c03e00a6ad08"
+  },
+  "rag_database_runtime_snapshot_file_sha256_before": {
+    "canonical_graph_v2.json": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+    "rag_documents.jsonl": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/data_level0.bin": "0e3d9a9905f15e3d833d68a407051d8f91391fc3dcd9c414dfd3abef08017c1a",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/header.bin": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/index_metadata.pickle": "48ac075da85b6483d410d83c35dd5245f8de4d9d724ad2b366fedfc495821cd2",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/length.bin": "d0fe7e4401b91a5e26ddc254006840a96ad18e6a75529cf5896ea8b8b02a7e75",
+    "vector_db/1af63347-7d5d-4320-bc2d-d717b2961269/link_lists.bin": "298bccb86a15fe2a0ec173eeae3f27f8a4a371ae629da552455064674bc6acca",
+    "vector_db/chroma.sqlite3": "1c9d670514827cce1f18a07832232bc65b87e70cb430bfaddebc4454c2c032a8"
+  },
+  "rag_database_runtime_snapshot_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-60-surface-v1-llm2-60x4-20261020/runs/surface-v1-llm2-60x4-20261020/runtime_inputs/vector_db",
+  "rag_database_runtime_snapshot_policy": "A byte-verified copy of the frozen source database is used for trial queries; Chroma may update SQLite runtime bookkeeping in the copy without changing the locked source.",
+  "rag_database_sha256": "78fc2dd00f86d977606c00d806770aa769d0593217ff21d08ff07148546ad3c7",
+  "rag_database_sha256_after": "78fc2dd00f86d977606c00d806770aa769d0593217ff21d08ff07148546ad3c7",
+  "rag_documents_sha256_after": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394",
+  "rag_runtime_sidecar_snapshot_sha256_after": {
+    "canonical_graph_v2.json": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+    "rag_documents.jsonl": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394"
+  },
+  "rag_runtime_sidecar_snapshot_sha256_before": {
+    "canonical_graph_v2.json": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+    "rag_documents.jsonl": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394"
+  },
+  "rag_runtime_sidecar_source_sha256": {
+    "canonical_graph_v2.json": "80d8eebd9447dbf5328e661662cc648b13e21d1fa760dd822730a120e8e0f1d2",
+    "rag_documents.jsonl": "0563183c1890fe819a354890c87532b354ede4f7f1a7b9cf8c7ac955bf077394"
+  },
+  "raw_dsg_comparison_scope": "Direct raw DSG plus the same reviewed label overlay, resolved by a benchmark-scoped facade; interpret as a backend/query-path comparison, not a storage-format-only intervention.",
+  "raw_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+  "raw_dsg_sha256_after": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+  "repeats": 1,
+  "run_kind": "benchmark",
+  "run_status": "complete",
+  "schema_version": 1,
+  "started_at_utc": "2026-10-20T17:28:36.211199+00:00",
+  "task_ids": [
+    "HC-001",
+    "HC-002",
+    "HC-003",
+    "HC-004",
+    "HC-005",
+    "HC-006",
+    "HC-007",
+    "HC-008",
+    "HC-009",
+    "HC-010",
+    "HC-011",
+    "HC-012",
+    "HC-013",
+    "HC-014",
+    "HC-015",
+    "HC-016",
+    "HC-017",
+    "HC-018",
+    "HC-019",
+    "HC-020",
+    "HC-021",
+    "HC-022",
+    "HC-023",
+    "HC-024",
+    "HC-025",
+    "HC-026",
+    "HC-027",
+    "HC-028",
+    "HC-029",
+    "HC-030",
+    "HC-031",
+    "HC-032",
+    "HC-033",
+    "HC-034",
+    "HC-035",
+    "HC-036",
+    "HC-037",
+    "HC-038",
+    "HC-039",
+    "HC-040",
+    "HC-041",
+    "HC-042",
+    "HC-043",
+    "HC-044",
+    "HC-045",
+    "HC-046",
+    "HC-047",
+    "HC-048",
+    "HC-049",
+    "HC-050",
+    "HC-051",
+    "HC-052",
+    "HC-053",
+    "HC-054",
+    "HC-055",
+    "HC-056",
+    "HC-057",
+    "HC-058",
+    "HC-059",
+    "HC-060"
+  ],
+  "trial_count_completed": 240,
+  "trial_count_expected": 240,
+  "variant_stage_policy": {
+    "full": {
+      "grounding": "rag_index",
+      "intent_parser": "llm1",
+      "llm2_repair": true,
+      "task_chaining": "llm2"
+    },
+    "no_llm1": {
+      "grounding": "rag_index",
+      "intent_parser": "fixed_rules",
+      "llm2_repair": true,
+      "task_chaining": "llm2"
+    },
+    "no_llm2": {
+      "grounding": "rag_index",
+      "intent_parser": "llm1",
+      "llm2_repair": false,
+      "task_chaining": "deterministic"
+    },
+    "raw_dsg": {
+      "grounding": "raw_dsg_facade",
+      "intent_parser": "llm1",
+      "llm2_repair": true,
+      "task_chaining": "llm2"
+    }
+  }
+}

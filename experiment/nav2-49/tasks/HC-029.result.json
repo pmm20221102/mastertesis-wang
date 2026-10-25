@@ -1,0 +1,14 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-029",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "failed",
+  "events": [],
+  "reached_stops": [],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "2f31a4aa6457aa782880337952c63807abe0528ecf97c2183ad18b62823ee7ad",
+  "failure_stage": "ros_adapter",
+  "error": "TimeoutError: timeout/empty result waiting for LoadMap",
+  "duration_s": 30.759
+}

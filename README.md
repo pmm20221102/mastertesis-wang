@@ -1,85 +1,62 @@
-# Hospital P1000: Natural Language to Nav2 Path Planning
+# Hospital P1000：从自然语言到 Nav2 规划
 
-This repository contains a reproducible, software-only workflow that turns an
-English Hospital P1000 navigation instruction into an ordered, Nav2-checked
-path plan using a local LLM, a structured Khronos scene-graph RAG index, and a
-four-floor Nav2 map bundle.
+这是论文最终实现与评测归档。最短运行链为：
 
-## Scope and success criteria
+自然语言指令 → LLM 意图解析 → Khronos-RAG 语义锚定 → 有序 mission → ROS 2/Nav2 路径规划 → 可追溯 JSON。
 
-The pipeline is:
+默认自然语言入口是软件级 plan-only：结果中的 planned 表示 Nav2 对任务链中的停靠点找到了可行路径，execution_performed 为 false；它不会证明真实 ANYmal 行走、楼梯/电梯通行或实体安全。跨楼层使用预配置抽象通道、地图加载和位姿重置。真实 Nav2 mission runner 是另一个接口，只有在隔离的模拟 ROS domain 中才可执行。
 
-`English instruction -> LLM1 intent -> Hospital RAG grounding -> ordered task chain -> Nav2 candidate/path planning -> provenance JSON`
+## 模块与说明
 
-The default task-chain adapter is deterministic after grounding. LLM2 remains
-available only for controlled comparisons with `--task-chain-backend llm2`.
-The current Nav2 integration is plan-only: a `planned` result means Nav2 found
-feasible paths for the ordered stops. It does not send `NavigateToPose`, move a
-robot, or validate physical ANYmal dynamics. Multi-floor transitions are
-abstract map/pose switches at configured connectors, not simulated stair
-climbing.
+| 模块 | 职责 | 详细说明 |
+|---|---|---|
+| llm-rag/ | 唯一 LLM-RAG 规划器与 Khronos DSG 索引构建器 | llm-rag/README.md、llm-rag/BUILD_ENVIRONMENT.md |
+| khronos/ | Khronos 源码与 TartanGround 输入适配工具 | khronos/README.md |
+| khronos-nav2-bridge/ | Hospital P1000 ROS 2/Nav2 package | khronos-nav2-bridge/README.md |
+| experiment/ | 论文数据、评测结果、地图与演示归档 | experiment/README.md |
 
-The default robot profile is the point-robot planning profile with Nav2
-costmaps retained. The four Khronos-only maps and their manifest are checked in
-under `khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/`.
+仓库根目录只保留这一个 README。模块内 README 解释各自的构建、依赖和接口。
 
-## Requirements and local inputs
+按干净环境重建 Python/ROS 环境、验证测试、构建 RAG 索引并运行 Nav2 plan-only 的逐步操作见 [代码复现流程](experiment/CODE_REPRODUCTION.md)。该指南会区分可重跑的流程与仅保存历史结果的实验归档。
 
-- WSL 2, Ubuntu 24.04, ROS 2 Jazzy, `colcon`, `rosdep`, and RViz2.
-- Python 3.12, Ollama, and the model `gemma4:e2b-it-qat`.
-- The local Hospital P1000 Khronos `dsg.json`, `mesh.ply`, and the reviewed
-  `hospital-object-review-2026-10-12.csv` for rebuilding the RAG index.
-- The dataset snapshot is approximately 27 GB. Dataset files, the reviewed
-  CSV, generated Chroma databases, and build/install/log directories are
-  intentionally excluded from Git. Supply the local input paths yourself.
+## 环境依赖
 
-Install ROS 2 Jazzy according to the official ROS instructions before
-continuing. The commands below assume the repository root is the current
-directory.
+- 推荐环境：WSL 2 / Ubuntu 24.04、Python 3.12、ROS 2 Jazzy、colcon、rosdep。
+- Python 依赖由 llm-rag/planner/pyproject.toml 管理；Nav2 ROS 依赖由 khronos-nav2-bridge/khronos_nav2_bridge/package.xml 声明。
+- 本地模型服务使用 Ollama，默认模型为 gemma4:e2b-it-qat。
+- 原始 Hospital P1000 DSG、mesh 和人工审阅 CSV（约 27 GB 数据集）是本地输入，不在 Git 中。构建 RAG 索引时必须提供自己的路径。
+- 完整依赖来源、版本约束、安装顺序和验证命令见 llm-rag/BUILD_ENVIRONMENT.md。
 
-If you do not already have the submission branch checked out:
+以下命令均假定当前工作目录是仓库根目录。先安装 ROS 2 Jazzy，再准备 Python 环境：
 
-```bash
-git clone --branch codex/hospital-nl-rag-nav2-20261024 --single-branch \
-  https://gitlab.kit.edu/roberto.corlito/ma_yunsong_wang.git Masterthesis-wang
-cd Masterthesis-wang
-```
-
-## 1. Create the Python environment
-
-```bash
-cd /path/to/Masterthesis-wang
+~~~bash
 python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -e 'LLM-robot-taskplanning-chaining-rag[dev]'
-```
-
-The RAG builder uses a pinned CPU embedding model so Ollama can use the GPU
-independently. The first build may download the pinned model revision.
-
-## 2. Start Ollama
-
-Ensure the Ollama service is running, then pull the configured model:
-
-```bash
+.venv/bin/pip install -e 'llm-rag/planner[dev]'
 ollama pull gemma4:e2b-it-qat
-ollama list
-```
+~~~
 
-If Ollama is not managed as a service in the WSL distribution, start `ollama
-serve` in a separate terminal and keep that terminal open.
+让 rosdep 安装 bridge 声明的依赖并编译 Hospital package：
 
-## 3. Build the reproducible Hospital RAG index
+~~~bash
+source /opt/ros/jazzy/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+rosdep update
+rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
+cd khronos-nav2-bridge
+colcon build --packages-select khronos_nav2_bridge --symlink-install
+source install/setup.bash
+cd ..
+~~~
 
-The command consumes the Khronos DSG and human-reviewed semantic CSV without
-modifying either input. It writes a canonical graph, documents, a pinned
-ChromaDB vector index, and provenance manifests. The planner's default database
-path is the v5 output shown below.
+PATH 设置选择 ROS Jazzy 的系统 Python，避免用户 Conda Python 覆盖 ROS Python。
 
-```bash
-cd /path/to/Masterthesis-wang
-.venv/bin/python RAG/khronos_3dsg_rag/src/main.py \
-  --config RAG/khronos_3dsg_rag/config.yaml build \
+## 构建 Hospital RAG 索引
+
+builder 只读取 DSG 与审阅 CSV，不修改原始输入。输出目录必须不存在；下例使用版本化目录 v5，和自然语言规划器默认的 --db-dir 相同。
+
+~~~bash
+.venv/bin/python llm-rag/RAG/khronos_3dsg_rag/src/main.py \
+  --config llm-rag/RAG/khronos_3dsg_rag/config.yaml build \
   --reproducible \
   --dataset hospital-p1000 \
   --input /path/to/hospital/full-data/dsg.json \
@@ -87,55 +64,16 @@ cd /path/to/Masterthesis-wang
   --embedding-model paraphrase-multilingual-MiniLM-L12-v2 \
   --embedding-model-revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
   --embedding-device cpu \
-  --output RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5
-```
+  --output llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5
+~~~
 
-The builder refuses to overwrite an existing output directory. Keep an existing
-build intact; choose a new versioned output path and pass its `vector_db`
-directory to the planner with `--db-dir` when rebuilding. Verify the manifest
-and logical vector-content digest before using a database.
+成功后该目录包含 canonical graph、RAG documents、vector_db 和 build manifest。若使用自定义输出路径，调用规划器时必须把该目录下的 vector_db 显式传给 --db-dir。现有目录不会被覆盖；要重建时请指定新的版本化输出目录。
 
-## 4. Optional: regenerate the Khronos-only maps
+## 启动完整自然语言到 Nav2 流程
 
-The committed maps are ready for the normal workflow; regeneration is not
-required. To reproduce the map bundle from local Khronos output:
+终端 1：启动隔离的 Hospital F0 Nav2 stack。先等待日志报告 Managed nodes are active；不要使用真实机器人 ROS domain。
 
-```bash
-cd /path/to/Masterthesis-wang
-.venv/bin/python experiments/hospital-khronos-only-20261019/generate_khronos_only.py \
-  --dsg /path/to/hospital/khronos-output/dsg.json \
-  --mesh /path/to/hospital/khronos-output/mesh.ply \
-  --output /tmp/hospital-p1000-khronos-only-generated
-```
-
-The checked-in `grid_geometry.json` defines floor extents, resolution, and
-origin; the generator uses Place support and mesh projection, not depth-map
-occupancy pixels. Regenerated output is diagnostic until its maps, reports,
-manifest hashes, and package bundle have all been reviewed together.
-
-## 5. Build the ROS 2/Nav2 package
-
-```bash
-cd /path/to/Masterthesis-wang
-source /opt/ros/jazzy/setup.bash
-export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
-rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge \
-  --ignore-src -r -y
-cd khronos-nav2-bridge
-colcon build --packages-select khronos_nav2_bridge --symlink-install
-source install/setup.bash
-```
-
-The PATH setting selects the ROS system Python and avoids a user Python taking
-precedence over ROS Jazzy packages.
-
-## 6. Start the isolated Hospital Nav2 stack
-
-In terminal 1, start the packaged F0 map and point-robot parameters on a
-dedicated local simulation domain:
-
-```bash
-cd /path/to/Masterthesis-wang
+~~~bash
 source /opt/ros/jazzy/setup.bash
 source khronos-nav2-bridge/install/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
@@ -143,71 +81,88 @@ export ROS_DOMAIN_ID=77
 ros2 launch khronos_nav2_bridge hospital_nav2.launch.py \
   map:=khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/map.yaml \
   params_file:=khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_point.yaml
-```
+~~~
 
-Wait until Nav2 reports `Managed nodes are active`. Do not use a real robot ROS
-domain for this plan-only workflow.
+终端 2：提交一条自然语言指令。脚本默认读取 v5 RAG 索引，并且不会覆盖已有结果文件。
 
-To open RViz2 with this same single-floor Nav2 stack, use
-`hospital_nav2_rviz.launch.py` instead of `hospital_nav2.launch.py` and pass the
-same `map` and `params_file` arguments. Do not launch both variants in the same
-ROS domain.
-
-## 7. Submit an English instruction
-
-In terminal 2, use the same domain and the repository Python environment:
-
-```bash
-cd /path/to/Masterthesis-wang
+~~~bash
 source /opt/ros/jazzy/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=77
 export HOSPITAL_NAV2_PYTHON="$PWD/.venv/bin/python"
-bash scripts/plan_hospital_nav2.sh \
-  --instruction "Please take me to a room with a chair and a door." \
+bash llm-rag/plan_hospital_nav2.sh \
+  --instruction "Please take me into the room with the bed." \
   --ros-domain-id 77 \
   --output /tmp/hospital-nav2-plan.json
-```
+~~~
 
-The wrapper defaults to `gemma4:e2b-it-qat`, the v5 RAG database, the checked-in
-four-floor transition bundle, and the deterministic grounded task-chain
-adapter. Use `--model`, `--db-dir`, `--bundle`, `--robot-model`, or
-`--task-chain-backend` to override a default explicitly. Output files are never
-overwritten.
+主要参数：
 
-## 8. Interpret the result
+- --model：覆盖 Ollama 模型。
+- --db-dir：覆盖 RAG vector_db。
+- --bundle：覆盖楼层地图及抽象通道配置。
+- --task-chain-backend grounded_deterministic 或 llm2：默认确定性编译，llm2 供受控比较。
+- --num-ctx、--num-predict、--request-timeout-s：覆盖单次 LLM 请求资源与超时。
+- --robot-model point 或 footprint：选择 Nav2 footprint 配置。
 
-- `planned` with `execution_performed: false`: all ordered stops received
-  feasible Nav2 paths; no motion command was sent.
-- `intent_parse_failed`, `grounding_failed`, `planning_failed`, or another
-  non-success status: inspect the stage-specific error and timing fields in the
-  JSON before changing prompts, map data, or Nav2 parameters.
-- For an ambiguous destination, the planner evaluates grounded candidates
-  against floor assignment and feasible route cost; it does not treat a
-  candidate list as proof that navigation succeeded.
+查看全部选项：
 
-The JSON records the instruction, model and source digests, RAG build and
-vector-content digests, map-bundle hash, selected target candidates, route
-geometry, stage timings, and whether execution occurred. A successful plan is
-software path-planning evidence only, not robot motion, physical safety, or a
-benchmark result.
+~~~bash
+.venv/bin/python llm-rag/planner/plan_nav2.py --help
+~~~
 
-## 9. Run the tests
+输出 JSON 记录 instruction、模型与代码摘要、RAG/map provenance、目标候选、路径几何、阶段耗时和 execution_performed。候选目标不表示已到达；plan-only 的成功也不表示真实机器人运动。
 
-From the repository root:
+## Nav2 mission 接口
 
-```bash
+低层 runner 消费一个冻结的 mission JSON、地图 bundle 和输出路径。默认模式可能发送 NavigateToPose；只验证路径时加 --plan-only。
+
+~~~bash
+source /opt/ros/jazzy/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=77
+/usr/bin/python3 khronos-nav2-bridge/khronos_nav2_bridge/scripts/run_task_chain_nav2.py \
+  --mission experiment/nav2-49/missions/HC-001.mission.json \
+  --bundle khronos-nav2-bridge/khronos_nav2_bridge/config/hospital_p1000_floor_transitions.yaml \
+  --output /tmp/HC-001-result.json \
+  --plan-only \
+  --robot-model point
+~~~
+
+该命令使用 ROS Jazzy 系统 Python，以确保能导入 rclpy。输入是有序停靠点和候选目标；输出是包含状态、路径和阶段信息的单任务 JSON。实际导航只允许连接隔离的模拟 domain。
+
+## 数据与论文分母
+
+- experiment/task-chain-60/public/tasks_en.jsonl：60 条输入；论文选定的 surface-v1-llm2-60x4-20261020 运行包含 Full、No LLM1、Raw DSG、No LLM2 四个条件，共 240 个任务—条件输出。
+- experiment/nav2-49/missions：从较早的 Full 预测筛出的 49 个可执行 mission；preparation_report.json 同时记录被排除的无效输出。tasks/ 保存 49 个首轮结果，retry-20261023/ 是六个故障任务的独立诊断重跑。
+- 论文报告的 43/49 是原始首轮结果；六个重跑成功不替代首轮分数。任务链成功数、Nav2 任务分母和 HC-031 演示是不同证据，不能合并成一次端到端成功率。
+- 其他任务链、语义 RAG、检索评测保存在 experiment/evaluations/；历史运行 manifest 保留原始绝对路径作为 provenance，不代表当前机器路径。
+
+原始任务链、Nav2 mission 与结果目录是从本地论文实验档案复制的；完整 RAG 重建和历史实验重跑仍需对应的外部数据、模型与 ROS 环境。
+
+## 测试与故障排查
+
+Python、RAG、地图生成和接口契约测试：
+
+~~~bash
 .venv/bin/python -m pytest -q \
-  LLM-robot-taskplanning-chaining-rag/tests \
-  RAG/khronos_3dsg_rag/tests \
-  experiments/hospital-khronos-only-20261019/test_generate_khronos_only.py
+  llm-rag/planner/tests \
+  llm-rag/RAG/khronos_3dsg_rag/tests \
+  experiment/map-generation/test_generate_khronos_only.py \
+  experiment/tests
+~~~
 
+ROS package 测试：
+
+~~~bash
 source /opt/ros/jazzy/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
 cd khronos-nav2-bridge
 colcon test --packages-select khronos_nav2_bridge --event-handlers console_direct+
 colcon test-result --verbose
-```
+~~~
 
-The checked-in plan-only record is at
-`experiments/hospital-natural-language-nav2-interface-v1-20261024/results/plan-room-chair-door-packaged-maps.json`.
-It is a software planning result, not an execution recording.
+- 找不到 RAG vector_db：先执行上面的 build 命令；自定义目录时用 --db-dir 指定。
+- Ollama 连接失败：确认服务运行，并检查 http://127.0.0.1:11434。
+- Nav2 action/service 不可用：先等 Managed nodes are active，并确认两个终端使用同一个隔离 ROS_DOMAIN_ID。
+- 找不到原始 DSG、mesh 或审阅 CSV：这些输入不随 Git 提供，需要本机准备后显式传入路径。

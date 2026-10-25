@@ -1,0 +1,77 @@
+{
+  "schema_version": "hospital-four-floor-rviz-demo-v1",
+  "date": "2026-10-23",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "visualization": {
+    "layout": {"F0": "top_left", "F1": "top_right", "F2": "bottom_left", "F3": "bottom_right"},
+    "mosaic_frame": "hospital_floor_mosaic",
+    "nav2_frame": "map",
+    "mosaic_grid": {"width": 663, "height": 706, "resolution_m": 0.1, "cell_count": 468078},
+    "runtime_grid_matches_composed_mosaic": true,
+    "floor_labels": 4,
+    "directed_portal_markers": 12,
+    "directed_portal_labels": 12,
+    "active_floor_robot_and_path_only": true,
+    "runtime_f0_live_map_cell_match": {"matched": true, "cells": 80682},
+    "runtime_f1_status": "HC-031 | F1 | SUCCEEDED"
+  },
+  "nav2_demo_profile": {
+    "config": "khronos_nav2_bridge/config/nav2_hospital_rviz.yaml",
+    "robot_model": "point",
+    "desired_linear_vel_m_s": 0.5,
+    "observed_controller_parameter_m_s": 0.5,
+    "local_costmap_window_m": [4, 4],
+    "local_costmap_resolution_m": 0.1,
+    "inflation_radius_m": 0.45,
+    "benchmark_profiles_modified": false
+  },
+  "cross_floor_mission": {
+    "task_id": "HC-031",
+    "floor_sequence": [3, 2, 1],
+    "status": "succeeded",
+    "reached_stops": [0, 1, 2],
+    "abstract_transitions_succeeded": ["F3_TO_F2_MAIN", "F2_TO_F1_MAIN"],
+    "load_map_geometry_and_costmap_checks": "passed for both transitions",
+    "exit_pose_tf_error_m": [0.0, 0.0],
+    "duration_s": 142.777,
+    "result_file": "HC-031-attempt2.result.json"
+  },
+  "manual_f1_goal_smoke": {
+    "goal_xy_m": [-2.95, 2.45],
+    "nav2_action_status": "SUCCEEDED",
+    "frame": "map"
+  },
+  "mosaic_frame_goal_smoke": {
+    "goal_xy_m": [50.05, 59.75],
+    "frame": "hospital_floor_mosaic",
+    "expected_map_xy_m": [-2.95, 2.45],
+    "nav2_action_status": "SUCCEEDED"
+  },
+  "cmd_vel_sample": {
+    "source": "F1 Nav2 action to the configured stair entry after HC-031",
+    "measurement_window_s": 45,
+    "messages": 243,
+    "nonzero_messages": 243,
+    "linear_x_min_m_s": 0.08545635961545993,
+    "linear_x_max_m_s": 0.5,
+    "linear_x_mean_nonzero_m_s": 0.3063268931796633,
+    "interpretation": "0.5 m/s was reached; lower values reflect controller regulation and approach behavior"
+  },
+  "superseded_first_attempt": {
+    "result_file": "HC-031.result.json",
+    "navigation_stops_reached": [0, 1, 2],
+    "wrapper_status": "failed",
+    "reason": "rclpy wait_for_all_acked was called with an unsupported keyword; fixed and re-run in attempt 2"
+  },
+  "verification": {
+    "focused_pytest": {"passed": 62, "failed": 0},
+    "targeted_ctest": {"passed": 9, "failed": 0},
+    "package_build": "passed"
+  },
+  "known_nonblocking_warnings": [
+    "RViz OpenGL indexed map shader reports an active-sampler link warning on this WSLg driver",
+    "ANYmal URDF reports a pre-existing undefined orange material on imu_link",
+    "install/setup.bash reports missing setup scripts for unrelated workspace packages"
+  ],
+  "scope_limit": "Planar kinematic point-robot Nav2 with abstract map/pose floor transitions; no physical stair traversal or ANYmal dynamics"
+}

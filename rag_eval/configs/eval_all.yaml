@@ -1,6 +1,0 @@
-dataset: combined
-gt_dir: data/groundtruth
-db_dir: ../RAG/khronos_3dsg_rag/outputs/vector_db
-top_k: 10
-seed: 42
-output_dir: data/reports

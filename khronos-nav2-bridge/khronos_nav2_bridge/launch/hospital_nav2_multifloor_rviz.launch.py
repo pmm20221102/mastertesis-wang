@@ -6,8 +6,8 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-HC031_F0_DEMO = "experiments/hospital-four-floor-rviz-demo-20261023/missions/HC-031-F0-demo.mission.json"
-KHRONOS_DSG = "experiments/hospital-khronos-only-20261019/output/hospital-p1000-khronos-only-generated/dsg_topology_repaired.json"
+HC031_F0_DEMO = "experiment/four-floor-demo/missions/HC-031-F0-demo.mission.json"
+KHRONOS_DSG = "experiment/map-generation/output/hospital-p1000-khronos-only-generated/dsg_topology_repaired.json"
 
 
 def generate_launch_description():

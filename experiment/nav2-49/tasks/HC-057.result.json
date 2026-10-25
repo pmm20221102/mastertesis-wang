@@ -1,0 +1,429 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-057",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "failed",
+  "events": [
+    {
+      "kind": "plan_stop",
+      "stop_index": 0,
+      "floor_id": 0,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090771",
+        "goal": {
+          "x": 11.05,
+          "y": 3.450000000000001,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 3.7729059819418485,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.5143,
+          "cell": [
+            168,
+            138
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 0,
+      "floor_id": 0,
+      "selected_node_id": "5908722711110090771",
+      "result": {
+        "status": "failed",
+        "reason": "NavigateToPose unavailable"
+      }
+    }
+  ],
+  "reached_stops": [],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "94718afa9fae718c4f52c06104ac2b6ac6fcd25509d97f1b6a5a90ef98328aab",
+  "candidate_route_selection": {
+    "status": "selected",
+    "selected_candidates": [
+      {
+        "target_id": "5908722711110090771",
+        "floor_id": 0,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "frame_id": "map",
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090771",
+          "position": [
+            10.59166689713796,
+            3.2166667208075523,
+            -1.6750000417232513
+          ],
+          "floor_id": 0,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      },
+      {
+        "target_id": "5908722711110090767",
+        "floor_id": 0,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "frame_id": "map",
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090767",
+          "position": [
+            -0.7367816249700798,
+            5.805747305096566,
+            0.010344828596745414
+          ],
+          "floor_id": 0,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      }
+    ],
+    "selected_target_ids": [
+      "5908722711110090771",
+      "5908722711110090767"
+    ],
+    "total_path_length_m": 19.31608881357051,
+    "transition_count": 0,
+    "route_actions": [
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 0,
+        "target_id": "5908722711110090771",
+        "floor_id": 0,
+        "goal": {
+          "x": 11.05,
+          "y": 3.450000000000001,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      },
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 1,
+        "target_id": "5908722711110090767",
+        "floor_id": 0,
+        "goal": {
+          "x": -0.5499999999999998,
+          "y": 5.450000000000001,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      }
+    ],
+    "segment_results": [
+      {
+        "kind": "candidate_goal",
+        "stop_index": 0,
+        "target_id": "5908722711110090771",
+        "floor_id": 0,
+        "path_length_m": 3.7729059819418485,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.5143,
+          "cell": [
+            168,
+            138
+          ],
+          "start_connected": true
+        }
+      },
+      {
+        "kind": "candidate_goal",
+        "stop_index": 1,
+        "target_id": "5908722711110090767",
+        "floor_id": 0,
+        "path_length_m": 15.543182831628663,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4018,
+          "cell": [
+            52,
+            158
+          ],
+          "start_connected": true
+        }
+      }
+    ],
+    "evaluated_sequence_count": 40,
+    "feasible_sequence_count": 38,
+    "rejected_sequences": [
+      {
+        "target_ids": [
+          "5908722711110090762",
+          "5908722711110090754"
+        ],
+        "reason": "live TF start is not point-safe on active map",
+        "route_actions": [
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "pose": {
+              "frame_id": "map",
+              "x": -3.25,
+              "y": 1.55,
+              "yaw": -1.7674839804789269
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_1/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.95,
+              "y": 2.45,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.75,
+              "y": 2.25,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_2/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "pose": {
+              "frame_id": "map",
+              "x": 8.45,
+              "y": -3.35,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_stop",
+            "stop_index": 0,
+            "target_id": "5908722711110090762",
+            "floor_id": 2,
+            "goal": {
+              "x": 2.1500000000000004,
+              "y": -3.25,
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "orientation_source": "point_robot_cell_projection"
+            }
+          }
+        ],
+        "segment_results": [
+          {
+            "kind": "portal_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "path_length_m": 19.608408630674877
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "from_floor": 0,
+            "to_floor": 1,
+            "status": "succeeded"
+          },
+          {
+            "kind": "portal_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "path_length_m": 0.35355294067567283
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F1_TO_F2_MAIN",
+            "from_floor": 1,
+            "to_floor": 2,
+            "status": "succeeded"
+          },
+          {
+            "kind": "candidate_goal",
+            "stop_index": 0,
+            "target_id": "5908722711110090762",
+            "floor_id": 2,
+            "path_length_m": 19.79112702424745,
+            "projection": {
+              "method": "point_robot_cell_projection",
+              "distance_m": 0.6763,
+              "cell": [
+                167,
+                198
+              ],
+              "start_connected": true
+            }
+          }
+        ]
+      },
+      {
+        "target_ids": [
+          "5908722711110090762",
+          "5908722711110090755"
+        ],
+        "reason": "live TF start is not point-safe on active map",
+        "route_actions": [
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "pose": {
+              "frame_id": "map",
+              "x": -3.25,
+              "y": 1.55,
+              "yaw": -1.7674839804789269
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_1/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.95,
+              "y": 2.45,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "pose": {
+              "frame_id": "map",
+              "x": -2.75,
+              "y": 2.25,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "load_map",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_2/map.yaml"
+          },
+          {
+            "kind": "set_pose",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 2,
+            "pose": {
+              "frame_id": "map",
+              "x": 8.45,
+              "y": -3.35,
+              "yaw": 0.0
+            }
+          },
+          {
+            "kind": "navigate_to_stop",
+            "stop_index": 0,
+            "target_id": "5908722711110090762",
+            "floor_id": 2,
+            "goal": {
+              "x": 2.1500000000000004,
+              "y": -3.25,
+              "orientation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0,
+                "w": 1.0
+              },
+              "orientation_source": "point_robot_cell_projection"
+            }
+          }
+        ],
+        "segment_results": [
+          {
+            "kind": "portal_entry",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "floor_id": 0,
+            "path_length_m": 19.608408630674877
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F0_TO_F1_VIDEO",
+            "from_floor": 0,
+            "to_floor": 1,
+            "status": "succeeded"
+          },
+          {
+            "kind": "portal_entry",
+            "transition_id": "F1_TO_F2_MAIN",
+            "floor_id": 1,
+            "path_length_m": 0.35355294067567283
+          },
+          {
+            "kind": "floor_transition",
+            "transition_id": "F1_TO_F2_MAIN",
+            "from_floor": 1,
+            "to_floor": 2,
+            "status": "succeeded"
+          },
+          {
+            "kind": "candidate_goal",
+            "stop_index": 0,
+            "target_id": "5908722711110090762",
+            "floor_id": 2,
+            "path_length_m": 19.79112702424745,
+            "projection": {
+              "method": "point_robot_cell_projection",
+              "distance_m": 0.6763,
+              "cell": [
+                167,
+                198
+              ],
+              "start_connected": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "mission_sha256": "65f56116838044b6324f97aea81dcf848a71f5175672b14e0ee677ac1877bdbc",
+  "active_floor": 0,
+  "duration_s": 194.586,
+  "failure_stage": "navigate_to_stop",
+  "error": "Nav2 did not reach the selected stop",
+  "not_run": true
+}

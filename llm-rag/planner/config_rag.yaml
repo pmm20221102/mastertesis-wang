@@ -1,0 +1,38 @@
+# RAG-Enhanced Task Planner Configuration
+# RAG 增强版任务规划器配置
+
+# Ollama connection / Ollama 连接
+ollama_host: 'http://127.0.0.1:11434'
+
+# Input command / 输入指令（直接在这里修改，然后运行 python main_rag.py）
+input_command: "Please take me to a room with a chair and a door."
+
+# Available models
+models:
+  qwen25_05b:
+    name: "qwen2.5:0.5b"
+    description: "Qwen 2.5 0.5B - fast and accurate (recommended)"
+    default: true
+  qwen35_4b:
+    name: "qwen3.5:4b"
+    description: "Qwen 3.5 4B - stronger but slower"
+    default: false
+  gemma4e2b:
+    name: "gemma4:e2b-it-qat"
+    description: "Gemma 4 2B - lightweight"
+    default: false
+
+# Inference parameters
+options:
+  temperature: 0.1
+  top_p: 0.9
+  top_k: 40
+  num_ctx: 8192
+  repeat_penalty: 1.1
+  seed: 42
+
+# RAG configuration
+rag:
+  db_dir: "llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5/vector_db"
+  top_k: 20
+  use_llm_keywords: true

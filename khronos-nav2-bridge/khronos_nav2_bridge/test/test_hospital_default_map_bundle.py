@@ -27,7 +27,7 @@ def test_hospital_default_bundle_uses_relative_verified_map_assets():
     asset_root = ROOT / "khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only"
     manifest = json.loads((asset_root / "map_manifest.json").read_text(encoding="utf-8"))
     for field in ("generator", "grid_geometry_manifest"):
-        source = ROOT / "experiments/hospital-khronos-only-20261019" / Path(
+        source = ROOT / "experiment/map-generation" / Path(
             manifest["inputs"][field]).name
         expected = manifest["inputs"][f"{field}_sha256"]
         assert hashlib.sha256(source.read_bytes()).hexdigest() == expected

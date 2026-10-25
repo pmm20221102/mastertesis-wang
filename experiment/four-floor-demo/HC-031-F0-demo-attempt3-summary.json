@@ -1,0 +1,58 @@
+{
+  "schema_version": "hospital-four-floor-rviz-demo-attempt-summary-v1",
+  "attempt": 3,
+  "mission": {
+    "task_id": "HC-031-F0-DEMO",
+    "derived_from": "HC-031",
+    "frozen_benchmark_modified": false,
+    "start_floor": 0,
+    "fixed_start_pose_map": {"x": 14.85, "y": 3.65, "yaw": 0.0},
+    "floor_sequence": [0, 1, 2, 3, 2, 1]
+  },
+  "navigation": {
+    "status": "succeeded",
+    "duration_s": 175.328,
+    "reached_stops": [0, 1, 2],
+    "selected_rooms_in_order": [
+      {"floor": 3, "room_label": "R07", "dsg_node_id": "5908722711110090758"},
+      {"floor": 2, "room_label": "R12", "dsg_node_id": "5908722711110090763"},
+      {"floor": 1, "room_label": "R13", "dsg_node_id": "5908722711110090764"}
+    ],
+    "successful_abstract_transitions": [
+      "F0_TO_F1_VIDEO",
+      "F1_TO_F2_MAIN",
+      "F2_TO_F3_MAIN",
+      "F3_TO_F2_MAIN",
+      "F2_TO_F1_MAIN"
+    ],
+    "load_map_and_pose_tf_checks": "passed for all transitions",
+    "execution_scope": "point-robot planar Nav2 with abstract map/pose floor changes; no physical stair traversal or ANYmal dynamics"
+  },
+  "visualization": {
+    "layout": {"type": "2x2 plus right sidebar", "quadrants": {"F0": "top-left", "F1": "top-right", "F2": "bottom-left", "F3": "bottom-right"}},
+    "tile_cells": {"width": 617, "height": 347, "aspect_ratio": 1.7781},
+    "resolution_m": 0.1,
+    "map_topics": [
+      "/hospital/floor_mosaic/f0/map",
+      "/hospital/floor_mosaic/f1/map",
+      "/hospital/floor_mosaic/f2/map",
+      "/hospital/floor_mosaic/f3/map"
+    ],
+    "occupancy_colors": {"free": "white", "occupied": "black", "unknown": "gray"},
+    "room_labels": {"source": "DSG ROOMS node IDs", "placed": 21, "f3_5_labels": ["R09", "R10"]},
+    "sidebar": "ordered floor and room IDs only, black text on white background"
+  },
+  "recording": {
+    "file": "HC-031-F0-demo-final.mp4",
+    "resolution": "1700x1000",
+    "frame_rate_fps": 22.25,
+    "duration_s": 175.461,
+    "codec": "H.264",
+    "verification": "ffprobe successfully parsed the video stream and duration"
+  },
+  "verification": {
+    "focused_pytest": {"passed": 13, "failed": 0},
+    "colcon_build_package": "khronos_nav2_bridge passed",
+    "map_sources": "frozen Hospital P1000 Khronos-only floor bundle; Nav2 planning maps unchanged"
+  }
+}

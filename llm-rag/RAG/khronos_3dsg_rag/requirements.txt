@@ -1,0 +1,7 @@
+# Convenience mirror for the shared llm-rag/planner/pyproject.toml dependencies.
+# Prefer: python -m pip install -e 'llm-rag/planner[dev]' from the repository root.
+ollama>=0.3.0
+pydantic>=2.0
+pyyaml>=6.0
+chromadb>=0.4.0
+sentence-transformers>=2.2.0

@@ -1,0 +1,639 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-033",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "succeeded",
+  "events": [
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F0_TO_F1_VIDEO",
+      "floor_id": 0,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": -2.6564175195451813,
+          "y": 2.06011343002972,
+          "yaw": -2.4806919301055363,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F0_TO_F1_VIDEO",
+      "floor_id": 1,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F0_TO_F1_VIDEO",
+      "floor_id": 1,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 0,
+      "floor_id": 1,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090764",
+        "goal": {
+          "x": 1.25,
+          "y": -2.75,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 8.53836230285983,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4891,
+          "cell": [
+            243,
+            178
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 0,
+      "floor_id": 1,
+      "selected_node_id": "5908722711110090764",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 0.5781443396182531,
+          "y": -2.3425469925849876,
+          "yaw": -0.5008100543365746,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F1_TO_F2_MAIN",
+      "floor_id": 1,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": -3.3965478033932284,
+          "y": 1.7889789079839111,
+          "yaw": 0.665730641416231,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F1_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F1_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F2_TO_F3_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 8.45,
+          "y": -3.35,
+          "yaw": 0.0,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F2_TO_F3_MAIN",
+      "floor_id": 3,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F2_TO_F3_MAIN",
+      "floor_id": 3,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 1,
+      "floor_id": 3,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090758",
+        "goal": {
+          "x": 5.250000000000002,
+          "y": -7.849999999999998,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 10.322790544555538,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4153,
+          "cell": [
+            108,
+            161
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 1,
+      "floor_id": 3,
+      "selected_node_id": "5908722711110090758",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 4.7220881926345335,
+          "y": -8.439875633296818,
+          "yaw": 0.4374091693937056,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 3,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": -2.7092301822497658,
+          "y": -6.3065525073433655,
+          "yaw": 2.172681656574972,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 2,
+      "floor_id": 2,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090763",
+        "goal": {
+          "x": 1.3500000000000014,
+          "y": 2.8500000000000014,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 10.15848731272932,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4184,
+          "cell": [
+            159,
+            259
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 2,
+      "floor_id": 2,
+      "selected_node_id": "5908722711110090763",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 2.0021207880103176,
+          "y": 2.399193245612305,
+          "yaw": 2.6203220626968524,
+          "frame_id": "map"
+        }
+      }
+    }
+  ],
+  "reached_stops": [
+    0,
+    1,
+    2
+  ],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "7b2f4e23f4b3ca9bd4d202707fbaec29aeee55bec1f8efcbb305fa977642e8dc",
+  "candidate_route_selection": {
+    "status": "selected",
+    "selected_candidates": [
+      {
+        "target_id": "5908722711110090764",
+        "floor_id": 1,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090764",
+          "position": [
+            1.7155688830210778,
+            -2.9000000441056524,
+            3.248503045764512
+          ],
+          "frame_id": "map",
+          "floor_id": 1,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      },
+      {
+        "target_id": "5908722711110090758",
+        "floor_id": 3,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090758",
+          "position": [
+            5.619047716082561,
+            -7.659523945789607,
+            10.932539852838667
+          ],
+          "frame_id": "map",
+          "floor_id": 3,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      },
+      {
+        "target_id": "5908722711110090763",
+        "floor_id": 2,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "frame_id": "map",
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090763",
+          "position": [
+            0.9648648882033052,
+            3.0135135690908172,
+            7.300000145628646
+          ],
+          "floor_id": 2,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      }
+    ],
+    "selected_target_ids": [
+      "5908722711110090764",
+      "5908722711110090758",
+      "5908722711110090763"
+    ],
+    "total_path_length_m": 67.39650925869684,
+    "transition_count": 4,
+    "route_actions": [
+      {
+        "kind": "navigate_to_entry",
+        "transition_id": "F0_TO_F1_VIDEO",
+        "floor_id": 0,
+        "pose": {
+          "frame_id": "map",
+          "x": -3.25,
+          "y": 1.55,
+          "yaw": -1.7674839804789269
+        }
+      },
+      {
+        "kind": "load_map",
+        "transition_id": "F0_TO_F1_VIDEO",
+        "floor_id": 1,
+        "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_1/map.yaml"
+      },
+      {
+        "kind": "set_pose",
+        "transition_id": "F0_TO_F1_VIDEO",
+        "floor_id": 1,
+        "pose": {
+          "frame_id": "map",
+          "x": -2.95,
+          "y": 2.45,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 0,
+        "target_id": "5908722711110090764",
+        "floor_id": 1,
+        "goal": {
+          "x": 1.25,
+          "y": -2.75,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      },
+      {
+        "kind": "navigate_to_entry",
+        "transition_id": "F1_TO_F2_MAIN",
+        "floor_id": 1,
+        "pose": {
+          "frame_id": "map",
+          "x": -2.75,
+          "y": 2.25,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "load_map",
+        "transition_id": "F1_TO_F2_MAIN",
+        "floor_id": 2,
+        "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_2/map.yaml"
+      },
+      {
+        "kind": "set_pose",
+        "transition_id": "F1_TO_F2_MAIN",
+        "floor_id": 2,
+        "pose": {
+          "frame_id": "map",
+          "x": 8.45,
+          "y": -3.35,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "navigate_to_entry",
+        "transition_id": "F2_TO_F3_MAIN",
+        "floor_id": 2,
+        "pose": {
+          "frame_id": "map",
+          "x": 8.45,
+          "y": -3.35,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "load_map",
+        "transition_id": "F2_TO_F3_MAIN",
+        "floor_id": 3,
+        "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_3/map.yaml"
+      },
+      {
+        "kind": "set_pose",
+        "transition_id": "F2_TO_F3_MAIN",
+        "floor_id": 3,
+        "pose": {
+          "frame_id": "map",
+          "x": -3.15,
+          "y": -5.65,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 1,
+        "target_id": "5908722711110090758",
+        "floor_id": 3,
+        "goal": {
+          "x": 5.250000000000002,
+          "y": -7.849999999999998,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      },
+      {
+        "kind": "navigate_to_entry",
+        "transition_id": "F3_TO_F2_MAIN",
+        "floor_id": 3,
+        "pose": {
+          "frame_id": "map",
+          "x": -3.15,
+          "y": -5.65,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "load_map",
+        "transition_id": "F3_TO_F2_MAIN",
+        "floor_id": 2,
+        "map_yaml_path": "/home/nenlian/Masterthesis-wang/experiments/hospital-khronos-only-20261019/output/khronos_only_clearance_khronos_global_planes_band005_200/floor_2/map.yaml"
+      },
+      {
+        "kind": "set_pose",
+        "transition_id": "F3_TO_F2_MAIN",
+        "floor_id": 2,
+        "pose": {
+          "frame_id": "map",
+          "x": 8.45,
+          "y": -3.35,
+          "yaw": 0.0
+        }
+      },
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 2,
+        "target_id": "5908722711110090763",
+        "floor_id": 2,
+        "goal": {
+          "x": 1.3500000000000014,
+          "y": 2.8500000000000014,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      }
+    ],
+    "segment_results": [
+      {
+        "kind": "portal_entry",
+        "transition_id": "F0_TO_F1_VIDEO",
+        "floor_id": 0,
+        "path_length_m": 19.608408630674877
+      },
+      {
+        "kind": "floor_transition",
+        "transition_id": "F0_TO_F1_VIDEO",
+        "from_floor": 0,
+        "to_floor": 1,
+        "status": "succeeded"
+      },
+      {
+        "kind": "candidate_goal",
+        "stop_index": 0,
+        "target_id": "5908722711110090764",
+        "floor_id": 1,
+        "path_length_m": 8.53836230285983,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4891,
+          "cell": [
+            243,
+            178
+          ],
+          "start_connected": true
+        }
+      },
+      {
+        "kind": "portal_entry",
+        "transition_id": "F1_TO_F2_MAIN",
+        "floor_id": 1,
+        "path_length_m": 8.525601977319688
+      },
+      {
+        "kind": "floor_transition",
+        "transition_id": "F1_TO_F2_MAIN",
+        "from_floor": 1,
+        "to_floor": 2,
+        "status": "succeeded"
+      },
+      {
+        "kind": "portal_entry",
+        "transition_id": "F2_TO_F3_MAIN",
+        "floor_id": 2,
+        "path_length_m": 0.0
+      },
+      {
+        "kind": "floor_transition",
+        "transition_id": "F2_TO_F3_MAIN",
+        "from_floor": 2,
+        "to_floor": 3,
+        "status": "succeeded"
+      },
+      {
+        "kind": "candidate_goal",
+        "stop_index": 1,
+        "target_id": "5908722711110090758",
+        "floor_id": 3,
+        "path_length_m": 10.322790544555538,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4153,
+          "cell": [
+            108,
+            161
+          ],
+          "start_connected": true
+        }
+      },
+      {
+        "kind": "portal_entry",
+        "transition_id": "F3_TO_F2_MAIN",
+        "floor_id": 3,
+        "path_length_m": 10.24285849055759
+      },
+      {
+        "kind": "floor_transition",
+        "transition_id": "F3_TO_F2_MAIN",
+        "from_floor": 3,
+        "to_floor": 2,
+        "status": "succeeded"
+      },
+      {
+        "kind": "candidate_goal",
+        "stop_index": 2,
+        "target_id": "5908722711110090763",
+        "floor_id": 2,
+        "path_length_m": 10.15848731272932,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4184,
+          "cell": [
+            159,
+            259
+          ],
+          "start_connected": true
+        }
+      }
+    ],
+    "evaluated_sequence_count": 2,
+    "feasible_sequence_count": 2,
+    "rejected_sequences": []
+  },
+  "mission_sha256": "67dcd41b79f5be686f1d528e9a1a955d52e7ef5cae592ec2da0a13abaa3ccab2",
+  "active_floor": 2,
+  "duration_s": 560.877,
+  "not_run": false
+}

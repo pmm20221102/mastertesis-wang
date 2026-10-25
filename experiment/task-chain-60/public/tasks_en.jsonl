@@ -1,0 +1,60 @@
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-001","instruction":"Please take me into the room with the bed."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-002","instruction":"I need to get to the room with the health monitor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-003","instruction":"Could you bring me into the room with the medical screen?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-004","instruction":"Take me to a room that has a desk and a sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-005","instruction":"I’m looking for the room with an elevator and a sofa."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-006","instruction":"Please bring me to the room with a chair and a door."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-007","instruction":"Find a room with a bed and a cabinet, and take me there."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-008","instruction":"Please take me to a room with a bed and a health monitor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-009","instruction":"Take me to the room with a bed and a nightstand."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-010","instruction":"Could you take me into the room that has a bed and a table?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-011","instruction":"I’m trying to find the room with a bed, a chair and an exit sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-012","instruction":"Please take me to a room with a desk, a cabinet and a sofa."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-013","instruction":"I need a room with a table, a sofa and a sign. Please take me there."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-014","instruction":"Please take me to a room with a sofa and a cabinet; any such room is fine."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-015","instruction":"Please take me into a room with a sofa."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-016","instruction":"I need a room that has a cabinet."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-017","instruction":"Could you bring me to a room with a door?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-018","instruction":"Take me into a room with a table."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-019","instruction":"I’d like to go to a room with a chair."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-020","instruction":"Please find a room with a sign and take me inside."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-021","instruction":"Bring me into a room with an exit sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-022","instruction":"Take me to the room that has a nightstand."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-023","instruction":"I need to get to the room with an elevator."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-024","instruction":"I could use a place to sit. Please take me into a room with a sofa."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-025","instruction":"First take me to the room with the bed, then to the room with a chair and a door."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-026","instruction":"Start with the room that has a chair and a door, and then take me to the room with the bed."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-027","instruction":"Take me into the room with a desk and a sign first; after that, go to the room with an exit sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-028","instruction":"Visit the room with the exit sign before the room with a desk and a sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-029","instruction":"Please take me to the room with an elevator and a sofa, then to the room with the medical screen."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-030","instruction":"Go to the room with the medical screen first, then take me to the room with an elevator and a sofa."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-031","instruction":"First the room with a desk and a sign, then the room with an exit sign, and finally the room with the medical screen."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-032","instruction":"Please take me to these rooms in order: the room with an elevator and a sofa, the room with an exit sign, and the room with the medical screen."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-033","instruction":"Visit the room with the medical screen, then the room with a desk and a sign, and finish in the room with an exit sign."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-034","instruction":"I need two stops: the room with a chair and a door, then the room with a bed and a health monitor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-035","instruction":"Please take me to a room that has a defibrillator."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-036","instruction":"Please take me to a room with a first-aid kit."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-037","instruction":"Take me to the reception area."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-038","instruction":"Could you take me to a quiet area?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-039","instruction":"Please take me to both rooms in this order: the room with the bed first, then the room with the medical screen."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-040","instruction":"Take me back to the room I visited earlier."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-041","instruction":"I need a place to spread out charts and make notes."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-042","instruction":"Which opening connects the main corridor to the treatment rooms?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-043","instruction":"How can I get to another level on foot using the steps?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-044","instruction":"Where could a patient stretch out for a short rest?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-045","instruction":"Take me to equipment that checks a patient's vital signs."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-046","instruction":"Show me the marker that points visitors toward an exit."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-047","instruction":"Which device could give staff a reading of a patient's pulse?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-048","instruction":"Guide me through the connection between the hallway and care area, then to the steps used to reach an upper level."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-049","instruction":"Can you take me somewhere a document can be printed?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-050","instruction":"I need a machine that sells drinks to visitors."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-051","instruction":"Please take me to a comfortable spot to sit for a few minutes."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-052","instruction":"Please take me to a counter-height surface for forms."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-053","instruction":"Could you guide me to an opening that lets people pass from one area to another?"}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-054","instruction":"I need a handrail to hold while walking along the corridor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-055","instruction":"First, take me to a comfortable spot to sit. My next stop should be a counter-height surface for forms."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-056","instruction":"Please take me to the steps leading to another floor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-057","instruction":"Take me to a barrier between two areas, then to a cupboard for supplies."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-058","instruction":"Please take me to one room with two things: a comfortable spot to sit, plus a wall that divides one area from another."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-059","instruction":"First take me to an opening between two areas, then to the steps connecting this level to another floor."}
+{"benchmark_id":"hospital-p1000-composite-60-v1-20261014","task_id":"HC-060","instruction":"Please take me to one room with two things: a counter-height surface for forms; a wall that divides one area from another."}

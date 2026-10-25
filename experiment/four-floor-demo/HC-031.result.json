@@ -1,0 +1,232 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-031",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "failed",
+  "events": [
+    {
+      "kind": "plan_stop",
+      "stop_index": 0,
+      "floor_id": 3,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090758",
+        "goal": {
+          "x": 5.250000000000002,
+          "y": -7.849999999999998,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 15.497128990332282,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4153,
+          "cell": [
+            108,
+            161
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 0,
+      "floor_id": 3,
+      "selected_node_id": "5908722711110090758",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 4.757556433719172,
+          "y": -8.428278444352735,
+          "yaw": 0.44012089656614856,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 3,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": -2.76410994293885,
+          "y": -6.300316734618428,
+          "yaw": 2.197887438263947,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F3_TO_F2_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 1,
+      "floor_id": 2,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090763",
+        "goal": {
+          "x": 1.3500000000000014,
+          "y": 2.8500000000000014,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 10.15848731272932,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4184,
+          "cell": [
+            159,
+            259
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 1,
+      "floor_id": 2,
+      "selected_node_id": "5908722711110090763",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 2.0005892968890833,
+          "y": 2.4308265260400543,
+          "yaw": 2.682000650059131,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_entry",
+      "transition_id": "F2_TO_F1_MAIN",
+      "floor_id": 2,
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 8.156892880806186,
+          "y": -2.641727626755745,
+          "yaw": -1.2660584581829355,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "load_map",
+      "transition_id": "F2_TO_F1_MAIN",
+      "floor_id": 1,
+      "result": {
+        "status": "succeeded",
+        "result_code": 0,
+        "response_geometry_matches": true,
+        "published_map_matches": true,
+        "global_costmap_matches_active_map": true,
+        "costmap_geometry_matches": true
+      }
+    },
+    {
+      "kind": "set_pose",
+      "transition_id": "F2_TO_F1_MAIN",
+      "floor_id": 1,
+      "result": {
+        "status": "succeeded",
+        "tf_error_m": 0.0
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 2,
+      "floor_id": 1,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090764",
+        "goal": {
+          "x": 1.25,
+          "y": -2.75,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 8.52600061931725,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4891,
+          "cell": [
+            243,
+            178
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 2,
+      "floor_id": 1,
+      "selected_node_id": "5908722711110090764",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 0.5563133502311999,
+          "y": -2.37849781751595,
+          "yaw": -0.36545674677873974,
+          "frame_id": "map"
+        }
+      }
+    }
+  ],
+  "reached_stops": [
+    0,
+    1,
+    2
+  ],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "mission_sha256": "17904ef34c566e5cda318b7cbab57556ba5a089dcf4161127b83be30559f321b",
+  "active_floor": 1,
+  "duration_s": 143.954,
+  "failure_stage": "ros_adapter",
+  "error": "TypeError: Publisher.wait_for_all_acked() got an unexpected keyword argument 'timeout_sec'"
+}

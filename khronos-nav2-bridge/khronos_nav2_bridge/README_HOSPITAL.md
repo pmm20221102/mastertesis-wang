@@ -24,7 +24,7 @@ Install Python dependencies and build the ROS package:
 ```bash
 cd /path/to/Masterthesis-wang
 python3 -m venv .venv
-.venv/bin/pip install -e 'LLM-robot-taskplanning-chaining-rag[dev]'
+.venv/bin/pip install -e 'llm-rag/planner[dev]'
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
 cd khronos-nav2-bridge
@@ -58,7 +58,7 @@ After Nav2 reports `Managed nodes are active`, run in terminal 2:
 ```bash
 cd /path/to/Masterthesis-wang
 export HOSPITAL_NAV2_PYTHON="$PWD/.venv/bin/python"
-bash scripts/plan_hospital_nav2.sh \
+bash llm-rag/plan_hospital_nav2.sh \
   --instruction "Please take me to a room with a chair and a door." \
   --ros-domain-id 77 \
   --output /tmp/hospital-nav2-plan.json
@@ -75,7 +75,7 @@ condition. No waypoint execution or physical ANYmal dynamics are claimed.
 The four installed maps are the Khronos-only Place-support plus mesh-projection
 maps. The map bundle and `generated/hospital-p1000-khronos-only/map_manifest.json`
 pin the grid and file hashes. The geometry-only contract is
-`experiments/hospital-khronos-only-20261019/grid_geometry.json`; it records
+`experiment/map-generation/grid_geometry.json`; it records
 floor extents, resolution and origin, not depth-map occupancy. The generator
 also repairs only the two approved Place topology links. Rebuilding requires
 the local P1000 DSG and mesh inputs; its ignored output directory is documented
@@ -85,9 +85,9 @@ Run the LLM/RAG and map-generator tests from the repository root, then run the
 ROS package's checked-in Hospital contract suite:
 
 ```bash
-.venv/bin/python -m pytest -q LLM-robot-taskplanning-chaining-rag/tests \
-  RAG/khronos_3dsg_rag/tests \
-  experiments/hospital-khronos-only-20261019/test_generate_khronos_only.py
+.venv/bin/python -m pytest -q llm-rag/planner/tests \
+  llm-rag/RAG/khronos_3dsg_rag/tests \
+  experiment/map-generation/test_generate_khronos_only.py
 
 source /opt/ros/jazzy/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin

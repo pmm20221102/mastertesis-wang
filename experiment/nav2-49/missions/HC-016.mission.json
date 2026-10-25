@@ -1,0 +1,87 @@
+{
+  "schema_version": "hospital-multifloor-candidate-mission-v1",
+  "task_id": "HC-016",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "initial_floor": 0,
+  "initial_pose": {
+    "frame_id": "map",
+    "x": 14.850000000000001,
+    "y": 3.6500000000000004,
+    "yaw": 0.0
+  },
+  "stops": [
+    {
+      "stop_index": 0,
+      "candidate_targets": [
+        {
+          "target_id": "5908722711110090754",
+          "floor_id": 2,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+          "navigation_target": {
+            "frame_id": "map",
+            "goal_type": "node",
+            "navigation_node_id": "5908722711110090754",
+            "position": [
+              -8.106405846456404,
+              -11.213879211093182,
+              6.958363112181531
+            ],
+            "floor_id": 2,
+            "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+          }
+        },
+        {
+          "target_id": "5908722711110090755",
+          "floor_id": 2,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+          "navigation_target": {
+            "frame_id": "map",
+            "goal_type": "node",
+            "navigation_node_id": "5908722711110090755",
+            "position": [
+              6.6400001181496515,
+              -11.808889081743029,
+              7.217777919769287
+            ],
+            "floor_id": 2,
+            "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+          }
+        },
+        {
+          "target_id": "5908722711110090758",
+          "floor_id": 3,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+          "navigation_target": {
+            "frame_id": "map",
+            "goal_type": "node",
+            "navigation_node_id": "5908722711110090758",
+            "position": [
+              5.619047716082561,
+              -7.659523945789607,
+              10.932539852838667
+            ],
+            "floor_id": 3,
+            "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+          }
+        },
+        {
+          "target_id": "5908722711110090767",
+          "floor_id": 0,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+          "navigation_target": {
+            "frame_id": "map",
+            "goal_type": "node",
+            "navigation_node_id": "5908722711110090767",
+            "position": [
+              -0.7367816249700798,
+              5.805747305096566,
+              0.010344828596745414
+            ],
+            "floor_id": 0,
+            "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+          }
+        }
+      ]
+    }
+  ]
+}

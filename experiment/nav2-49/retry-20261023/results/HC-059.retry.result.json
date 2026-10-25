@@ -1,0 +1,229 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-059",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "succeeded",
+  "events": [
+    {
+      "kind": "plan_stop",
+      "stop_index": 0,
+      "floor_id": 0,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090768",
+        "goal": {
+          "x": 3.750000000000001,
+          "y": 12.750000000000002,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 18.644879047860833,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4101,
+          "cell": [
+            95,
+            231
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 0,
+      "floor_id": 0,
+      "selected_node_id": "5908722711110090768",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 3.481327752251406,
+          "y": 12.00208532858697,
+          "yaw": 0.8046001631647163,
+          "frame_id": "map"
+        }
+      }
+    },
+    {
+      "kind": "plan_stop",
+      "stop_index": 1,
+      "floor_id": 0,
+      "result": {
+        "status": "path_found",
+        "selected_node_id": "5908722711110090768",
+        "goal": {
+          "x": 3.750000000000001,
+          "y": 12.750000000000002,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        },
+        "path_length_m": 0.8754278390850804,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4101,
+          "cell": [
+            95,
+            231
+          ],
+          "start_connected": true
+        }
+      }
+    },
+    {
+      "kind": "navigate_to_stop",
+      "stop_index": 1,
+      "floor_id": 0,
+      "selected_node_id": "5908722711110090768",
+      "result": {
+        "status": "succeeded",
+        "action_status": 4,
+        "final_pose": {
+          "x": 3.481708144326571,
+          "y": 12.002480617111736,
+          "yaw": 0.8046001631647163,
+          "frame_id": "map"
+        }
+      }
+    }
+  ],
+  "reached_stops": [
+    0,
+    1
+  ],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "6cc241aad7156954483ca0f257a9bfb086dfe44efa338d45668872f692e55ad9",
+  "candidate_route_selection": {
+    "status": "selected",
+    "selected_candidates": [
+      {
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "frame_id": "map",
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090768",
+          "position": [
+            3.7250000523636118,
+            13.159375295042992,
+            0.040625001885928214
+          ],
+          "floor_id": 0,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      },
+      {
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes",
+        "navigation_target": {
+          "frame_id": "map",
+          "goal_type": "node",
+          "navigation_node_id": "5908722711110090768",
+          "position": [
+            3.7250000523636118,
+            13.159375295042992,
+            0.040625001885928214
+          ],
+          "floor_id": 0,
+          "floor_assignment_source": "hospital-60-nav2-planning-20261015:nearest_floor_crosschecked_to_khronos_planes"
+        }
+      }
+    ],
+    "selected_target_ids": [
+      "5908722711110090768",
+      "5908722711110090768"
+    ],
+    "total_path_length_m": 18.644879047860833,
+    "transition_count": 0,
+    "route_actions": [
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 0,
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "goal": {
+          "x": 3.750000000000001,
+          "y": 12.750000000000002,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      },
+      {
+        "kind": "navigate_to_stop",
+        "stop_index": 1,
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "goal": {
+          "x": 3.750000000000001,
+          "y": 12.750000000000002,
+          "orientation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0,
+            "w": 1.0
+          },
+          "orientation_source": "point_robot_cell_projection"
+        }
+      }
+    ],
+    "segment_results": [
+      {
+        "kind": "candidate_goal",
+        "stop_index": 0,
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "path_length_m": 18.644879047860833,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4101,
+          "cell": [
+            95,
+            231
+          ],
+          "start_connected": true
+        }
+      },
+      {
+        "kind": "candidate_goal",
+        "stop_index": 1,
+        "target_id": "5908722711110090768",
+        "floor_id": 0,
+        "path_length_m": 0.0,
+        "projection": {
+          "method": "point_robot_cell_projection",
+          "distance_m": 0.4101,
+          "cell": [
+            95,
+            231
+          ],
+          "start_connected": true
+        }
+      }
+    ],
+    "evaluated_sequence_count": 25,
+    "feasible_sequence_count": 25,
+    "rejected_sequences": []
+  },
+  "mission_sha256": "ef3c6c6427a195442d9477e42961003f3838f823e522742a6d8389da93b42028",
+  "active_floor": 0,
+  "duration_s": 265.359,
+  "not_run": false
+}

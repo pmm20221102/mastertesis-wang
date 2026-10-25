@@ -1,7 +1,0 @@
-# Shared miniconda base environment — no separate venv needed.
-# Install with: pip install ollama pydantic pyyaml chromadb sentence-transformers
-ollama
-pydantic
-pyyaml
-chromadb
-sentence-transformers

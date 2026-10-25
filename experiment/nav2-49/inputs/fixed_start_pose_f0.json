@@ -1,0 +1,26 @@
+{
+  "schema_version": "hospital-fixed-start-pose-v1",
+  "status": "user-approved-for-crossfloor-e2e-2026-10-22",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "floor_id": 0,
+  "pose": {
+    "x": 14.850000000000001,
+    "y": 3.6500000000000004,
+    "yaw": 0.0,
+    "frame_id": "map"
+  },
+  "source": {
+    "method": "max-clearance-cell-in-largest-8-connected-known-free-component",
+    "cell_xy": [
+      206,
+      140
+    ],
+    "pgm_value": 254,
+    "clearance_from_occupied_or_unknown_m": 4.675467891024384,
+    "resolution_m": 0.1,
+    "map_yaml_sha256": "93f4ca62d0c3063e2c161232d01efa5c6a04dcedbe6decd5a85b9161bede2f4c",
+    "map_pgm_sha256": "da1f3a6893ac7228f5553a8def87c289c30974321f8fda026095199adff8d853"
+  },
+  "map_yaml_sha256": "93f4ca62d0c3063e2c161232d01efa5c6a04dcedbe6decd5a85b9161bede2f4c",
+  "map_pgm_sha256": "da1f3a6893ac7228f5553a8def87c289c30974321f8fda026095199adff8d853"
+}

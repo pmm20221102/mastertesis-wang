@@ -1,0 +1,14 @@
+{
+  "schema_version": "hospital-task-chain-nav2-results-v1",
+  "task_id": "HC-025",
+  "map_bundle_id": "hospital-p1000-khronos-only-20261019-band005-200",
+  "status": "failed",
+  "events": [],
+  "reached_stops": [],
+  "robot_model": "point",
+  "execution_scope": "point-robot planar Nav2; abstract floor transitions",
+  "input_mission_sha256": "31fd7ec68346cb9a6e7165c3da9f2f803b15064b8ccbb5ea75e2c493ce44b10f",
+  "failure_stage": "ros_adapter",
+  "error": "NameError: name 'nav2_footprint_cost_is_safe' is not defined",
+  "duration_s": 3.376
+}
