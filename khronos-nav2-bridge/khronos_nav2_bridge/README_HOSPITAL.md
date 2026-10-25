@@ -24,7 +24,7 @@ Install Python dependencies and build the ROS package:
 ```bash
 cd /path/to/Masterthesis-wang
 python3 -m venv .venv
-.venv/bin/pip install -e 'llm-rag/planner[dev]'
+.venv/bin/pip install -r llm-rag/requirements.txt
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
 cd khronos-nav2-bridge

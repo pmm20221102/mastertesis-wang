@@ -22,7 +22,7 @@
 ## 环境依赖
 
 - 推荐环境：WSL 2 / Ubuntu 24.04、Python 3.12、ROS 2 Jazzy、colcon、rosdep。
-- Python 依赖由 llm-rag/planner/pyproject.toml 管理；Nav2 ROS 依赖由 khronos-nav2-bridge/khronos_nav2_bridge/package.xml 声明。
+- Python 直接依赖由 [llm-rag/requirements.txt](llm-rag/requirements.txt) 固定；Nav2 ROS 依赖由 khronos-nav2-bridge/khronos_nav2_bridge/package.xml 声明并通过 rosdep 安装。
 - 本地模型服务使用 Ollama，默认模型为 gemma4:e2b-it-qat。
 - 原始 Hospital P1000 DSG、mesh 和人工审阅 CSV（约 27 GB 数据集）是本地输入，不在 Git 中。构建 RAG 索引时必须提供自己的路径。
 - 完整依赖来源、版本约束、安装顺序和验证命令见 llm-rag/BUILD_ENVIRONMENT.md。
@@ -31,7 +31,7 @@
 
 ~~~bash
 python3 -m venv .venv
-.venv/bin/pip install -e 'llm-rag/planner[dev]'
+.venv/bin/pip install -r llm-rag/requirements.txt
 ollama pull gemma4:e2b-it-qat
 ~~~
 

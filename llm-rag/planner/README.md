@@ -34,7 +34,7 @@ main_rag.py 提供较低层的 intent、grounding 和 task-chain 模块接口；
 
 ## 配置和依赖
 
-- Python 依赖唯一声明于 pyproject.toml。
+- Python 直接运行/测试依赖见仓库级 `llm-rag/requirements.txt`；`pyproject.toml` 保留包元数据和版本下限。当前从源码目录运行，不做 editable install。
 - Ollama 地址、默认 instruction、模型表和 RAG index 路径见 config_rag.yaml。
 - 默认数据库路径应与根 README 中的 v5 build 输出一致；自定义 build 输出需要显式 --db-dir。
 - 可选 baseline 对照使用 experiment/evaluations/baseline/scene_graph.json；它是数据 fixture，不是第二套规划器实现。

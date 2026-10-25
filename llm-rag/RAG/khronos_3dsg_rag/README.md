@@ -262,7 +262,7 @@ ref = EntityReference(
 
 ```bash
 # Run from the repository root with the shared project environment:
-.venv/bin/pip install -e llm-rag/planner
+.venv/bin/pip install -r llm-rag/requirements.txt
 ```
 
 ---

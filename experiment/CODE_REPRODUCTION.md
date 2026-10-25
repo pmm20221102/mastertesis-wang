@@ -6,7 +6,7 @@ This guide covers reproducing the software workflow in this repository. It does 
 
 | Workflow | Reproduction status | Required inputs |
 |---|---|---|
-| Python, RAG-builder, map-generation, and interface tests | Runnable from a clean checkout | Python dependencies in `llm-rag/planner/pyproject.toml` |
+| Python, RAG-builder, map-generation, and interface tests | Runnable from a clean checkout | Python dependencies in `llm-rag/requirements.txt` |
 | Khronos/Nav2 bridge compile | Runnable from a clean checkout | ROS 2 Jazzy, `ros-dev-tools`, dependencies declared by `package.xml` |
 | RAG builder | Runnable when given the recorded Hospital DSG and semantic-review CSV | DSG and CSV whose SHA-256 values match the defaults file; pinned embedding model revision |
 | One natural-language instruction through planner and Nav2 plan-only | Runnable after building the provenance-bearing RAG index and starting the isolated Nav2 stack | Above inputs, Ollama model, built map bundle |
@@ -24,10 +24,10 @@ From the repository root:
 python3 --version   # expected: Python 3.12.x
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -e 'llm-rag/planner[dev]'
+.venv/bin/pip install -r llm-rag/requirements.txt
 ```
 
-**Known blocker (2026-10-26):** the editable-install command was tested in a new Python 3.12 virtual environment and currently fails during Setuptools package discovery: it finds multiple top-level packages (`llm`, `grounding`, `planner_schemas`). This repository-only task does not alter packaging code, so a clean dependency installation is not yet verified. The 1192-test result below used the pre-existing `llm-task-planner` environment, not this new `.venv`; do not treat it as proof that the install command works. Resolve the packaging metadata in a separate code change before claiming a clean-machine setup is reproducible.
+`requirements.txt` pins direct Python dependencies. ROS dependencies are installed separately via `rosdep`; Ollama and embedding model weights plus the Hospital dataset are external inputs.
 
 Install ROS 2 Jazzy and `ros-dev-tools` using the [official Ubuntu installation guide](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html). Install the ROS dependencies declared by this package:
 

@@ -9,12 +9,14 @@
 | OS | WSL 2、Ubuntu 24.04 |
 | Python | 3.12；planner 的 pyproject 声明 requires-python >=3.10 |
 | ROS | ROS 2 Jazzy |
-| Python 包依赖 | llm-rag/planner/pyproject.toml |
-| 共享 Python 依赖 | 由 planner/pyproject.toml 单点声明；RAG builder 使用同一环境 |
+| Python 直接依赖 | `llm-rag/requirements.txt`，固定当前验证环境中的版本 |
+| ROS 依赖 | 各 ROS package 的 `package.xml`，通过 `rosdep` 安装 |
 | 本地 LLM | Ollama，默认 gemma4:e2b-it-qat |
 | Embedding | paraphrase-multilingual-MiniLM-L12-v2，revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42，CPU |
 
-planner 的 Python 依赖为 ollama>=0.3.0、pydantic>=2.0、pyyaml>=6.0、chromadb>=0.4.0、sentence-transformers>=2.2.0；开发测试依赖 pytest>=7.0。依赖声明以 pyproject.toml 为单一安装入口。
+`llm-rag/requirements.txt` 是 Python 运行和测试的安装清单，固定直接依赖版本并指定 CPU 版 PyTorch，避免安装 CUDA 运行时。它不锁定所有传递依赖；`llm-rag/planner/pyproject.toml` 保留包元数据和版本下限。不要使用 `pip install -e 'llm-rag/planner[dev]'`：当前 Setuptools 自动包发现会因多个顶层包而失败。本项目从仓库源码路径运行脚本，无需 editable install。
+
+这些固定版本取自当前已通过 Python 测试的 Python 3.12 环境；CPU PyTorch 发行包的安装命令/索引已按 PyTorch 官方安装页选择，但这份 requirements 集合尚未在全新虚拟环境整体安装验证。请在干净环境运行下方测试命令并记录任何解析或兼容问题。
 
 ## 安装顺序
 
@@ -24,7 +26,7 @@ planner 的 Python 依赖为 ollama>=0.3.0、pydantic>=2.0、pyyaml>=6.0、chrom
 python3 --version
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -e 'llm-rag/planner[dev]'
+.venv/bin/pip install -r llm-rag/requirements.txt
 ollama pull gemma4:e2b-it-qat
 ~~~
 
