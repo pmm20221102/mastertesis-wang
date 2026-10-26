@@ -42,7 +42,7 @@ For other parameters and status definitions, see the repository-root README and 
 
 ### Interactive navigation demo
 
-The GUI demonstration is maintained as a separate module in experiment/navigation-ui-demo. It offers a selector for the human-reviewed RAG and the fresh no-review RAG, with matching provenance profiles. See that module's README for launch instructions and the packaged assets.
+The GUI demonstration is maintained as a separate module in experiment/navigation-ui-demo. It offers a selector for the human-reviewed RAG and the fresh no-review RAG, and discovers future generated run profiles. See that module's README for launch instructions, discovery roots, and packaged assets.
 
 ## Tests
 

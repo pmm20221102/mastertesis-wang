@@ -1,6 +1,6 @@
 # Hospital Navigation GUI Demo
 
-This standalone demo module connects the natural-language planner to either of two packaged Hospital P1000 RAG builds. Select the active RAG in the GUI before submitting a navigation request.
+This standalone demo module connects the natural-language planner to Hospital P1000 RAG builds. The GUI lists the two packaged indexes and automatically discovers later run builds with matching navigation profiles. Select the active RAG before submitting a navigation request.
 
 ## Included RAG Profiles
 
@@ -28,6 +28,8 @@ From the repository root in WSL:
 The script opens the local GUI at http://127.0.0.1:8765. It selects a Python environment with the required dependencies from the project virtual environment, the standard Miniconda location, or PATH. Set HOSPITAL_UI_PYTHON to override the selection.
 
 Choose **Human-reviewed RAG (v5)** to use the manually supplemented labels, or **Fresh RAG (no manual labels)** to compare against the unreviewed build. Switching indexes clears the previous plan and stage outputs. The GUI validates each index against its source manifest and matching defaults before making it selectable.
+
+The GUI rescans the repository experiment folder and WSL home run folders every 15 seconds, and provides a Refresh RAG list button. A newly generated run becomes selectable when its RAG build is paired with nav2-profile/hospital_nav2_plan_defaults.yaml, nav2-profile/hospital_floor_transitions.yaml, and nav2-profile/run_profile_manifest.json. For run outputs stored elsewhere, set HOSPITAL_RAG_DISCOVERY_ROOTS to a colon-separated list of WSL directories before launch. Each discovered profile is checked against its RAG build manifest, map hashes, and run-profile hashes before it appears in the selector. Full Chroma content verification runs before planning starts.
 
 ## Maps and Simulation
 

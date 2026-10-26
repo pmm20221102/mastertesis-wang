@@ -13,7 +13,8 @@
       "source_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
       "defaults_sha256": "03c6c9f4ec6e8793ffd3c340dc19251da634234fd1898f7cf391203026b2f6fc",
       "rag_manifest_sha256": "7ba3be5914355370ff16d8e37c65820ea647518076563dd334ea5f0e21c92418",
-      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639"
+      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639",
+      "run_profile_manifest": "nav2-profile/run_profile_manifest.human-reviewed-v5.json"
     },
     {
       "id": "fresh-no-review",
@@ -25,7 +26,8 @@
       "source_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
       "defaults_sha256": "275cf403aed4b1764553a6b794d5ff9e0be0a3b5839b2dda7364ee74c061dc7b",
       "rag_manifest_sha256": "857401ea0c5453e40317cff56b5922bc84d4a2078d9f9a884eee0cfcd0de6169",
-      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639"
+      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639",
+      "run_profile_manifest": "nav2-profile/run_profile_manifest.fresh-no-review.json"
     }
   ]
 }

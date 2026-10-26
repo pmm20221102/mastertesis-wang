@@ -126,7 +126,7 @@ The output JSON records the instruction, model and code summaries, RAG/map prove
 
 ## Interactive WSL Navigation Demo
 
-A standalone browser-based demonstration is provided in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes the human-reviewed RAG build and a fresh no-review build; choose the active index in the GUI before planning.
+A standalone browser-based demonstration is provided in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes the human-reviewed RAG build and a fresh no-review build; choose the active index in the GUI before planning. It also discovers future packaged RAG runs every 15 seconds when their matching Nav2 profile is available.
 
 From WSL, start it with:
 

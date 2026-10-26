@@ -170,7 +170,7 @@ textarea,select{width:100%;border:1px solid #b8c5d2;border-radius:9px;padding:10
 <header class="header"><h1>Hospital Navigation Console</h1><span class="tag">WSL · Point Robot Simulation · ROS_DOMAIN_ID 79</span></header>
 <div id="startup" class="notice" hidden></div>
 <div class="grid"><section class="panel stage-column"><h2>Stage Outputs</h2><article class="stage-card"><h3>LLM1 Intent</h3><pre id="stage-intent" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RAG Grounding</h3><pre id="stage-rag" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Task Chain</h3><pre id="stage-mission" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Mission</h3><pre id="stage-mission-build" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Nav2 Route</h3><pre id="stage-nav2" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RViz Simulation</h3><pre id="stage-execution" class="stage-output">Run after route planning succeeds</pre></article></section><section class="panel"><h2>Navigation Request</h2><div class="muted">Enter a natural-language destination. If multiple places match, choose one below. After planning succeeds, you can run the planar kinematic simulation in RViz2.</div>
-<div class="profile-selector"><label for="rag-profile">RAG index</label><select id="rag-profile" aria-label="RAG index"></select><div class="muted">Changing the RAG clears the previous plan and stage outputs.</div></div>
+<div class="profile-selector"><label for="rag-profile">RAG index</label><select id="rag-profile" aria-label="RAG index"></select><div class="muted">New run profiles are detected automatically. Changing the RAG clears the previous plan and stage outputs.</div><div class="row"><button id="refresh-rags" class="secondary">Refresh RAG list</button><span id="rag-refresh-status" class="muted">Scans configured run folders every 15 seconds.</span></div></div>
 <textarea id="instruction" placeholder="e.g., Take me to a room with a bed"></textarea><div class="row"><button id="plan">Plan Route</button><span id="status" class="status">Ready</span></div>
 <div id="message" class="notice" hidden></div><div id="choices"></div><div id="result"></div>
 <div class="row"><button id="demo" hidden>Run Navigation in RViz2</button><button id="stop" class="secondary">Stop Simulation</button></div>
@@ -188,11 +188,12 @@ function renderChoices(groups){const root=$("choices");const nextKey=JSON.string
 function renderStageOutputs(s){const o=s.stage_outputs||{},items=[["intent","stage-intent","Waiting for input"],["rag","stage-rag","Waiting for input"],["task_chain","stage-mission","Waiting for input"],["mission","stage-mission-build","Waiting for input"],["nav2","stage-nav2","Waiting for input"],["execution","stage-execution","Run after route planning succeeds"]];for(const [key,id,fallback] of items){const el=$(id);el.textContent=Object.prototype.hasOwnProperty.call(o,key)?JSON.stringify(o[key],null,2):fallback}}
 let ragProfileOptionsKey=null;
 function renderRagProfiles(s){const options=s.rag_profiles||[],key=JSON.stringify(options);const select=$("rag-profile");if(key!==ragProfileOptionsKey){ragProfileOptionsKey=key;select.replaceChildren();for(const profile of options){const option=document.createElement("option");option.value=profile.id;option.textContent=profile.label;select.append(option)}}if(s.selected_rag_profile_id)select.value=s.selected_rag_profile_id}
-function render(s){renderStageOutputs(s);renderRagProfiles(s);const banner=$("startup");if(s.startup_error){banner.hidden=false;banner.className="notice error";banner.textContent=s.startup_error}else if(s.rag_build_id){banner.hidden=false;banner.className="notice";banner.textContent="RAG "+s.rag_build_id.slice(0,12)+" · "+s.rag_review_badge}$("status").textContent=s.stage_message||s.status||"Ready";$("plan").disabled=["running","demo_running"].includes(s.status);$("rag-profile").disabled=["running","demo_running"].includes(s.status);$("demo").hidden=s.status!=="planned";$("demo").disabled=s.status==="demo_running";if(s.error)showMessage(s.error,"error");else if(s.status==="planned")showMessage(`Route planned: ${s.result?.path_length_m??"?"} m, ${s.result?.transition_count??0} floor transition(s). You can start the RViz2 simulation.`,"success");else if(s.status==="awaiting_selection")showMessage("Multiple places match. Choose a destination.","warning");else if(s.status==="target_not_found")showMessage("RAG could not ground this destination in the scene graph. Rephrase the request or add semantic labels to the graph.","warning");renderChoices(s.candidate_groups);
+function render(s){renderStageOutputs(s);renderRagProfiles(s);const banner=$("startup");if(s.startup_error){banner.hidden=false;banner.className="notice error";banner.textContent=s.startup_error}else if(s.rag_build_id){banner.hidden=false;banner.className="notice";banner.textContent="RAG "+s.rag_build_id.slice(0,12)+" · "+s.rag_review_badge}$("status").textContent=s.stage_message||s.status||"Ready";$("plan").disabled=["running","demo_running"].includes(s.status);$("rag-profile").disabled=["running","demo_running"].includes(s.status);$("refresh-rags").disabled=["running","demo_running"].includes(s.status);$("demo").hidden=s.status!=="planned";$("demo").disabled=s.status==="demo_running";if(s.error)showMessage(s.error,"error");else if(s.status==="planned")showMessage(`Route planned: ${s.result?.path_length_m??"?"} m, ${s.result?.transition_count??0} floor transition(s). You can start the RViz2 simulation.`,"success");else if(s.status==="awaiting_selection")showMessage("Multiple places match. Choose a destination.","warning");else if(s.status==="target_not_found")showMessage("RAG could not ground this destination in the scene graph. Rephrase the request or add semantic labels to the graph.","warning");renderChoices(s.candidate_groups);
  const list=$("events");list.replaceChildren();for(const e of (s.events||[])){const li=document.createElement("li"),time=document.createElement("time"),span=document.createElement("span");time.textContent=e.time||"";span.textContent=e.message||e.stage||"";li.append(time,span);list.append(li)}if(s.demo_result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify({status:s.demo_result.status,reached_stops:s.demo_result.reached_stops,error:s.demo_result.error},null,2);$("result").replaceChildren(pre)}else if(s.result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify(s.result,null,2);$("result").replaceChildren(pre)}list.scrollTop=list.scrollHeight}
 async function poll(){try{render(await (await fetch("/api/state")).json())}catch(e){}timer=setTimeout(poll,700)}
 $("instruction").addEventListener("input",()=>{candidateGroupsKey=null});
 $("rag-profile").onchange=()=>{const select=$("rag-profile");select.disabled=true;post("/api/rag-profile",{profile_id:select.value}).then(()=>{candidateGroupsKey=null;$("choices").replaceChildren();showMessage("RAG profile changed. Previous results and outputs were cleared.","success")}).catch(e=>showMessage(e.message,"error")).finally(()=>{select.disabled=false})};
+$("refresh-rags").onclick=()=>{const button=$("refresh-rags");button.disabled=true;$("rag-refresh-status").textContent="Scanning configured run folders...";post("/api/rag-profiles/refresh").then(result=>{$("rag-refresh-status").textContent=result.error||("Scan complete. "+result.discovered+" new profile(s) found.")}).catch(e=>{$("rag-refresh-status").textContent=e.message}).finally(()=>{button.disabled=false})};
 $("plan").onclick=()=>{const instruction=$("instruction").value.trim();if(!instruction){showMessage("Enter a navigation request.","warning");return}post("/api/plan",{instruction}).then(()=>showMessage("Request submitted. Starting the simulation and analyzing the intent.")) .catch(e=>showMessage(e.message,"error"))};
 $("demo").onclick=()=>post("/api/demo").then(()=>showMessage("RViz2 is running the point-robot simulation.","success")).catch(e=>showMessage(e.message,"error"));
 $("stop").onclick=()=>post("/api/stop").then(()=>showMessage("Simulation stack stopped."));
@@ -215,7 +216,11 @@ class NavigationController:
         self.rag_profiles = {}
         self.selected_rag_profile_id = None
         self.startup_error = None
+        self.discovery_error = None
         self.state_lock = threading.RLock()
+        self.profile_scan_lock = threading.Lock()
+        self.last_profile_scan = time.monotonic()
+        self.profile_scan_interval_s = 15.0
         self.job_lock = threading.Lock()
         self.stop_requested = False
         self.state = {"status": "idle", "events": [], "candidate_groups": [],
@@ -230,6 +235,103 @@ class NavigationController:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self._load_inputs()
 
+    @staticmethod
+    def _resolved_profile_path(base, value):
+        raw = Path(value).expanduser()
+        return (raw if raw.is_absolute() else base / raw).resolve(strict=True)
+
+    def _validate_rag_profile(self, profile_id, label, rag_path, defaults_path,
+                              bundle_path, expected=None):
+        bundle = _read_yaml(bundle_path)
+        validate_transition_bundle(bundle, verify_files=True)
+        defaults = _read_yaml(defaults_path)
+        plan_nav2._load_defaults(defaults_path, bundle)
+        rag_root = rag_path.resolve().parent
+        manifest_path = rag_root / "build_manifest.json"
+        if rag_path.name != "vector_db" or not (rag_root / "vector_db" / "chroma.sqlite3").is_file():
+            raise FileNotFoundError(f"RAG vector database is missing: {rag_path}")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        plan_nav2._validate_build_manifest(manifest)
+        if manifest.get("schema_version") not in (
+                "hospital-rag-build-manifest-v1", "hospital-rag-build-manifest-v2",
+                "hospital-rag-build-manifest-v3"):
+            raise ValueError(f"Unsupported RAG manifest schema: {profile_id}")
+        build_config = manifest.get("build_config") or {}
+        if build_config.get("dataset") not in ("hospital_p1000", "hospital-p1000"):
+            raise ValueError(f"RAG profile is not a Hospital P1000 build: {profile_id}")
+        inputs = manifest.get("inputs") or {}
+        actual_dsg = (inputs.get("dsg") or {}).get("sha256")
+        actual_review = (inputs.get("semantic_overrides") or {}).get("sha256")
+        expected_source = defaults.get("rag_source") or {}
+        for key, actual in (
+                ("dsg_sha256", actual_dsg),
+                ("semantic_review_csv_sha256", actual_review),
+                ("embedding_model", build_config.get("embedding_model")),
+                ("embedding_model_revision", build_config.get("embedding_model_revision")),
+                ("embedding_device", build_config.get("embedding_device"))):
+            if expected_source.get(key) != actual:
+                raise ValueError(f"RAG profile provenance mismatch for {key}: {profile_id}")
+        if not build_config.get("embedding_model_revision"):
+            raise ValueError(f"RAG profile does not pin an embedding revision: {profile_id}")
+
+        expected = expected or {}
+        build_id = manifest.get("build_id")
+        bundle_id = bundle.get("map_bundle_id")
+        expected_build = expected.get("expected_build_id") or expected.get("rag_build_id")
+        if expected_build and build_id != expected_build:
+            raise ValueError(f"RAG profile build ID mismatch: {profile_id}")
+        if ("review_csv_sha256" in expected
+                and actual_review != expected.get("review_csv_sha256")):
+            raise ValueError(f"RAG profile review hash mismatch: {profile_id}")
+        if expected.get("source_dsg_sha256") and actual_dsg != expected["source_dsg_sha256"]:
+            raise ValueError(f"RAG profile DSG hash mismatch: {profile_id}")
+        if expected.get("map_bundle_id") and bundle_id != expected["map_bundle_id"]:
+            raise ValueError(f"RAG profile map bundle ID mismatch: {profile_id}")
+        for key, path in (("defaults_sha256", defaults_path),
+                          ("bundle_sha256", bundle_path)):
+            if expected.get(key) and plan_nav2._sha256_file(path) != expected[key]:
+                raise ValueError(f"RAG profile {key} mismatch: {profile_id}")
+        expected_rag_manifest = expected.get("rag_manifest_sha256")
+        if expected_rag_manifest and plan_nav2._sha256_file(manifest_path) != expected_rag_manifest:
+            raise ValueError(f"RAG profile manifest hash mismatch: {profile_id}")
+        run_manifest_path = expected.get("run_profile_manifest")
+        if run_manifest_path:
+            run_manifest = json.loads(Path(run_manifest_path).read_text(encoding="utf-8"))
+            if run_manifest.get("rag_build_id") != build_id:
+                raise ValueError(f"Run profile does not match its RAG build: {profile_id}")
+            if run_manifest.get("map_bundle_id") != bundle_id:
+                raise ValueError(f"Run profile does not match its map bundle: {profile_id}")
+            if run_manifest.get("rag_manifest_sha256") != plan_nav2._sha256_file(manifest_path):
+                raise ValueError(f"Run profile RAG manifest hash mismatch: {profile_id}")
+            if run_manifest.get("defaults_sha256") != plan_nav2._sha256_file(defaults_path):
+                raise ValueError(f"Run profile defaults hash mismatch: {profile_id}")
+            if run_manifest.get("bundle_sha256") != plan_nav2._sha256_file(bundle_path):
+                raise ValueError(f"Run profile map bundle hash mismatch: {profile_id}")
+            if run_manifest.get("source_dsg_sha256") != actual_dsg:
+                raise ValueError(f"Run profile DSG hash mismatch: {profile_id}")
+            if run_manifest.get("review_csv_sha256") != actual_review:
+                raise ValueError(f"Run profile review hash mismatch: {profile_id}")
+        canonical_path = rag_root / "canonical_graph_v2.json"
+        if not canonical_path.is_file():
+            raise FileNotFoundError(f"RAG canonical graph is missing: {canonical_path}")
+        canonical_graph = json.loads(canonical_path.read_text(encoding="utf-8"))
+        rag_info = {
+            "build_id": build_id,
+            "manifest_path": str(manifest_path),
+            "manifest_sha256": plan_nav2._sha256_file(manifest_path),
+            "source_dsg_sha256": actual_dsg,
+            "semantic_review_csv_sha256": actual_review,
+        }
+        return {
+            "id": profile_id, "label": label,
+            "rag_db": rag_path, "defaults_path": defaults_path,
+            "bundle_path": bundle_path, "bundle": bundle,
+            "defaults": defaults, "rag_info": rag_info,
+            "canonical_graph": canonical_graph,
+            "build_id": build_id, "review_csv_sha256": actual_review,
+            "profile_key": f"{build_id}:{bundle_id}",
+        }
+
     def _load_inputs(self):
         if not self.profile_config_path.is_file():
             self.startup_error = f"RAG profile configuration is missing: {self.profile_config_path}"
@@ -241,15 +343,11 @@ class NavigationController:
             config = json.loads(self.profile_config_path.read_text(encoding="utf-8"))
             if config.get("schema_version") != "hospital-navigation-demo-rag-profiles-v1":
                 raise ValueError("Unsupported RAG profile configuration schema.")
-            bundle_entry = os.environ.get("HOSPITAL_NAV2_BUNDLE") or config.get("bundle")
-            if not bundle_entry:
+            default_bundle = config.get("bundle")
+            if not default_bundle and not os.environ.get("HOSPITAL_NAV2_BUNDLE"):
                 raise ValueError("RAG profile configuration does not name a map bundle.")
-            raw_bundle_path = Path(bundle_entry).expanduser()
-            self.bundle_path = (raw_bundle_path if raw_bundle_path.is_absolute()
-                                else self.profile_root / raw_bundle_path).resolve(strict=True)
-            self.bundle = _read_yaml(self.bundle_path)
-            validate_transition_bundle(self.bundle, verify_files=True)
-
+            default_bundle_path = self._resolved_profile_path(
+                self.profile_root, os.environ.get("HOSPITAL_NAV2_BUNDLE") or default_bundle)
             profiles = config.get("profiles")
             if not isinstance(profiles, list) or not profiles:
                 raise ValueError("RAG profile configuration must contain at least one profile.")
@@ -262,30 +360,17 @@ class NavigationController:
                     raise ValueError("RAG profile IDs must be unique non-empty strings.")
                 if not isinstance(label, str) or not label:
                     raise ValueError(f"RAG profile {profile_id} has no display label.")
-                rag_path = (self.profile_root / item["rag_db"]).resolve(strict=True)
-                defaults_path = (self.profile_root / item["defaults"]).resolve(strict=True)
-                if not rag_path.is_dir() or not defaults_path.is_file():
-                    raise FileNotFoundError(f"RAG profile assets are incomplete: {profile_id}")
-                defaults = _read_yaml(defaults_path)
-                plan_nav2._load_defaults(defaults_path, self.bundle)
-                rag_info = plan_nav2.verify_rag_build(
-                    rag_path, expected_source=defaults.get("rag_source"))
-                expected_build_id = item.get("expected_build_id")
-                if expected_build_id and rag_info.get("build_id") != expected_build_id:
-                    raise ValueError(f"RAG profile build ID mismatch: {profile_id}")
-                expected_review = item.get("review_csv_sha256")
-                if rag_info.get("semantic_review_csv_sha256") != expected_review:
-                    raise ValueError(f"RAG profile semantic-review hash mismatch: {profile_id}")
-                canonical_path = rag_path.resolve().parent / "canonical_graph_v2.json"
-                canonical_graph = json.loads(canonical_path.read_text(encoding="utf-8"))
-                self.rag_profiles[profile_id] = {
-                    "id": profile_id, "label": label,
-                    "rag_db": rag_path, "defaults_path": defaults_path,
-                    "defaults": defaults, "rag_info": rag_info,
-                    "canonical_graph": canonical_graph,
-                    "build_id": rag_info.get("build_id"),
-                    "review_csv_sha256": rag_info.get("semantic_review_csv_sha256"),
-                }
+                rag_path = self._resolved_profile_path(self.profile_root, item["rag_db"])
+                defaults_path = self._resolved_profile_path(self.profile_root, item["defaults"])
+                bundle_path = self._resolved_profile_path(
+                    self.profile_root, item.get("bundle", default_bundle_path))
+                expected = dict(item)
+                if expected.get("run_profile_manifest"):
+                    expected["run_profile_manifest"] = self._resolved_profile_path(
+                        self.profile_root, expected["run_profile_manifest"])
+                profile = self._validate_rag_profile(
+                    profile_id, label, rag_path, defaults_path, bundle_path, expected)
+                self.rag_profiles[profile_id] = profile
             default_id = config.get("default_profile_id")
             if default_id not in self.rag_profiles:
                 raise ValueError("Default RAG profile is not present in the profile list.")
@@ -294,13 +379,126 @@ class NavigationController:
             self.startup_error = f"Demo profile validation failed: {type(error).__name__}: {error}"
 
     def _activate_rag_profile(self, profile_id):
-        profile = self.rag_profiles[profile_id]
-        self.rag_db = profile["rag_db"]
-        self.defaults_path = profile["defaults_path"]
-        self.defaults = profile["defaults"]
-        self.rag_info = profile["rag_info"]
-        self.canonical_graph = profile["canonical_graph"]
-        self.selected_rag_profile_id = profile_id
+        with self.state_lock:
+            profile = self.rag_profiles[profile_id]
+            self.rag_db = profile["rag_db"]
+            self.defaults_path = profile["defaults_path"]
+            self.bundle_path = profile["bundle_path"]
+            self.bundle = profile["bundle"]
+            self.defaults = profile["defaults"]
+            self.rag_info = profile["rag_info"]
+            self.canonical_graph = profile["canonical_graph"]
+            self.selected_rag_profile_id = profile_id
+
+    @staticmethod
+    def _walk_build_manifests(root, max_depth=6):
+        root = Path(root).expanduser()
+        if not root.is_dir():
+            return
+        pruned = {".git", ".cache", ".local", ".conda", ".codex", ".agents",
+                  ".venv", "venv", "miniconda3", "node_modules", "__pycache__",
+                  "site-packages", "datasets", "models", "Masterthesis-wang"}
+        for directory, subdirs, files in os.walk(root):
+            current = Path(directory)
+            try:
+                depth = len(current.relative_to(root).parts)
+            except ValueError:
+                subdirs[:] = []
+                continue
+            if depth >= max_depth:
+                subdirs[:] = []
+            else:
+                subdirs[:] = [name for name in subdirs
+                              if name not in pruned and not name.startswith(".")]
+                if root.resolve() == Path.home().resolve() and depth == 0:
+                    tokens = ("run", "output", "hospital", "khronos", "rag", "experiment")
+                    subdirs[:] = [name for name in subdirs
+                                  if any(token in name.lower() for token in tokens)]
+            if "build_manifest.json" in files and (current / "vector_db").is_dir():
+                yield current
+
+    def refresh_rag_profiles(self, force=False):
+        now = time.monotonic()
+        if not force and now - self.last_profile_scan < self.profile_scan_interval_s:
+            return 0
+        if not self.profile_scan_lock.acquire(blocking=False):
+            return 0
+        added = 0
+        try:
+            roots = [ROOT / "experiment",
+                     Path.home() / "Masterthesis-wang" / "RAG" /
+                     "khronos_3dsg_rag" / "outputs",
+                     Path.home()]
+            extra_roots = os.environ.get("HOSPITAL_RAG_DISCOVERY_ROOTS", "")
+            roots.extend(Path(part).expanduser()
+                         for part in extra_roots.split(os.pathsep) if part.strip())
+            seen_roots = set()
+            for root in roots:
+                try:
+                    resolved_root = root.resolve(strict=True)
+                except OSError:
+                    continue
+                if resolved_root in seen_roots:
+                    continue
+                seen_roots.add(resolved_root)
+                for build_root in self._walk_build_manifests(resolved_root):
+                    try:
+                        build_manifest = json.loads(
+                            (build_root / "build_manifest.json").read_text(encoding="utf-8"))
+                        build_id = build_manifest.get("build_id")
+                        build_rag = build_root / "vector_db"
+                        run_root = None
+                        for ancestor in (build_root.parent, *list(build_root.parents)[1:5]):
+                            if ((ancestor / "nav2-profile" /
+                                 "hospital_nav2_plan_defaults.yaml").is_file()
+                                    and (ancestor / "nav2-profile" /
+                                         "hospital_floor_transitions.yaml").is_file()
+                                    and (ancestor / "nav2-profile" /
+                                         "run_profile_manifest.json").is_file()):
+                                run_root = ancestor
+                                break
+                        if not run_root or not build_id:
+                            continue
+                        nav_profile = run_root / "nav2-profile"
+                        run_manifest = json.loads(
+                            (nav_profile / "run_profile_manifest.json").read_text(
+                                encoding="utf-8"))
+                        bundle_id = run_manifest.get("map_bundle_id")
+                        profile_key = f"{build_id}:{bundle_id}"
+                        with self.state_lock:
+                            if any(p["profile_key"] == profile_key
+                                   for p in self.rag_profiles.values()):
+                                continue
+                        source_review = (build_manifest.get("inputs", {})
+                                        .get("semantic_overrides") or {}).get("sha256")
+                        review_label = "human-reviewed" if source_review else "no manual labels"
+                        profile_id = f"generated-{build_id[:12]}-{str(bundle_id)[-8:]}"
+                        label = f"{run_root.name} · {review_label} · {build_id[:8]}"
+                        expected = {
+                            "rag_build_id": build_id,
+                            "review_csv_sha256": source_review,
+                            "source_dsg_sha256": (build_manifest.get("inputs", {})
+                                                  .get("dsg", {}).get("sha256")),
+                            "map_bundle_id": bundle_id,
+                            "run_profile_manifest": nav_profile / "run_profile_manifest.json",
+                        }
+                        profile = self._validate_rag_profile(
+                            profile_id, label, build_rag,
+                            nav_profile / "hospital_nav2_plan_defaults.yaml",
+                            nav_profile / "hospital_floor_transitions.yaml",
+                            expected)
+                        with self.state_lock:
+                            if not any(p["profile_key"] == profile_key
+                                       for p in self.rag_profiles.values()):
+                                self.rag_profiles[profile_id] = profile
+                                added += 1
+                    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError):
+                        continue
+            self.discovery_error = None
+            self.last_profile_scan = time.monotonic()
+            return added
+        finally:
+            self.profile_scan_lock.release()
 
     def _append_event(self, stage, message, **details):
         # Keep the progress timeline focused on user-facing flow. Detailed
@@ -387,20 +585,26 @@ class NavigationController:
         self._append_event(stage, message)
 
     def snapshot(self):
+        self.refresh_rag_profiles()
         with self.state_lock:
             snapshot = json.loads(json.dumps(self.state, ensure_ascii=False))
-        snapshot["rag_build_id"] = (self.rag_info or {}).get("build_id")
-        snapshot["semantic_review_csv_sha256"] = (self.rag_info or {}).get(
+            selected_profile_id = self.selected_rag_profile_id
+            rag_info = self.rag_info
+            profiles = [
+                {"id": item["id"], "label": item["label"],
+                 "build_id": item["build_id"],
+                 "review_csv_sha256": item["review_csv_sha256"]}
+                for item in self.rag_profiles.values()
+            ]
+            discovery_error = self.discovery_error
+        snapshot["rag_build_id"] = (rag_info or {}).get("build_id")
+        snapshot["semantic_review_csv_sha256"] = (rag_info or {}).get(
             "semantic_review_csv_sha256")
         snapshot["rag_review_badge"] = rag_review_badge(
             snapshot["semantic_review_csv_sha256"])
-        snapshot["selected_rag_profile_id"] = self.selected_rag_profile_id
-        snapshot["rag_profiles"] = [
-            {"id": item["id"], "label": item["label"],
-             "build_id": item["build_id"],
-             "review_csv_sha256": item["review_csv_sha256"]}
-            for item in self.rag_profiles.values()
-        ]
+        snapshot["selected_rag_profile_id"] = selected_profile_id
+        snapshot["rag_profiles"] = profiles
+        snapshot["rag_discovery_error"] = discovery_error
         return snapshot
 
     def select_rag_profile(self, profile_id):
@@ -795,6 +999,11 @@ class NavigationUiHandler(BaseHTTPRequestHandler):
                 self.controller.start_plan(state["instruction"], data.get("selections"))
             elif path == "/api/rag-profile":
                 self.controller.select_rag_profile(data.get("profile_id"))
+            elif path == "/api/rag-profiles/refresh":
+                discovered = self.controller.refresh_rag_profiles(force=True)
+                self._json(200, {"discovered": discovered,
+                                 "error": self.controller.discovery_error})
+                return
             elif path == "/api/demo":
                 self.controller.start_demo()
             elif path == "/api/stop":
@@ -847,6 +1056,9 @@ def main(argv=None):
     server.daemon_threads = True
     url = f"http://{args.host}:{args.port}"
     print(f"Navigation UI listening at {url}", flush=True)
+    if not controller.startup_error:
+        threading.Thread(target=controller.refresh_rag_profiles,
+                         kwargs={"force": True}, daemon=True).start()
     if controller.startup_error:
         print(f"Run profile not ready: {controller.startup_error}", flush=True)
     if args.open_browser:

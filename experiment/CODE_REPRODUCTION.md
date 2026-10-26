@@ -254,7 +254,7 @@ The profile generator verifies that the RAG and map manifests refer to the same 
 
 ### Launch the interactive navigation demo
 
-The standalone demo is in experiment/navigation-ui-demo. It bundles two Hospital P1000 RAG indexes and the matching run profiles. The GUI lets you select either the human-reviewed v5 index or the fresh no-review index before planning.
+The standalone demo is in experiment/navigation-ui-demo. It bundles two Hospital P1000 RAG indexes and the matching run profiles. The GUI lets you select either the human-reviewed v5 index or the fresh no-review index before planning, and scans configured run-output folders for future RAG builds with matching navigation profiles.
 
     bash experiment/navigation-ui-demo/run_demo.sh
 
