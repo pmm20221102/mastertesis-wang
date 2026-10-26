@@ -126,15 +126,17 @@ The output JSON records the instruction, model and code summaries, RAG/map prove
 
 ## Interactive WSL Navigation Demo
 
-A standalone browser-based demonstration is provided in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes the human-reviewed RAG build and a fresh no-review build; choose the active index in the GUI before planning. It also discovers future packaged RAG runs every 15 seconds when their matching Nav2 profile is available.
+A standalone browser demo is available in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes a manually reviewed RAG index and a fresh no-review index; the GUI lets you select either one before planning.
 
-From WSL, start it with:
+From the repository root in WSL:
 
 ~~~bash
 bash experiment/navigation-ui-demo/run_demo.sh
 ~~~
 
-The GUI asks for a destination, presents selectable candidates when grounding is ambiguous, and can launch the isolated point-robot simulation in RViz2. It uses the packaged four-floor Khronos-only maps and a 0.5 m/s desired-speed profile. It does not control a physical robot.
+The GUI also discovers future RAG builds every 15 seconds. A generated build is selectable when its manifest-bearing RAG directory has a matching Nav2 run profile. Set HOSPITAL_RAG_DISCOVERY_ROOTS to a colon-separated list of additional WSL output directories if your runs are stored elsewhere. The module README documents profile matching, dependencies, and the complete interaction flow.
+
+The demo uses an isolated ROS domain, four-floor Khronos-only maps, and a point-robot kinematic profile with a 0.5 m/s desired linear speed. It does not control a physical robot.
 
 ## Nav2 Mission Interface
 
