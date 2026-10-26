@@ -1,10 +1,10 @@
 # LLM-RAG planner
 
-这是仓库唯一的自然语言任务规划器。它依赖同一模块下的 Khronos 3DSG RAG builder/retriever（../RAG/khronos_3dsg_rag/），并与根目录的 Hospital Nav2 bridge 通过 mission JSON 和 Nav2 bundle 对接。
+This is the repository's only natural-language task planner. It depends on the Khronos 3DSG RAG builder/retriever in `../RAG/khronos_3dsg_rag/` and connects to the repository's Hospital Nav2 bridge through a mission JSON and Nav2 bundle.
 
-## 主入口
+## Main Entry Point
 
-自然语言到 Nav2 的主入口是 plan_nav2.py；从仓库根目录推荐通过 wrapper 调用：
+The main natural-language-to-Nav2 entry point is `plan_nav2.py`. From the repository root, use the wrapper:
 
 ~~~bash
 bash llm-rag/plan_hospital_nav2.sh \
@@ -13,35 +13,35 @@ bash llm-rag/plan_hospital_nav2.sh \
   --output /tmp/hospital-nav2-plan.json
 ~~~
 
-运行前需先构建 RAG v5 index、启动隔离的 Hospital Nav2 stack，并设置 ROS 2 Jazzy 环境。完整操作顺序见根 README.md。
+Before running, build the RAG v5 index, start the isolated Hospital Nav2 stack, and source the ROS 2 Jazzy environment. See the repository-root `README.md` for the complete sequence.
 
-## 参数与输入输出
+## Parameters and Inputs/Outputs
 
-plan_nav2.py 输入：
+`plan_nav2.py` inputs:
 
-- 必需：自然语言 --instruction 和新输出路径 --output。
-- 默认：gemma4:e2b-it-qat、Hospital v5 vector_db、Hospital floor bundle 和 plan-only Nav2 adapter。
-- 可覆盖：--model、--db-dir、--bundle、--defaults、--intent-prompt-profile、--task-chain-backend、--num-ctx、--num-predict、--request-timeout-s、--floor-tolerance-m、--robot-model、--ros-domain-id。
+- Required: natural-language `--instruction` and a new output path via `--output`.
+- Defaults: `gemma4:e2b-it-qat`, the Hospital v5 `vector_db`, Hospital floor bundle, and plan-only Nav2 adapter.
+- Overridable: `--model`, `--db-dir`, `--bundle`, `--defaults`, `--intent-prompt-profile`, `--task-chain-backend`, `--num-ctx`, `--num-predict`, `--request-timeout-s`, `--floor-tolerance-m`, `--robot-model`, and `--ros-domain-id`.
 
-输出 JSON 记录 intent、实体候选、任务链/mission、RAG 与 map provenance、路径、分阶段状态和耗时。成功规划不会自动代表已执行导航；plan-only 时 execution_performed=false。
+The output JSON records the intent, entity candidates, task chain/mission, RAG and map provenance, route, stage statuses, and timings. A successful plan does not mean navigation was executed; in plan-only mode, `execution_performed=false`.
 
 ~~~bash
 .venv/bin/python llm-rag/planner/plan_nav2.py --help
 .venv/bin/python llm-rag/planner/main_rag.py --help
 ~~~
 
-main_rag.py 提供较低层的 intent、grounding 和 task-chain 模块接口；主论文运行应使用 plan_nav2.py，把相同 RAG、mission 和 ROS domain 契约保持在一条总入口上。
+`main_rag.py` exposes lower-level intent, grounding, and task-chain interfaces. Thesis runs should use `plan_nav2.py` to keep the RAG, mission, and ROS-domain contracts in one entry point.
 
-## 配置和依赖
+## Configuration and Dependencies
 
-- Python 直接运行/测试依赖见仓库级 `llm-rag/requirements.txt`；`pyproject.toml` 保留包元数据和版本下限。当前从源码目录运行，不做 editable install。
-- Ollama 地址、默认 instruction、模型表和 RAG index 路径见 config_rag.yaml。
-- 默认数据库路径应与根 README 中的 v5 build 输出一致；自定义 build 输出需要显式 --db-dir。
-- 可选 baseline 对照使用 experiment/evaluations/baseline/scene_graph.json；它是数据 fixture，不是第二套规划器实现。
+- Python runtime and test dependencies are listed in the repository-level `llm-rag/requirements.txt`; `pyproject.toml` retains package metadata and minimum versions. The project currently runs from the source tree and does not use an editable install.
+- Ollama endpoint, default instruction, model list, and RAG index path are in `config_rag.yaml`.
+- The default database path should match the v5 build output in the repository-root README. For a custom build output, pass `--db-dir` explicitly.
+- Optional baseline comparison uses `experiment/evaluations/baseline/scene_graph.json`; this is a data fixture, not a second planner implementation.
 
-环境依赖详见 ../BUILD_ENVIRONMENT.md。
+For environment dependencies, see `../BUILD_ENVIRONMENT.md`.
 
-## 测试
+## Tests
 
 ~~~bash
 .venv/bin/python -m pytest -q llm-rag/planner/tests

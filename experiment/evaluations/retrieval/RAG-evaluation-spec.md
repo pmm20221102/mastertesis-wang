@@ -352,7 +352,7 @@ Example:
 ```text
 EN: Where is the mug?
 DE: Wo befindet sich die Tasse?
-ZH: 杯子在哪里？
+ZH query example (English translation: "Where is the cup?"):
 ```
 
 This is important because the user often works with Chinese questions, English papers, and German documents.

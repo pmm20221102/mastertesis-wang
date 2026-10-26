@@ -64,7 +64,7 @@
 
 ## Recommendation
 
-**For论文实验**:
+**For thesis experiments**:
 - Intent Parser: Use Gemma4 (more accurate)
 - Planner: Use Qwen2.5:0.5b (faster)
 

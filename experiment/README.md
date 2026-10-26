@@ -1,43 +1,43 @@
-# experiment：论文数据、评测与结果
+# Experiments: Datasets, Evaluations, and Results
 
-这里集中保存数据集、冻结输入、评测脚本和运行结果。实验记录是证据档案，不会被代码重构自动重跑或改写。
+This module stores datasets, frozen inputs, evaluation scripts, and run outputs. Experiment records are an evidence archive; code refactors do not rerun or rewrite them automatically.
 
-从干净环境验证代码、构建带 provenance manifest 的 RAG 索引、启动 Nav2 并运行单条 plan-only 请求，请按 [CODE_REPRODUCTION.md](CODE_REPRODUCTION.md)。该文档也列出当前不能从本仓库完整重放的历史批次及缺失输入。
+For clean-environment setup, tests, a provenance-bearing RAG build, and a single Nav2 plan-only request, follow [CODE_REPRODUCTION.md](CODE_REPRODUCTION.md). It also lists historical batches that cannot currently be replayed from this repository and the missing inputs.
 
-## 主论文数据
+## Main Thesis Experiments
 
-### 60 条任务链消融
+### 60-Task Task-Chain Ablation
 
-- 输入：task-chain-60/public/tasks_en.jsonl，60 条指令。
-- 主运行：task-chain-60/runs/surface-v1-llm2-60x4-20261020/。
-- 条件：Full、No LLM1、Raw DSG、No LLM2；每个任务每个条件一次，共 240 个任务—条件输出。
-- 来源文件：artifact_manifest.json、draft/system_lock.json、run_manifest.json。
-- predictions/ 是各条件输出；runtime_inputs/ 保存当次运行的 canonical graph、RAG documents 和索引快照。
+- Input: `task-chain-60/public/tasks_en.jsonl` contains 60 instructions.
+- Main run: `task-chain-60/runs/surface-v1-llm2-60x4-20261020/`.
+- Conditions: Full, No LLM1, Raw DSG, and No LLM2; each task-condition pair ran once, for 240 outputs.
+- Provenance files: `artifact_manifest.json`, `draft/system_lock.json`, and `run_manifest.json`.
+- `predictions/` stores condition outputs. `runtime_inputs/` stores the canonical graph, RAG documents, and index snapshot used by that run.
 
-不同用途的 final_intent_60、planning_generation_60 等数据保存在 evaluations/taskchain/，不是这次主消融的同一数据集。
+Datasets such as `final_intent_60` and `planning_generation_60` serve different evaluation purposes and are stored under `evaluations/taskchain/`; they are not the dataset used for this main ablation.
 
-### 49 条 Nav2 mission
+### 49 Nav2 Missions
 
-- 输入：nav2-49/missions/ 中 49 个 mission，准备报告在 missions/preparation_report.json。
-- 首轮结果：nav2-49/tasks/ 中 49 个结果 JSON，logs/ 保存首轮日志。
-- 诊断重跑：retry-20261023/ 单独保存 6 个失败 mission 的日志与结果；不回写首轮结果。
-- 论文分母：首轮 43/49。六个重跑成功属于补充诊断，不替代首轮分数。
+- Input: 49 mission files in `nav2-49/missions/`; the preparation report is `missions/preparation_report.json`.
+- First-pass results: 49 result JSON files in `nav2-49/tasks/`; `logs/` contains first-pass logs.
+- Diagnostic reruns: logs and results for six failed missions are stored separately under `retry-20261023/`; they do not overwrite first-pass results.
+- Thesis denominator: 43/49 on the first pass. Successes in the six reruns are supplementary diagnostics and do not replace the first-pass score.
 
-这些 mission 是从论文选定的较早 Full 预测中筛选的可执行子集，不是 49/60 的任务链成功率。
+These missions are an executable subset selected from an earlier Full prediction run. They do not represent a 49/60 task-chain success rate.
 
-### 其他产物
+### Other Artifacts
 
-- four-floor-demo/：HC-031 四层 RViz2 单独演示。
-- map-generation/：Khronos-only 地图生成脚本、几何清单和测试；生成的 output/ 可重建，不随 Git 提交。
-- interface-smoke/：自然语言到 Nav2 接口联调记录，不计入 benchmark。
-- evaluations/taskchain/、evaluations/semantic-rag/、evaluations/retrieval/：其他评测案例、脚本和历史结果。
-- evaluations/baseline/scene_graph.json：RAG 规划器可选 baseline comparison 使用的 fixture；旧 baseline planner 实现不再保留。
+- `four-floor-demo/`: standalone HC-031 four-floor RViz2 demonstration.
+- `map-generation/`: Khronos-only map generator, geometry manifest, and tests. Generated `output/` can be rebuilt and is not committed.
+- `interface-smoke/`: natural-language-to-Nav2 interface integration records; these are not benchmark results.
+- `evaluations/taskchain/`, `evaluations/semantic-rag/`, and `evaluations/retrieval/`: other evaluation cases, scripts, and historical results.
+- `evaluations/baseline/scene_graph.json`: optional fixture for baseline comparison in the RAG planner. The old baseline planner implementation is not included.
 
-## 完整复跑要求
+## Requirements for Full Replays
 
-归档 mission、预测、日志和结果可用于核对论文分母；它们本身不是“重跑证明”。完整重建 RAG 需本地 Hospital 原始 DSG、mesh、78 行审阅 CSV、embedding 模型；完整 Nav2 重跑需 Ollama、已启动的隔离 Nav2 stack、匹配地图 bundle 和 ROS domain。历史 manifest 中的绝对路径保留为运行 provenance，不应当作当前 checkout 的路径。
+Archived missions, predictions, logs, and results can be used to verify thesis denominators; they are not evidence that a run has been reproduced. Rebuilding the full RAG index requires the local Hospital DSG, mesh, 78-row review CSV, and embedding model. Replaying Nav2 requires Ollama, a running isolated Nav2 stack, the matching map bundle, and a ROS domain. Absolute paths in historical manifests are preserved as run provenance and must not be treated as paths in the current checkout.
 
-## 快速核对归档数量
+## Quick Archive-Count Checks
 
 ~~~bash
 wc -l experiment/task-chain-60/public/tasks_en.jsonl
@@ -45,4 +45,4 @@ find experiment/nav2-49/missions -maxdepth 1 -name 'HC-*.mission.json' | wc -l
 find experiment/nav2-49/tasks -maxdepth 1 -name 'HC-*.result.json' | wc -l
 ~~~
 
-当前期望值依次为 60、49、49。数量核对不等于重跑实验。
+Expected counts are 60, 49, and 49, respectively. Matching these counts does not reproduce an experiment.

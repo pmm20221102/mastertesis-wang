@@ -1,10 +1,10 @@
 # Hospital P1000 Nav2 bridge
 
-本模块提供唯一的 Hospital/Nav2 ROS 2 package，包路径为 khronos_nav2_bridge/。它消费 mission JSON 与 floor bundle，使用 Nav2 对有序停靠点规划；集成任务链的自然语言入口见仓库根目录 README.md 和 llm-rag/plan_hospital_nav2.sh。
+This module contains the repository's Hospital/Nav2 ROS 2 package at `khronos_nav2_bridge/`. It consumes a mission JSON and floor bundle, then uses Nav2 to plan an ordered set of stops. For the integrated natural-language task-chain entry point, see the repository-root `README.md` and `llm-rag/plan_hospital_nav2.sh`.
 
 ## Dependencies and build
 
-ROS 2 Jazzy、Nav2、RViz2、colcon 和 rosdep。Nav2/ROS 包依赖由 khronos_nav2_bridge/package.xml 声明，Python 系统包由 ROS/rosdep 提供。完整依赖见 llm-rag/BUILD_ENVIRONMENT.md。
+Dependencies: ROS 2 Jazzy, Nav2, RViz2, colcon, and rosdep. Nav2/ROS package dependencies are declared in `khronos_nav2_bridge/package.xml`; Python system packages are provided through ROS/rosdep. See `llm-rag/BUILD_ENVIRONMENT.md` for the full environment setup.
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -17,7 +17,7 @@ source install/setup.bash
 
 ## Mission interface
 
-底层 runner 的输入是一个 mission JSON、楼层地图 bundle 和输出 JSON 路径；robot-model 必须和启动的 Nav2 profile 一致。默认执行模式会向 Nav2 action server 发送目标。
+The low-level runner takes a mission JSON, a floor-map bundle, and an output JSON path. `robot-model` must match the Nav2 profile that was launched. By default, execution mode sends goals to the Nav2 action server.
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -30,7 +30,7 @@ export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
   --robot-model point
 ~~~
 
---plan-only 仅规划，不发送 NavigateToPose；执行模式只能用于隔离模拟 ROS domain，绝不可指向真实机器人 domain。runner 输出包含任务状态、停靠点顺序、地图/路径信息和错误阶段。输入格式及其实际使用方式见：
+`--plan-only` computes a route without sending `NavigateToPose` goals. Execution mode is restricted to an isolated simulation ROS domain and must never target a real robot domain. Runner output includes task status, stop order, map/path information, and the failure stage. Inspect the interface with:
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -38,4 +38,4 @@ export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
 /usr/bin/python3 khronos-nav2-bridge/khronos_nav2_bridge/scripts/run_task_chain_nav2.py --help
 ~~~
 
-地图 PNG/YAML 与哈希位于 khronos_nav2_bridge/generated/hospital-p1000-khronos-only/。重建源代码在 experiment/map-generation/，原始 Hospital DSG/mesh 不随仓库提供。包内详细 Hospital launch 说明见 khronos_nav2_bridge/README_HOSPITAL.md。
+Map PNG/YAML files and their hashes are under `khronos_nav2_bridge/generated/hospital-p1000-khronos-only/`. Map-generation source is in `experiment/map-generation/`; the original Hospital DSG/mesh is not included. For detailed Hospital launch instructions, see `khronos_nav2_bridge/README_HOSPITAL.md`.

@@ -1,14 +1,14 @@
-# LLM + Semantic RAG + Graph Grounding 最终联合测评报告（v3，mistral）
+# LLM + Semantic RAG + Graph Grounding Final Joint Evaluation Report (v3, Mistral)
 
-- 日期：2026-08-06
-- 模型：mistral:latest
-- 数据：joint_cases_v3.jsonl（30 条，GT 由 canonical 自动生成，含 Room 约束）
-- 流程：NL -> LLM Intent -> Semantic RAG Top-1 -> 确定性 Graph Grounding（predicted label + Room）
-- 修复：无 Ground Truth 泄漏、禁止 full-instruction fallback、strict intent gate、GT node IDs 比较
+- Date: 2026-08-06
+- Model: `mistral:latest`
+- Data: `joint_cases_v3.jsonl` (30 cases; ground truth generated automatically from canonical data, including Room constraints)
+- Pipeline: NL -> LLM Intent -> Semantic RAG Top-1 -> deterministic Graph Grounding (predicted label + Room)
+- Safeguards: no ground-truth leakage, no full-instruction fallback, strict intent gate, and comparison against ground-truth node IDs
 
-## 验收对照（任务书第 25 节）
+## Acceptance Criteria (Specification Section 25)
 
-| 条件 | 值 | 达标 |
+| Criterion | Value | Met |
 |---|---|---|
 | Benchmark validator | PASS | ✅ |
 | Intent Gate ≥80% | 96.67% | ✅ |
@@ -19,20 +19,20 @@
 | Room-constrained Grounding ≥80% | 100.00% | ✅ |
 | Ambiguous Candidate F1 ≥0.90 | 1.000 | ✅ |
 | Set Exact Match ≥0.90 | 100.00% | ✅ |
-| Invalid node ID Rate = 0 | 0（canonical 确定性） | ✅ |
+| Invalid node ID Rate = 0 | 0 (canonical deterministic lookup) | ✅ |
 | Failure Stage Coverage = 100% | ✅ | ✅ |
 
-## 失败案例（2/30）
+## Failed Cases (2/30)
 
 - `joint_v3_029`: `Find something employees can sit on duri` stage=`semantic_retrieval`
 - `joint_v3_030`: `Find items people use for writing at wor` stage=`intent_quantifier`
 
-## 失败 by stage
+## Failures by Stage
 
 - {"semantic_retrieval": 1, "intent_quantifier": 1}
 
-## 说明
+## Notes
 
-- Graph Grounding 采用 canonical 确定性 label+room 解析（predicted label 驱动，无 GT 泄漏）
-- resolve_entity 的 single 路径依赖 text 语义，与 Semantic RAG 分层后不适用，故用确定性 label 路径
-- 本轮未修改 Semantic embedding / Retriever / threshold / Planner
+- Graph Grounding uses deterministic canonical label + Room resolution, driven by the predicted label and without ground-truth leakage.
+- The single-target `resolve_entity` path depends on text semantics and is not suitable after separating Semantic RAG into its own stage; therefore this run uses deterministic label resolution.
+- Semantic embeddings, retriever, threshold, and planner were not changed in this round.

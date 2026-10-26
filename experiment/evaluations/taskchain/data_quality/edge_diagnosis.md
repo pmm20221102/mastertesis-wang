@@ -1,46 +1,46 @@
 # Edge Diagnosis Report
 
-## 数据来源
+## Data Sources
 
-| 数据源 | 节点数 | 边数 |
+| Data source | Nodes | Edges |
 |--------|--------|------|
-| 原始 DSG (dsg.json) | 402 | 288 |
-| RAG Documents (rag_documents.jsonl) | 1332 | 4675 |
-| Canonical Graph (canonical_graph.json) | 1332 | 0 |
+| Raw DSG (`dsg.json`) | 402 | 288 |
+| RAG documents (`rag_documents.jsonl`) | 1,332 | 4,675 |
+| Canonical graph (`canonical_graph.json`) | 1,332 | 0 |
 
-## 诊断结论
+## Diagnostic Findings
 
-### 1. 原始 DSG 是否有 edges
+### 1. Does the Raw DSG Contain Edges?
 
-**是**。原始 DSG 有 288 条 edges，全部在 layer 2 (objects) 之间。
+**Yes.** The raw DSG contains 288 edges, all between nodes in Layer 2 (objects).
 
-### 2. 边在哪里丢失
+### 2. Where Were the Edges Lost?
 
-**Canonical graph 从 ChromaDB metadata 重建时丢失。**
+**The edges were lost when the canonical graph was reconstructed from ChromaDB metadata.**
 
-原因：
-- `build_documents.py` 截断 `parent_ids[:5]`, `child_ids[:10]`, `neighbor_ids[:10]`
-- `canonical_index.py` 从 ChromaDB metadata 重建 canonical graph
-- ChromaDB metadata 中的 edges 被截断或丢失
+Causes:
+- `build_documents.py` truncates `parent_ids[:5]`, `child_ids[:10]`, and `neighbor_ids[:10]`.
+- `canonical_index.py` reconstructs the canonical graph from ChromaDB metadata.
+- Edge data in ChromaDB metadata is truncated or lost.
 
-### 3. RAG Documents 的 4675 条 relations
+### 3. The 4,675 Relations in the RAG Documents
 
-这些是 places 之间的 `connected_to` 关系，不是原始 DSG 的 edges。
+These are `connected_to` relations between Places, not edges from the raw DSG.
 
-原始 DSG 的 288 条 edges 是 objects 之间的关系。
+The 288 raw-DSG edges are relations between objects.
 
-### 4. 修复方案
+### 4. Proposed Fix
 
-**从原始 DSG 直接导出 canonical graph**，不经过 ChromaDB metadata。
+**Export the canonical graph directly from the raw DSG**, without using ChromaDB metadata.
 
 ```text
 parse raw DSG (dsg.json)
-    ├── canonical_graph.json (完整图，不截断)
-    ├── rag_documents.jsonl (用于 embedding，可截断)
+    ├── canonical_graph.json (complete graph, no truncation)
+    ├── rag_documents.jsonl (for embeddings; may be truncated)
     └── vector_db
 ```
 
-### 5. 原始 DSG edge 结构
+### 5. Raw DSG Edge Structure
 
 ```json
 {
@@ -53,30 +53,30 @@ parse raw DSG (dsg.json)
 }
 ```
 
-所有 edges 都在 layer 2 (objects) 之间，没有 hierarchy edges。
+All edges are between objects in Layer 2; there are no hierarchy edges.
 
-### 6. 数据限制
+### 6. Data Limitations
 
-原始 DSG 只有 layer 2 (objects)，没有：
+The raw DSG contains only Layer 2 (objects), with no:
 - Room nodes
 - Place nodes  
 - Building nodes
 - Hierarchy edges (Room → Place → Object)
 
-这意味着 **Room/Place/Object hierarchy 在当前数据集中不存在**。
+This means the **Room/Place/Object hierarchy does not exist in the current dataset**.
 
-因此：
-- Room-constrained queries 无法测试
-- Place topology 无法测试
-- 只能测试 object-level queries
+Therefore:
+- Room-constrained queries cannot be tested.
+- Place topology cannot be tested.
+- Only object-level queries are supported.
 
-### 7. 建议
+### 7. Recommendation
 
-生成受限 benchmark，只测试当前数据真实支持的能力：
+Create a constrained benchmark that tests only capabilities supported by the available data:
 - Object label ambiguity
 - Set query
 - Exact ID sanity
 - Not-found
 - Object navigation
 
-**不得在数据不支持时测试 Room-constrained Grounding。**
+**Do not test Room-constrained Grounding when the data does not support it.**

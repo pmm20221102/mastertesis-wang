@@ -1,26 +1,20 @@
-# Development Report / 开发报告
+# Development Report
 
-**Author / 作者**: Yunsong Wang | **Date / 日期**: 2026-06-21
+**Author**: Yunsong Wang | **Date**: 2026-06-21
 
 ---
 
-## 1. Project Background / 项目背景
+## 1. Project Background
 
 Building an LLM-based robot task planning system using Khronos 3D Dynamic Scene Graphs.
 
-基于 Khronos 3D 动态场景图构建 LLM 机器人任务规划系统。
+## 2. RAG Evaluation Design
 
----
-
-## 2. RAG Evaluation Design / RAG 评估设计
-
-### Problem / 问题
+### Problem
 
 Official datasets lack structured groundtruth (no room hierarchy, no semantic labels). Instead, we use Khronos DSG output as groundtruth.
 
-官方数据集缺乏结构化 groundtruth（无 room 层级，无语义标签）。我们改用 Khronos DSG 输出作为 groundtruth。
-
-### Solution / 方案
+### Solution
 
 ```
 Khronos DSG (1858 nodes, 6205 edges)
@@ -32,31 +26,31 @@ RAG Index (ChromaDB)
 
 ---
 
-## 3. Query Types / 查询类型
+## 3. Query Types
 
-| Type / 类型 | Example / 示例 | Purpose / 目的 |
+| Type | Example | Purpose |
 |------------|----------------|---------------|
-| Spatial | "Object at x=-15, y=22" | 位置检索 / Location retrieval |
-| Hierarchy | "What is inside room?" | 父→子遍历 / Parent→child traversal |
-| Reverse Hierarchy | "Where is chair?" | 子→父遍历 / Child→parent traversal |
-| Neighbor | "What is connected to X?" | 邻居发现 / Neighbor discovery |
-| Type Filter | "Find all rooms" | 类型过滤 / Type filtering |
-| Semantic | "Find all chairs" | 语义匹配 / Semantic matching |
+| Spatial | "Object at x=-15, y=22" | Location retrieval |
+| Hierarchy | "What is inside room?" | Parent→child traversal |
+| Reverse Hierarchy | "Where is chair?" | Child→parent traversal |
+| Neighbor | "What is connected to X?" | Neighbor discovery |
+| Type Filter | "Find all rooms" | Type filtering |
+| Semantic | "Find all chairs" | Semantic matching |
 
 ---
 
-## 4. Metrics / 评估指标
+## 4. Metrics
 
-| Metric / 指标 | Definition / 定义 | Target / 目标 |
+| Metric | Definition | Target |
 |--------------|------------------|--------------|
-| Hit@10 | top-10 中是否有正确答案 / Correct answer in top-10? | > 0.70 |
-| Recall@10 | 找到了多少比例的相关项 / Proportion of relevant items found | > 0.60 |
-| Precision@10 | 检索结果中正确比例 / Proportion of correct results | > 0.10 |
-| Graph Accuracy | 图结构信息是否正确 / Graph structure correctness | > 0.10 |
+| Hit@10 | Correct answer appears in top 10 | > 0.70 |
+| Recall@10 | Proportion of relevant items found | > 0.60 |
+| Precision@10 | Proportion of retrieved results that are correct | > 0.10 |
+| Graph Accuracy | Correctness of graph-structure information | > 0.10 |
 
 ---
 
-## 5. Current Status / 当前状态
+## 5. Current Status
 
 | Metric | Initial | Current | Target | Status |
 |--------|---------|---------|--------|--------|
@@ -65,7 +59,7 @@ RAG Index (ChromaDB)
 | Precision@10 | 0.01 | 0.07 | 0.10 | ⚠️ |
 | Graph Accuracy | 0.003 | 0.11 | 0.10 | ✅ |
 
-### By Query Type / 按查询类型
+### By Query Type
 
 | Type | Hit | Status |
 |------|-----|--------|
@@ -76,55 +70,51 @@ RAG Index (ChromaDB)
 | Neighbor | 33% | ⚠️ |
 | Reverse Hierarchy | 10.5% | ❌ |
 
-### Bottleneck / 瓶颈
+### Bottleneck
 
 Reverse Hierarchy fails because 70 nodes share the same label "small_office_objects", causing ambiguous parent retrieval.
 
-反向层级查询失败，因为 70 个 nodes 有相同的 label，导致 parent 检索歧义。
+## 6. Nav2 Integration
 
----
-
-## 6. Nav2 Integration / Nav2 集成
-
-### Architecture / 架构
+### Architecture
 
 ```
 Khronos (TSDF/DSG) → Khronos-Nav2 Bridge → Nav2
 ```
 
-### Three Bridge Modules / 三个桥接模块
+### Three Bridge Modules
 
-| Module / 模块 | Input / 输入 | Output / 输出 | Status / 状态 |
+| Module | Input | Output | Status |
 |--------------|-------------|--------------|--------------|
 | Occupancy Bridge | /khronos/occupancy | /khronos/map (OccupancyGrid) | 🔧 Config applied |
 | Dynamic Object Bridge | object_changes | /khronos/dynamic_obstacles (PointCloud2) | 📋 Planned |
 | Semantic Goal Bridge | DSG query | /semantic_goal_pose (PoseStamped) | 📋 Planned |
 
-### PLY Projection Failed / PLY 投影失败
+### PLY Projection Failed
 
 Attempted: `mesh.ply → 3D→2D projection → PGM/YAML → Nav2`
 
 Result: Map mostly black (occupied), no free space for navigation.
 
-原因: PLY 只有表面顶点，无法区分占用/空闲区域。
+Cause: the PLY contains only surface vertices and cannot distinguish occupied from free space.
 
-Conclusion: PLY projection is negative baseline only.
+Conclusion: PLY projection is a negative baseline only.
 
-### Correct Approach / 正确方案
+### Correct Approach
 
 Enable Khronos `TsdfOccupancyPublisher` to publish OccupancyGrid directly from TSDF voxel layer.
 
-启用 Khronos 的 TsdfOccupancyPublisher，直接从 TSDF 体素层发布 OccupancyGrid。
+Enable Khronos `TsdfOccupancyPublisher` to publish an `OccupancyGrid` directly from the TSDF voxel layer.
 
 ```yaml
-# Configuration applied / 已应用配置
+# Configuration applied
 sinks:
   - type: TsdfOccupancyPublisher
     extraction:
       min_distance: 0.25
 ```
 
-### Next Steps / 下一步
+### Next Steps
 
 1. Run Khronos and verify `/khronos/occupancy` output
 2. Implement occupancy_bridge_node
@@ -133,7 +123,7 @@ sinks:
 
 ---
 
-## 7. Conclusions / 结论
+## 7. Conclusions
 
 | Item | Status |
 |------|--------|
@@ -145,15 +135,15 @@ sinks:
 
 ---
 
-## Appendix: Commands / 附录：命令
+## Appendix: Commands
 
 ```bash
-# Build RAG / 构建 RAG
+# Build the RAG index
 cd RAG/khronos_3dsg_rag && python src/main.py build --all
 
-# Run eval / 运行评估
+# Run the evaluation
 cd rag_eval && python scripts/run_eval.py --config configs/eval_office.yaml
 
-# View report / 查看报告
+# View the report
 cat rag_eval/data/reports/eval_summary.md
 ```

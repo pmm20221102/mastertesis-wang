@@ -1,113 +1,113 @@
-# RAG Evaluation Subproject
+# RAG Retrieval Evaluation Subproject
 
-验证 Khronos 场景图 RAG 系统检索正确率的评估框架。
+This framework evaluates retrieval accuracy in the Khronos scene-graph RAG system.
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 激活环境
+# Activate the environment
 conda activate llm-task-planner
 
-# 生成评估用例
+# Generate evaluation cases
 cd rag_eval
 python scripts/build_eval_cases.py \
     --dataset office \
     --gt-dir data/groundtruth/office \
     --output data/eval_cases/office_cases.jsonl
 
-# 运行评估
+# Run the evaluation
 python scripts/run_eval.py --config configs/eval_office.yaml
 
-# 查看结果
+# View the results
 cat data/reports/eval_summary.md
 ```
 
-## 项目结构
+## Project Structure
 
-```
+```text
 rag_eval/
-├── configs/                      # 评估配置
+├── configs/                      # Evaluation configuration
 │   ├── eval_office.yaml
 │   ├── eval_apartment.yaml
 │   └── eval_all.yaml
 ├── data/
-│   ├── groundtruth/              # Groundtruth 数据
-│   │   ├── office/office/        # office 数据集
-│   │   └── apartment/apartment/  # apartment 数据集
-│   ├── eval_cases/               # 生成的评估用例
-│   └── reports/                  # 评估报告
-├── rag_eval/                     # 核心模块
-│   ├── schemas.py                # 数据类定义
-│   ├── groundtruth_loader.py     # Groundtruth 解析
-│   ├── query_generator.py        # 评估用例生成
-│   ├── retrieval_adapter.py      # RAG 检索适配
-│   ├── metrics.py                # 评估指标
-│   ├── evaluator.py              # 评估执行器
-│   └── report_writer.py          # 报告生成
+│   ├── groundtruth/              # Ground-truth data
+│   │   ├── office/office/        # Office dataset
+│   │   └── apartment/apartment/  # Apartment dataset
+│   ├── eval_cases/               # Generated evaluation cases
+│   └── reports/                  # Evaluation reports
+├── rag_eval/                     # Core modules
+│   ├── schemas.py                # Data-class definitions
+│   ├── groundtruth_loader.py     # Ground-truth parsing
+│   ├── query_generator.py        # Evaluation-case generation
+│   ├── retrieval_adapter.py      # RAG retrieval adapter
+│   ├── metrics.py                # Evaluation metrics
+│   ├── evaluator.py              # Evaluation runner
+│   └── report_writer.py          # Report generation
 └── scripts/
-    ├── build_eval_cases.py       # 构建评估用例
-    ├── run_eval.py               # 运行评估
-    └── inspect_index.py          # 检查 RAG 索引
+    ├── build_eval_cases.py       # Build evaluation cases
+    ├── run_eval.py               # Run the evaluation
+    └── inspect_index.py          # Inspect the RAG index
 ```
 
-## Groundtruth 格式
+## Ground-Truth Format
 
 `gt_dsg_consolidated.json`:
-- 只有 layer 2 的 object nodes
-- `attributes.name`: 物体符号（如 "O(0)", "O(1)"）
-- `attributes.bounding_box`: 位置和尺寸
-- `semantic_label`: 未标注（4294967295）
+- Contains only layer-2 object nodes.
+- `attributes.name`: object symbol, e.g. `O(0)` or `O(1)`.
+- `attributes.bounding_box`: position and dimensions.
+- `semantic_label`: unannotated (`4294967295`).
 
 `gt_changes.csv`:
-- `ObjectSymbol`: 物体符号
-- `AppearedAt`: 出现时间（纳秒）
-- `DisappearedAt`: 消失时间（0 = 未消失）
+- `ObjectSymbol`: object symbol.
+- `AppearedAt`: appearance time in nanoseconds.
+- `DisappearedAt`: disappearance time (`0` means not disappeared).
 
-## V1 评估目标
+## V1 Evaluation Objectives
 
-| 类别 | 说明 | 查询类型 |
+| Category | Description | Query type |
 |------|------|----------|
-| A. Index Coverage | groundtruth 物体是否在 RAG index 中 | N/A（统计） |
-| B. Object Symbol Retrieval | 按物体符号检索 | "Retrieve O(370)" |
-| C. Object Attribute Retrieval | 按属性检索 | "bounding box of O(370)" |
-| D. Change Retrieval | 物体变化检索 | "Which objects disappeared?" |
+| A. Index Coverage | Whether ground-truth objects appear in the RAG index | N/A (statistical) |
+| B. Object Symbol Retrieval | Retrieve by object symbol | `Retrieve O(370)` |
+| C. Object Attribute Retrieval | Retrieve by attribute | `bounding box of O(370)` |
+| D. Change Retrieval | Retrieve object changes | `Which objects disappeared?` |
 
-## 评估指标
+## Evaluation Metrics
 
-- **Hit@k**: top-k 中是否包含至少一个正确结果
-- **MRR@k**: 第一个正确结果的排名倒数
-- **Recall@k**: top-k 中包含多少比例的正确结果
-- **Precision@k**: top-k 中正确结果的比例
-- **Index Coverage**: groundtruth 物体在 RAG index 中的覆盖率
+- **Hit@k**: whether the top-k results contain at least one correct result.
+- **MRR@k**: reciprocal rank of the first correct result.
+- **Recall@k**: proportion of correct results included in the top-k.
+- **Precision@k**: proportion of top-k results that are correct.
+- **Index Coverage**: proportion of ground-truth objects represented in the RAG index.
 
-## 重要限制
+## Important Limitations
 
-### Groundtruth 与 RAG Index 的差异
+### Differences Between Ground Truth and the RAG Index
 
-1. **Groundtruth** (`gt_dsg_consolidated.json`):
-   - 物体有 `name` 字段（如 "O(0)", "O(1)"）
-   - 位置坐标系可能与 SLAM 输出不同
+1. **Ground truth** (`gt_dsg_consolidated.json`):
+   - Objects have a `name` field, e.g. `O(0)` or `O(1)`.
+   - The position coordinate frame may differ from the SLAM output.
 
-2. **RAG Index** (Khronos SLAM 输出):
-   - 物体 `name` 字段为空
-   - 使用 64 位整数作为 node_id
-   - 没有 object symbol 信息
+2. **RAG index** (Khronos SLAM output):
+   - The object `name` field is empty.
+   - A 64-bit integer is used as `node_id`.
+   - Object-symbol information is unavailable.
 
 ### Position-Based Matching
 
-评估框架使用位置匹配（bounding box 中心距离）来关联 groundtruth 物体和 RAG index 中的物体。
+The evaluator matches ground-truth objects to RAG-index objects by position (distance between bounding-box centers).
 
-默认阈值: 5.0 米（可配置）
+Default threshold: 5.0 meters (configurable).
 
-### 查询类型适配
+### Query-Type Compatibility
 
-V1 生成的查询（如 "Retrieve O(0)"）可能无法直接匹配 RAG index 内容，因为:
-- RAG index 没有 object symbol 信息
-- 向量搜索基于语义相似度，不是精确匹配
+V1 queries such as `Retrieve O(0)` may not match RAG-index content directly because:
+- The RAG index has no object-symbol information.
+- Vector search uses semantic similarity rather than exact matching.
 
-**建议**: 后续版本应使用位置查询或重建包含 object symbol 的 RAG index。
+**Recommendation**: Future versions should use position-based queries or rebuild the RAG index with object-symbol information.
 
-## 配置文件
+## Configuration
 
 `configs/eval_office.yaml`:
 ```yaml
@@ -119,22 +119,22 @@ seed: 42
 output_dir: data/reports
 ```
 
-## 检查 RAG 索引
+## Inspect the RAG Index
 
 ```bash
 python experiment/evaluations/retrieval/scripts/inspect_index.py --db-dir llm-rag/RAG/khronos_3dsg_rag/outputs/khronos_office/vector_db
 ```
 
-## 输出报告
+## Output Reports
 
-- `eval_summary.json`: 结构化结果
-- `eval_summary.md`: Markdown 报告
-- `per_case_results.jsonl`: 每个用例的详细结果
-- `failures.jsonl`: 失败用例分析
+- `eval_summary.json`: structured results
+- `eval_summary.md`: Markdown report
+- `per_case_results.jsonl`: detailed results for each case
+- `failures.jsonl`: analysis of failed cases
 
-## 后续改进
+## Potential Improvements
 
-1. 重建包含 object symbol 的 RAG index
-2. 使用位置查询替代 object symbol 查询
-3. 添加更多 groundtruth 标注（room, category）
-4. 支持多种检索模式比较（vector_only, hybrid, bm25）
+1. Rebuild the RAG index with object-symbol information.
+2. Use position-based queries instead of object-symbol queries.
+3. Add more ground-truth annotations (room, category).
+4. Support comparisons across retrieval modes (`vector_only`, `hybrid`, `bm25`).

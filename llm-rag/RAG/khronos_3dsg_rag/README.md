@@ -1,69 +1,65 @@
 # Khronos 3D Scene Graph RAG
 
-基于 Khronos 3D 动态场景图的 RAG（检索增强生成）系统。提供结构化场景图解析、规范图导出、向量检索和确定性 Grounding 后端。
-
 Khronos 3D Dynamic Scene Graph RAG system. Provides structured scene graph parsing, canonical graph export, vector retrieval, and deterministic Grounding backend.
 
 ---
 
-## 概述 / Overview
-
-将 Khronos SLAM 输出的结构化场景图（DSG JSON）转换为规范图和可检索的向量数据库，支持自然语言和结构化查询场景中的物体、房间、空间关系和层级约束。
+## Overview
 
 Converts structured scene graphs (DSG JSON) from Khronos SLAM into a canonical graph and searchable vector database, supporting natural language and structured queries for objects, rooms, spatial relationships, and hierarchical constraints.
 
 ---
 
-## 核心功能 / Core Features
+## Core Features
 
-- **Canonical Graph Export**: 直接从 raw DSG 导出规范图，100% 层级有效率 / **规范图导出**：直接从 raw DSG 导出，100% hierarchy validity
-- **Hard Constraint Filtering**: node_type / label / location / relation 硬约束 / **硬约束过滤**：node_type / label / location / relation 硬约束
-- **Fast Path Resolution**: Exact ID / Nearest-by-position / All-by-label 直接查询 / **快速路径解析**：Exact ID / Nearest-by-position / All-by-label 直接查询
-- **Multi-Location Constraints**: LocationConstraint 支持 Place + Room 同时约束 / **多位置约束**：LocationConstraint 支持 Place + Room 同时约束
-- **Relation Filtering**: inside / near / connected_to / contains（含传递） / **关系过滤**：inside / near / connected_to / contains（含传递）
-- **Aggregate Queries**: max_count / min_count / count_in_location / **聚合查询**：max_count / min_count / count_in_location
-- **Graph-Aware Chunks**: Entity / Context / Region 文档包含图结构元数据 / **图感知文档**：Entity / Context / Region 文档包含图结构元数据
+- **Canonical Graph Export**: export directly from raw DSG with 100% hierarchy validity.
+- **Hard Constraint Filtering**: hard constraints on `node_type`, label, location, and relation.
+- **Fast Path Resolution**: direct queries by exact ID, nearest position, or label.
+- **Multi-Location Constraints**: `LocationConstraint` supports simultaneous Place and Room constraints.
+- **Relation Filtering**: `inside`, `near`, `connected_to`, and transitive `contains` relations.
+- **Aggregate Queries**: `max_count`, `min_count`, and `count_in_location`.
+- **Graph-Aware Chunks**: Entity, Context, and Region documents include graph-structure metadata.
 
 ---
 
-## 项目结构 / Project Structure
+## Project Structure
 
 ```
 khronos_3dsg_rag/
 ├── README.md
 ├── data/
-│   └── dsg.json                 # Khronos SLAM 输出 (1858 nodes, 6205 edges)
+│   └── dsg.json                 # Khronos SLAM output (1,858 nodes, 6,205 edges)
 ├── outputs/
-│   ├── canonical_graph.json      # v1 规范图（旧版）
-│   ├── canonical_graph_v2.json   # v2 规范图（从 raw DSG 直接导出）
+│   ├── canonical_graph.json      # v1 canonical graph (legacy)
+│   ├── canonical_graph_v2.json   # v2 canonical graph (exported directly from raw DSG)
 │   ├── canonical_graph_v2.manifest.json
-│   ├── rag_documents.jsonl       # RAG 文档
-│   ├── vector_db/                # ChromaDB 向量数据库
-│   └── khronos_office_new/       # Office 数据集输出
+│   ├── rag_documents.jsonl       # RAG documents
+│   ├── vector_db/                # ChromaDB vector database
+│   └── khronos_office_new/       # Office dataset output
 │       ├── canonical_graph_v2.json
 │       ├── canonical_graph_v2.manifest.json
 │       ├── rag_documents.jsonl
 │       └── vector_db/
 └── src/
-    ├── main.py                   # CLI 入口
-    ├── parse_3dsg.py             # DSG JSON 解析器（含 position 修复）
-    ├── export_canonical_graph.py # 规范图导出器（从 raw DSG 直接导出）
-    ├── build_documents.py        # RAG 文档生成器（含图感知增强）
-    ├── build_vector_db.py        # ChromaDB 向量索引
-    ├── canonical_index.py        # 规范图索引（v1/v2 双格式加载）
-    ├── scene_graph_api.py        # 场景图 API（硬约束 + 快速路径）
-    ├── entity_resolver.py        # 实体解析器
-    ├── graph_ranker.py           # 图感知排序器
-    ├── query_rag.py              # RAG 查询接口
-    ├── api_schemas.py            # API 数据模型
-    └── schemas.py                # 内部数据模型
+    ├── main.py                   # CLI entry point
+    ├── parse_3dsg.py             # DSG JSON parser (including position fixes)
+    ├── export_canonical_graph.py # Canonical graph exporter (directly from raw DSG)
+    ├── build_documents.py        # RAG document builder (graph-aware enrichment)
+    ├── build_vector_db.py        # ChromaDB vector index builder
+    ├── canonical_index.py        # Canonical index (loads v1/v2 formats)
+    ├── scene_graph_api.py        # Scene-graph API (hard constraints + fast paths)
+    ├── entity_resolver.py        # Entity resolver
+    ├── graph_ranker.py           # Graph-aware ranker
+    ├── query_rag.py              # RAG query interface
+    ├── api_schemas.py            # API data models
+    └── schemas.py                # Internal data models
 ```
 
 ---
 
-## 规范图 v2 / Canonical Graph v2
+## Canonical Graph v2
 
-### 人工细语义补标（可选） / Optional Human-Confirmed Fine-Semantic Overrides
+### Optional Human-Confirmed Fine-Semantic Overrides
 
 Hospital P1000 unknown object labels can be supplied as a separate, provenance-tracked sidecar. The parser applies only entries marked `human_confirmed` to matching object-layer nodes whose original Khronos `semantic_label` is the unknown sentinel `4294967295`. Raw DSG attributes are not changed. Fine-label IDs remain in the sidecar; the RAG parser uses the fine-label name as the node label because these IDs are not Khronos semantic-label IDs.
 
@@ -121,9 +117,9 @@ Rebuilding requires the pinned model revision to be available locally or
 downloadable. Do not overwrite or relabel an existing run; compare its manifest
 and source hashes first.
 
-### 导出方式 / Export Method
+### Export Method
 
-直接从 raw DSG 导出，不经过 ChromaDB 或 RAG chunk metadata：
+Export directly from the raw DSG without passing through ChromaDB or RAG chunk metadata:
 
 Direct export from raw DSG, without going through ChromaDB or RAG chunk metadata:
 
@@ -132,24 +128,24 @@ cd llm-rag/RAG/khronos_3dsg_rag
 python src/export_canonical_graph.py data/dsg.json -o outputs/
 ```
 
-### 数据统计 / Data Statistics
+### Data Statistics
 
-| 指标 / Metric | 值 / Value |
+| Metric | Value |
 |--------------|-----------|
-| 总节点 / Total nodes | 1,858 |
-| Object 节点 | 191 |
-| Agent 节点 | 394 |
-| Place 节点 | 1,262 |
-| Room 节点 | 10 |
-| Building 节点 | 1 |
-| 层级边 / Hierarchy edges | 1,867 |
-| 邻居边 / Neighbor edges | 4,338 |
-| 层级有效率 / Hierarchy validity | 100% |
-| Object→Place 覆盖率 | 100% |
-| Place→Room 覆盖率 | 98.9% |
-| Position 覆盖率 | 100% (1,262/1,262 unique) |
+| Total nodes | 1,858 |
+| Object nodes | 191 |
+| Agent nodes | 394 |
+| Place nodes | 1,262 |
+| Room nodes | 10 |
+| Building nodes | 1 |
+| Hierarchy edges | 1,867 |
+| Neighbor edges | 4,338 |
+| Hierarchy validity | 100% |
+| Object→Place coverage | 100% |
+| Place→Room coverage | 98.9% |
+| Position coverage | 100% (1,262/1,262 unique) |
 
-### 规范图 Schema v2 / Canonical Graph Schema v2
+### Canonical Graph Schema v2
 
 ```json
 {
@@ -182,9 +178,9 @@ python src/export_canonical_graph.py data/dsg.json -o outputs/
 
 ---
 
-## Scene Graph API / 场景图 API
+## Scene Graph API
 
-### 快速路径 / Fast Paths
+### Fast Paths
 
 ```python
 from scene_graph_api import SceneGraphRAG
@@ -194,7 +190,7 @@ rag = SceneGraphRAG(db_dir)
 # 1. Exact ID fast path
 result = rag.resolve_entity(EntityReference(text="5692549928996306945"))
 
-# 2. Nearest-by-position (canonical index 直接遍历)
+# 2. Nearest-by-position (direct canonical-index traversal)
 result = rag.resolve_entity(EntityReference(
     text="nearest place",
     node_type="place",
@@ -202,7 +198,7 @@ result = rag.resolve_entity(EntityReference(
     quantifier="nearest",
 ))
 
-# 3. All-by-label (canonical index 直接查询)
+# 3. All-by-label (direct canonical-index lookup)
 result = rag.resolve_entity(EntityReference(
     text="chairs",
     label="chairs",
@@ -211,7 +207,7 @@ result = rag.resolve_entity(EntityReference(
 ))
 ```
 
-### 硬约束过滤 / Hard Constraint Filtering
+### Hard Constraint Filtering
 
 ```python
 from planner_schemas.intent import EntityReference, LocationConstraint, RelationConstraint
@@ -240,7 +236,7 @@ ref = EntityReference(
 )
 ```
 
-### 聚合查询 / Aggregate Queries
+### Aggregate Queries
 
 ```python
 from planner_schemas.intent import AggregateConstraint, LocationConstraint
@@ -258,7 +254,7 @@ ref = EntityReference(
 
 ---
 
-## 安装 / Installation
+## Installation
 
 ```bash
 # Run from the repository root with the shared project environment:
@@ -267,29 +263,29 @@ ref = EntityReference(
 
 ---
 
-## 使用方法 / Usage
+## Usage
 
-### 导出规范图 / Export Canonical Graph
+### Export the Canonical Graph
 
 ```bash
 cd llm-rag/RAG/khronos_3dsg_rag
 python src/export_canonical_graph.py data/dsg.json -o outputs/
 ```
 
-### 构建向量库 / Build Vector Database
+### Build the Vector Database
 
 ```bash
 cd llm-rag/RAG/khronos_3dsg_rag
 python src/main.py build --all
 ```
 
-### 查询 / Query
+### Query
 
 ```bash
 python src/main.py query --db outputs/vector_db -q "chair near table" --top-k 5
 ```
 
-### Python API / Python 接口
+### Python API
 
 ```python
 from scene_graph_api import SceneGraphRAG
@@ -316,7 +312,7 @@ print(f"All chairs: {len(result.selected_many)}")
 
 ---
 
-## 数据流 / Data Flow
+## Data Flow
 
 ```
 Khronos SLAM
@@ -342,15 +338,15 @@ ResolutionResult (status + candidates + selected)
 
 ---
 
-## 依赖 / Dependencies
+## Dependencies
 
-- `chromadb` — 向量数据库 / Vector database
-- `sentence-transformers` — Embedding 模型 / Embedding model
-- `pyyaml` — 配置解析 / Config parsing
+- `chromadb` — vector database
+- `sentence-transformers` — embedding model
+- `pyyaml` — configuration parsing
 
 ---
 
-## 测试 / Tests
+## Tests
 
 ```bash
 cd llm-rag/RAG/khronos_3dsg_rag
@@ -359,11 +355,11 @@ python -m pytest src/ -v
 
 ---
 
-## 评估结果 / Evaluation Results
+## Evaluation Results
 
 ### Oracle-Intent Grounding (v3 benchmark, 100 cases)
 
-| 指标 / Metric | 值 / Value |
+| Metric | Value |
 |--------------|-----------|
 | Pipeline status accuracy | 100% |
 | Grounding exact success | 100/100 |
@@ -373,9 +369,9 @@ python -m pytest src/ -v
 | Case failure count | 0 |
 | Avg latency | 271ms |
 
-### 分类别结果 / Category Breakdown
+### Category Breakdown
 
-| 类别 / Category | 准确率 / Accuracy | 数量 / Count |
+| Category | Accuracy | Count |
 |----------------|------------------|-------------|
 | ambiguous | 100% | 5/5 |
 | obj_nav | 100% | 10/10 |
@@ -390,61 +386,59 @@ python -m pytest src/ -v
 
 ---
 
-## 版本历史 / Version History
+## Version History
 
-### v18 (2026-07-23) — RAG Grounding 模块完成
+### v18 (2026-07-23) — RAG Grounding Module Complete
 
-- LocationConstraint 支持 Place + Room 同时约束
-- RelationConstraint.target_node_id 支持完整节点 ID
-- count_in_location 聚合操作
+- `LocationConstraint` supports simultaneous Place + Room constraints.
+- `RelationConstraint.target_node_id` supports full node IDs.
+- Add the `count_in_location` aggregate operation.
 - transitive contains/inside（BFS descendants）
-- 统一 constraint pipeline（nearest/all/standard 共用）
-- Benchmark v3：byte-identical 可复现性，manifest hash 完整性
+- Unify the constraint pipeline across nearest/all/standard paths.
+- Benchmark v3: byte-identical reproducibility and manifest-hash integrity.
 - Evaluation：grounding_exact_success, Set P/R/F1, Spatial ID/distance
-- target_ref 必填（无静默猜测），step-specific references
+- Require `target_ref` (no silent guessing) and support step-specific references.
 
-### v17 (2026-07-23) — Complex/Relation Schema 修复
+### v17 (2026-07-23) — Complex/Relation Schema Fixes
 
 - LocationConstraint schema（Place + Room）
 - RelationConstraint.target_node_id
 - count_in_location aggregate
-- Complex cases 使用 locations field
-- Relation inside 使用 relations field
+- Complex cases use the `locations` field.
+- The `inside` relation uses the `relations` field.
 
-### v16 (2026-07-23) — Hard Constraints + Spatial/Set 修复
+### v16 (2026-07-23) — Hard Constraints + Spatial/Set Fixes
 
 - node_type / label hard filter
-- Nearest query 使用 canonical index 直接遍历
-- All query 使用 canonical index 精确集合
+- Nearest queries traverse the canonical index directly.
+- All queries use the canonical index for exact set resolution.
 - Spatial 0/10 → 10/10, Set P=0.616 → 1.0
 
-### v15 (2026-07-17) — Canonical Graph v2 + Position 修复
+### v15 (2026-07-17) — Canonical Graph v2 + Position Fixes
 
-- export_canonical_graph.py 直接从 raw DSG 导出
+- `export_canonical_graph.py` exports directly from the raw DSG.
 - Hierarchy validity: 26.4% → 100%
-- Position parser 修复（Place/Room 不再全部 [0,0,0]）
-- Benchmark manifest hash 完整性
-- Validator category pass 进入 overall
+- Fix the position parser (Place/Room positions are no longer all `[0,0,0]`).
+- Preserve benchmark-manifest hash integrity.
+- Include category-level validator passes in the overall result.
 
-### v14 (2026-07-16) — 结构化管道优化
+### v14 (2026-07-16) — Structured-Pipeline Improvements
 
-- PlanDraft schema（LLM 输出 target_ref）
-- 确定性 target_ref → target_id 编译
+- Add the PlanDraft schema (the LLM outputs `target_ref`).
+- Compile `target_ref` → `target_id` deterministically.
 - Role-specific validator
-- 100 条 Grounding benchmark
+- Add a 100-case Grounding benchmark.
 
 ---
 
-## 论文可用结论 / Paper-Ready Claims
+## Paper-Ready Claims
 
-### 可以写 / Can write:
+### Claims That Can Be Made
 
 > Given oracle structured intents, the v18 scene-graph Grounding backend achieved 100% pipeline-status accuracy, 100% resolved target-ID accuracy, 100% set exact match, and 100% spatial target-ID accuracy across all 100 development benchmark cases. The canonical graph exporter achieved 100% hierarchy validity with 100% Object-to-Place and 98.9% Place-to-Room coverage.
 
-给定 oracle 结构化意图，v18 场景图 Grounding 后端在全部 100 条开发基准测试中实现了 100% 的流水线状态准确率、100% 的解析目标 ID 准确率、100% 的集合精确匹配和 100% 的空间目标 ID 准确率。规范图导出器实现了 100% 的层级有效率，Object→Place 覆盖率 100%，Place→Room 覆盖率 98.9%。
+### Claims That Must Not Be Made
 
-### 不应写 / Cannot write:
-
-- End-to-end LLM+RAG accuracy = 100%（未用真实 LLM 测试）
-- Natural-language understanding accuracy = 100%（仅 oracle intent 模式）
-- Cross-dataset generalization is proven（未测试跨数据集）
+- End-to-end LLM+RAG accuracy = 100% (not tested with a real LLM).
+- Natural-language understanding accuracy = 100% (only oracle-intent mode was tested).
+- Cross-dataset generalization is proven (no cross-dataset test was run).

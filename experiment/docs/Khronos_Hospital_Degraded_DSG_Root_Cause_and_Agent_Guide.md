@@ -1,39 +1,39 @@
-# Khronos Hospital 当前代码/日志问题分析与 Agent 执行指南
+# Khronos Hospital Code/Log Investigation and Agent Execution Guide
 
-> 目的：基于当前上传的 debug package，先把“574 nodes / 仅 objects 层”的真正来源追清楚，再修复 `dynamic_object_points` 保存问题。
+> Purpose: Use the uploaded debug package to identify the true source of the “574 nodes / objects layer only” result before fixing the `dynamic_object_points` save issue.
 >
-> **当前禁止继续盲改 backend.cpp。**
+> **Do not make further unverified edits to `backend.cpp`.**
 >
-> 当前最重要的结论：
+> Key findings:
 >
-> 1. 旧版 Hospital 1200-frame 运行已经明确成功：
+> 1. The older 1200-frame Hospital run is a confirmed success:
 >    - 1980 nodes
 >    - 9407 edges
 >    - 33 objects
 >    - 1781 places
 >    - 14 rooms
 >    - 1 building
-> 2. 当前归档中的 `backend.cpp` 与 `backend.cpp.bak` **SHA256 完全相同**。
-> 3. 当前归档代码中 **不存在** `dynamic_object_points.clear()`。
-> 4. 因此：
->    > 归档中所谓“修改 backend.cpp 后只剩 objects 层”的因果链目前并没有被代码证据支持。
-> 5. 最新 `voxel010_full.log` / `voxel010_run3.log` 是**另一类失败运行**：
->    - 配置文件路径不存在
->    - node 在初始化阶段 SIGABRT
->    - 根本没有进入正常 mapping
->    - 不能把这次日志当作“574 nodes degraded run”的证据
-> 6. 当前最大问题是：
->    > **不同运行、不同 executable、不同 output directory、不同配置和不同 DSG 文件被混在一起分析。**
+> 2. In the current archive, `backend.cpp` and `backend.cpp.bak` have **identical SHA-256 hashes**.
+> 3. The archived code does **not contain** `dynamic_object_points.clear()`.
+> 4. Therefore:
+>    > The claimed causal chain—“editing `backend.cpp` left only the objects layer”—is not supported by the archived code evidence.
+> 5. The latest `voxel010_full.log` / `voxel010_run3.log` files are **a different type of failed run**:
+>    - Configuration file paths do not exist.
+>    - The node aborts with SIGABRT during initialization.
+>    - Normal mapping never starts.
+>    - This log is not evidence for the “574-node degraded run.”
+> 6. The main problem is:
+>    > **Different runs, executables, output directories, configurations, and DSG files have been conflated in the analysis.**
 >
-> 先解决 provenance（运行来源可追踪性），再讨论 strip 修复。
+> Establish provenance (traceability of each run) before discussing a strip fix.
 
 ---
 
-# 1. 已确认的成功基线
+# 1. Confirmed Successful Baselines
 
 ## 1.1 Smoke 300 frames
 
-旧报告：
+Previous report:
 
 ```text
 793 nodes
@@ -44,7 +44,7 @@
 1 building
 ```
 
-结果：
+Result:
 
 ```text
 PASS
@@ -52,7 +52,7 @@ PASS
 
 ## 1.2 1200 frames / 120 s
 
-旧报告：
+Previous report:
 
 ```text
 1980 nodes
@@ -63,21 +63,21 @@ PASS
 1 building
 ```
 
-输出：
+Output:
 
 ```text
 reports/khronos_output/2026_08_16-10_45_05/dsg.json
 ```
 
-这个是当前最重要的 **known-good DSG baseline**。
+This is the most important current **known-good DSG baseline**.
 
-后续任何新输出都必须和它对比。
+Compare every subsequent output against it.
 
 ---
 
-# 2. 当前归档中的关键代码事实
+# 2. Key Code Facts in the Current Archive
 
-归档：
+Archived files:
 
 ```text
 src_backend/backend.cpp
@@ -94,17 +94,17 @@ backend.cpp.bak
 6470b6075d9f83b1644e6eb8ab765260feaca4ce40812bb9a5ca8352d9a1e9a3
 ```
 
-两者完全相同。
+The two files are byte-identical.
 
-并且：
+Also:
 
 ```bash
 grep -R "dynamic_object_points.clear" src_backend
 ```
 
-无结果。
+The search returns no matches.
 
-当前 `Backend::save()` 是：
+The current `Backend::save()` implementation is:
 
 ```cpp
 void Backend::save(const hydra::DataDirectory& log_setup) {
@@ -123,24 +123,24 @@ void Backend::save(const hydra::DataDirectory& log_setup) {
 }
 ```
 
-也就是说：
+Therefore:
 
-> 当前归档源码中没有执行任何 lightweight strip。
+> The archived source does not perform any lightweight strip.
 
-因此不能继续说：
+Therefore, do not claim:
 
 ```text
 backend strip modification
 → places/rooms disappeared
 ```
 
-至少当前证据不支持。
+The current evidence does not support this causal claim.
 
 ---
 
-# 3. 清空 dynamic_object_points 本身不应删除 Place / Room / Building 层
+# 3. Clearing `dynamic_object_points` Should Not Remove Place / Room / Building Layers
 
-计划中的修改类似：
+The proposed change resembles:
 
 ```cpp
 for (const auto& [id, node] :
@@ -150,15 +150,15 @@ for (const auto& [id, node] :
 }
 ```
 
-这个操作只涉及：
+This operation affects only:
 
 ```text
 Layer 2 OBJECTS
 ```
 
-中的 attribute field。
+the attribute field in that layer.
 
-它本身不会：
+By itself, it does not:
 
 ```text
 removeNode()
@@ -168,17 +168,17 @@ clear ROOMS
 clear BUILDINGS
 ```
 
-因此：
+Therefore:
 
-> 如果一个新 DSG 真的只有 Layer 2，那么不能第一反应就归因于 `dynamic_object_points.clear()`。
+> If a new DSG truly contains only Layer 2, do not immediately attribute that to `dynamic_object_points.clear()`.
 
-必须寻找真正导致 Layer 3/4/5 不存在的来源。
+Find the actual cause of the missing Layers 3/4/5.
 
 ---
 
-# 4. 最新 voxel010_full.log 是独立启动失败，不是 degraded DSG run
+# 4. The Latest `voxel010_full.log` Is a Separate Startup Failure, Not a Degraded DSG Run
 
-`voxel010_full.log` 显示：
+`voxel010_full.log` shows:
 
 ```text
 ERROR File '.../tartanground_input.yaml' does not exist
@@ -188,55 +188,55 @@ SIGABRT
 exit code -6
 ```
 
-根因非常明确：
+The root cause is clear:
 
-> 启动命令在容器中使用了宿主机 `/home/ulmmt/...` 路径，但这些文件在该容器路径下不存在。
+> The container launch command uses host path `/home/ulmmt/...`, but those files do not exist at that path inside the container.
 
-这次运行：
+This run:
 
 ```text
-没有正常初始化 Khronos
-没有处理 bag
-没有生成有效 mapping
+did not initialize Khronos normally
+did not process a bag
+did not produce a valid mapping
 ```
 
-所以：
+Therefore:
 
-**禁止把 `voxel010_full.log` 和 574-node degraded output 关联起来，除非能证明 output directory/timestamp 一致。**
+**Do not associate `voxel010_full.log` with the 574-node degraded output unless the output directory and timestamp are proven to match.**
 
 ---
 
-# 5. ianvs warning 不是当前主因
+# 5. The Ianvs Warning Is Not the Current Primary Cause
 
-日志还有：
+The log also contains:
 
 ```text
 ModuleNotFoundError:
 No module named 'ianvs._ianvs_bindings'
 ```
 
-这是 launch extension warning。
+This is a launch-extension warning.
 
-之后真正导致 launch abort 的是：
+The actual cause of the later launch abort is:
 
 ```text
 config files do not exist
 ```
 
-因此当前优先级：
+Current priority:
 
 ```text
 Missing config path = fatal
 ianvs warning = secondary
 ```
 
-不要先去修 ianvs。
+Do not start by fixing Ianvs.
 
 ---
 
-# 6. 当前最大嫌疑：你们分析了错误的 DSG 文件
+# 6. Leading Suspect: The Wrong DSG File Was Analyzed
 
-当前所谓 degraded output：
+The alleged degraded output has:
 
 ```text
 574 nodes
@@ -246,16 +246,16 @@ objects only
 614 KB
 ```
 
-这组数字非常异常。
+These numbers are highly unusual.
 
-尤其：
+In particular:
 
 ```text
 574 object nodes
 480 edges
 ```
 
-相比旧数据：
+Compared with the older data:
 
 ```text
 33 objects
@@ -263,47 +263,45 @@ objects only
 14 rooms
 ```
 
-这不像：
+This does not resemble:
 
 ```text
-同一个完整 DSG 删除了 dynamic_object_points
+a complete DSG with only `dynamic_object_points` removed
 ```
 
-更像：
+It more closely resembles one of these cases:
 
-1. 打开了一个只包含某个 layer 的中间文件
-2. 打开了 frontend/private object graph
-3. 打开了 incomplete save
-4. 分析脚本把 JSON schema 解析错了
-5. output directory 指向了另一轮测试
-6. 新运行实际没加载完整 mapper config
-7. 使用了错误 executable/install overlay
+1. An intermediate file containing only one layer was opened.
+2. A frontend/private object graph was opened.
+3. An incomplete save was opened.
+4. The analysis script parsed the JSON schema incorrectly.
+5. The output directory points to a different test run.
+6. The new run did not load the complete mapper configuration.
+7. The wrong executable/install overlay was used.
 
-因此第一任务不是改算法。
+The first task is not to change the algorithm.
 
-第一任务是：
+The first task is:
 
-> **准确定位 574-node 文件。**
+> **Locate the exact 574-node file.**
 
 ---
 
-# 7. Agent 第一阶段：建立 degraded output provenance
+# 7. Agent Phase 1: Establish Degraded-Output Provenance
 
-必须找到：
+Locate the real file corresponding to:
 
 ```text
 574 nodes / 480 edges / objects-only
 ```
 
-对应的真实文件。
-
-输出：
+Write the findings to:
 
 ```text
 reports/degraded_output_provenance.md
 ```
 
-必须包含：
+The report must include:
 
 ```text
 absolute path
@@ -321,7 +319,7 @@ binary sha256
 source backend.cpp sha256
 ```
 
-例如：
+Example:
 
 ```bash
 DEGRADED_DSG=/absolute/path/dsg.json
@@ -330,13 +328,13 @@ stat "$DEGRADED_DSG"
 sha256sum "$DEGRADED_DSG"
 ```
 
-找到父目录：
+Find the parent directory:
 
 ```bash
 dirname "$DEGRADED_DSG"
 ```
 
-然后：
+Then list its files:
 
 ```bash
 find "$OUTPUT_DIR" -maxdepth 3 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %s %p\n' | sort
@@ -344,21 +342,21 @@ find "$OUTPUT_DIR" -maxdepth 3 -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %s %p\n'
 
 ---
 
-# 8. 不允许通过“最近的文件”猜是哪次运行
+# 8. Do Not Guess the Run Based on the “Most Recent File”
 
-禁止：
+Do not run:
 
 ```bash
 ls -t | head
 ```
 
-然后直接说：
+and then conclude:
 
 ```text
-这个应该就是 degraded run
+“This must be the degraded run.”
 ```
 
-必须使用：
+Use these sources instead:
 
 ```text
 timestamp
@@ -368,35 +366,35 @@ shell log
 output mtime
 ```
 
-四者互相匹配。
+All four must agree with each other.
 
-如果不能匹配：
+If they cannot be matched:
 
 ```text
 RESULT=INCONCLUSIVE
 ```
 
-不要继续推断。
+Do not infer further.
 
 ---
 
-# 9. Agent 第二阶段：分析所有候选 DSG 的真实 layer
+# 9. Agent Phase 2: Inspect the Actual Layers in Every Candidate DSG
 
-必须对以下文件分别统计：
+Count the layers in each of the following files separately:
 
-## Known good
+## Known-Good Baseline
 
 ```text
 2026_08_16-10_45_05/dsg.json
 ```
 
-## degraded candidate
+## Degraded Candidate
 
-实际 574-node 文件。
+The actual 574-node file.
 
-## 其他同 run 文件
+## Other Files from the Same Run
 
-如果存在：
+If present:
 
 ```text
 shared_dsg.json
@@ -406,9 +404,9 @@ dsg_with_mesh.json
 maps/dsg_*.json
 ```
 
-全部分别检查。
+Inspect each file separately.
 
-输出表：
+Output table:
 
 ```text
 file
@@ -422,17 +420,17 @@ layer5_buildings
 mesh_attached
 ```
 
-必须确认：
+Confirm:
 
-> 574 nodes 到底来自哪个 DSG 类型。
+> Which type of DSG contains the 574 nodes?
 
 ---
 
-# 10. 不要用旧统计脚本盲信结果
+# 10. Do Not Trust Results from an Old Counting Script Without Verification
 
-Agent 必须先检查 JSON 的 layer keys。
+The agent must inspect the JSON layer keys first.
 
-例如 Python：
+For example, in Python:
 
 ```python
 import json
@@ -443,7 +441,7 @@ with open(path) as f:
 print(d.keys())
 ```
 
-然后打印：
+Then print:
 
 ```text
 layer IDs
@@ -451,33 +449,33 @@ layer names
 node counts by layer
 ```
 
-如果 JSON 5GB 无法直接加载：
+If the 5 GB JSON cannot be loaded directly:
 
-使用 streaming / grep / spark_dsg API。
+use streaming, grep, or the `spark_dsg` API.
 
-不要因为分析脚本输出：
+Do not trust an analysis-script result such as:
 
 ```text
 layers = 1
 ```
 
-就直接相信。
+without checking it.
 
-先确认脚本对 Khronos/Spark-DSG 1.1.3 schema 的解析方式正确。
+First confirm that the script correctly parses the Khronos/Spark-DSG 1.1.3 schema.
 
 ---
 
-# 11. Known-good vs degraded 配置必须做真正 diff
+# 11. Diff the Known-Good and Degraded Configurations
 
-找到对应 run 的：
+Find the corresponding run's:
 
 ```text
 config.txt
 ```
 
-不要只对比手写 YAML。
+Do not compare only hand-written YAML files.
 
-执行：
+Run:
 
 ```bash
 diff -u \
@@ -486,7 +484,7 @@ diff -u \
   > reports/known_good_vs_degraded_config.diff
 ```
 
-重点检查：
+Check these items in particular:
 
 ```text
 enable_rooms
@@ -501,9 +499,9 @@ semantic remap
 save flags
 ```
 
-特别注意：
+Pay special attention:
 
-当前 config dump 中出现：
+The current config dump contains:
 
 ```text
 surface_places [Uninitialized Virtual Config]
@@ -511,27 +509,27 @@ freespace_places [Uninitialized Virtual Config]
 frontier_places [Uninitialized Virtual Config]
 ```
 
-这本身不一定错误，因为具体 place generation config 可能在 frontend module 层。
+This is not necessarily an error because the specific place-generation configuration may be defined at the frontend-module level.
 
-但必须与 known-good config.txt 做 **逐行 diff**。
+However, perform a **line-by-line diff** against the known-good `config.txt`.
 
-不能靠视觉猜。
+Do not guess by visual inspection.
 
 ---
 
-# 12. 运行 executable provenance 必须记录
+# 12. Record Executable Provenance for Every Run
 
-这是当前非常重要的一点。
+This is especially important in the current investigation.
 
-机器上可能同时存在：
+Multiple installations may exist on the same machine:
 
 ```text
 /workspace/install
 /workspace/src/khronos/install
-其他 colcon install
+other colcon installations
 ```
 
-所以：
+Therefore, record:
 
 ```bash
 which ros2
@@ -539,19 +537,19 @@ ros2 pkg prefix khronos
 ros2 pkg prefix khronos_ros
 ```
 
-以及：
+Also record:
 
 ```bash
 readlink -f $(ros2 pkg prefix khronos_ros)/lib/khronos_ros/khronos_node
 ```
 
-然后：
+Then:
 
 ```bash
 sha256sum /actual/path/khronos_node
 ```
 
-记录：
+Record:
 
 ```text
 AMENT_PREFIX_PATH
@@ -559,66 +557,66 @@ CMAKE_PREFIX_PATH
 LD_LIBRARY_PATH
 ```
 
-必须回答：
+Answer:
 
-> 574-node run 运行的到底是哪一个 build？
+> Which exact build produced the 574-node run?
 
 ---
 
-# 13. 确认 backend.cpp 修改是否真的进入 executable
+# 13. Verify That a `backend.cpp` Change Reaches the Executable
 
-不要只：
+Do not simply:
 
 ```text
-修改源码
+modify the source
 colcon build
 ```
 
-然后假设运行的是新代码。
+and assume that the run uses the new code.
 
-建议加一个临时、明确、只出现一次的日志：
+Add a temporary, distinctive log message that appears once:
 
 ```cpp
 CLOG(1) << "[HOSPITAL_LIGHT_SAVE_V1] Backend::save() build marker";
 ```
 
-重新编译。
+Rebuild.
 
-运行 10–50 frames。
+Run 10–50 frames.
 
-日志必须出现：
+The log must contain:
 
 ```text
 [HOSPITAL_LIGHT_SAVE_V1]
 ```
 
-如果没出现：
+If it does not appear:
 
-> 当前运行没有使用修改后的 binary。
+> The current run did not use the modified binary.
 
-这是当前必须建立的 build provenance。
+This establishes the build provenance required for the investigation.
 
-确认后再删除 marker。
+Remove the marker after verification.
 
 ---
 
-# 14. 不能直接在原 graph 上 destructive strip
+# 14. Do Not Destructively Strip the Original Graph
 
-之前建议：
+An earlier proposal was:
 
 ```cpp
 private_dsg_->graph->...dynamic_object_points.clear();
 ```
 
-这虽然理论上不删除层，但属于：
+Although this should not remove layers in theory, it is:
 
 ```text
 mutating live backend graph during save
 ```
 
-工程上不够安全。
+not sufficiently safe from an engineering perspective.
 
-尤其 save 之后还有：
+In particular, the following operations occur after saving:
 
 ```text
 map_.update(private_dsg_->graph->clone())
@@ -627,52 +625,52 @@ maps/*.json
 pipeline clone
 ```
 
-如果直接修改 live graph，会影响后续：
+Directly modifying the live graph would affect later:
 
 ```text
 4D map
 snapshot
-其他保存输出
+other saved outputs
 ```
 
-因此新修复不要直接 clear live DSG。
+Do not directly clear the live DSG in the new fix.
 
 ---
 
-# 15. 正确 lightweight save 设计
+# 15. Correct Lightweight-Save Design
 
-目标：
+Goal:
 
 ```text
-保留 live graph 完整不变
+preserve the complete live graph
 ↓
-只在 serialization 时省略 dynamic_object_points
+omit `dynamic_object_points` only during serialization
 ```
 
-优先级：
+Priority:
 
-## 最优
+## Preferred
 
-给 `KhronosObjectAttributes` JSON serializer 增加：
+Add the following option to the `KhronosObjectAttributes` JSON serializer:
 
 ```text
 save_dynamic_object_points = false
 ```
 
-在 lightweight output 时跳过字段。
+Skip the field when producing lightweight output.
 
-优点：
+Advantages:
 
 ```text
-不复制5GB
-不修改live graph
-不影响layers
-不影响backend
+does not copy 5 GB
+does not modify the live graph
+does not affect layers
+does not affect the backend
 ```
 
-## 次优
+## Second-Best Option
 
-构造 lightweight attributes/node copy，只复制：
+Construct lightweight attribute/node copies and copy only:
 
 ```text
 id
@@ -683,32 +681,32 @@ mesh summary
 trajectory summary
 ```
 
-不要复制：
+Do not copy:
 
 ```text
 dynamic_object_points
 ```
 
-## 不推荐
+## Not Recommended
 
 ```cpp
 auto copy = graph->clone();  // clone 5GB
 clear points;
 ```
 
-因为：
+Reason:
 
 ```text
-先复制5GB
+first copies 5 GB
 ```
 
-仍可能造成内存峰值。
+and may still cause a memory peak.
 
 ---
 
-# 16. 不要在 Backend::save() 一开始清空两个 live graph
+# 16. Do Not Clear Both Live Graphs at the Start of `Backend::save()`
 
-禁止最终方案：
+Do not use this as the final implementation:
 
 ```cpp
 for (...) {
@@ -720,24 +718,24 @@ for (...) {
 }
 ```
 
-原因：
+Reasons:
 
 1. destructive
-2. 会改变后续 map save 输入
-3. 会改变 debug/archive state
-4. 不易证明算法输出保持一致
-5. 后续若需要 dynamic history 已丢失
+2. It changes the input to later map saves.
+3. It changes debug/archive state.
+4. It is difficult to prove that algorithm outputs remain unchanged.
+5. Dynamic history is lost if it is needed later.
 
 ---
 
-# 17. 推荐新增独立 RAG 输出
+# 17. Add a Separate RAG Output
 
-最干净的架构：
+The cleanest architecture is:
 
 ```text
 Khronos full in-memory DSG
         │
-        ├── normal/full output（可选）
+        ├── normal/full output (optional)
         │
         └── RAG lightweight exporter
                   ↓
@@ -745,7 +743,7 @@ Khronos full in-memory DSG
          hospital_rag.json
 ```
 
-RAG lightweight DSG 保留：
+The lightweight RAG DSG retains:
 
 ```text
 Objects
@@ -761,26 +759,26 @@ is_dynamic
 optional trajectory summary
 ```
 
-不保存：
+It does not store:
 
 ```text
 dynamic_object_points
 raw point history
 ```
 
-这样不会干扰 Khronos 官方保存路径。
+This does not interfere with Khronos's standard save path.
 
 ---
 
-# 18. 当前最关键的 A/B 不是 full 3178
+# 18. The Most Important A/B Test Is Not the Full 3,178-Frame Run
 
-使用 known-good 小数据：
+Use the small known-good dataset:
 
 ```text
 300 frames
 ```
 
-先验证 lightweight exporter。
+First validate the lightweight exporter.
 
 Baseline：
 
@@ -793,7 +791,7 @@ Baseline：
 1 building
 ```
 
-Lightweight 必须：
+The lightweight output must:
 
 ```text
 793 nodes
@@ -804,9 +802,9 @@ Lightweight 必须：
 1 building
 ```
 
-**必须完全一致。**
+**match exactly.**
 
-唯一允许变化：
+The only permitted change:
 
 ```text
 file size
@@ -815,15 +813,15 @@ dynamic_object_points field
 
 ---
 
-# 19. A/B 的硬验收条件
+# 19. Hard Acceptance Criteria for the A/B Test
 
-输出：
+Outputs:
 
 ```text
 reports/lightweight_graph_equivalence.json
 ```
 
-必须包含：
+must include:
 
 ```json
 {
@@ -850,7 +848,7 @@ reports/lightweight_graph_equivalence.json
 }
 ```
 
-如果任意：
+If any:
 
 ```text
 places
@@ -859,33 +857,33 @@ buildings
 edges
 ```
 
-变化：
+changes:
 
 ```text
 FAIL
 ```
 
-立即停止，不跑 full P1000。
+stop immediately; do not run the full P1000 dataset.
 
 ---
 
-# 20. 先用 300-frame known-good，而不是500-frame未知基线
+# 20. Start with the 300-Frame Known-Good Baseline, Not the Unknown 500-Frame Baseline
 
-之前用了500-frame测试，但旧项目已经有非常明确的：
+The earlier 500-frame test was used, but the old project already has a well-established:
 
 ```text
 300-frame smoke known-good
 ```
 
-因此现在更合理：
+The more appropriate next step is:
 
 ```text
-相同300 frames
-相同config
-相同bag
+same 300 frames
+same configuration
+same bag
 ```
 
-做：
+Then run:
 
 ```text
 old binary / old output
@@ -893,41 +891,41 @@ vs
 new lightweight save
 ```
 
-这样因果最清楚。
+This provides the clearest causal comparison.
 
 ---
 
-# 21. 最新 missing-config launch 问题要独立修
+# 21. Fix the Latest Missing-Config Launch Issue Separately
 
-当前失败命令使用：
+The failed command currently uses:
 
 ```text
 /home/ulmmt/Masterthesis-wang/...
 ```
 
-但 node 在 container 中运行：
+but the node runs inside a container:
 
 ```text
 /workspace/...
 ```
 
-所以配置不存在。
+Therefore, the configuration file is missing.
 
-Agent 必须统一路径策略。
+The agent must use a consistent path strategy.
 
-推荐：
+Recommended:
 
 ```text
-容器内部所有配置都使用容器路径
+Use container paths for all configuration files inside the container.
 ```
 
-例如：
+For example:
 
 ```text
 /workspace/tartanground_khronos/...
 ```
 
-运行前：
+Before launch:
 
 ```bash
 test -f "$INPUT_CONFIG" || exit 10
@@ -936,88 +934,88 @@ test -f "$LABELSPACE_CONFIG" || exit 12
 test -f "$REMAP_CONFIG" || exit 13
 ```
 
-配置不存在时：
+If a configuration file is missing:
 
 ```text
-不要启动 Khronos
+do not launch Khronos
 ```
 
 ---
 
-# 22. 不要再混用 launch 和 ros2 run 流程
+# 22. Do Not Mix the Launch and `ros2 run` Workflows
 
-Known-good 08-16 是：
+The known-good 08-16 run used:
 
 ```text
 ros2 launch tartanground_khronos_bridge ...
 ```
 
-后续很多实验变成：
+Many later experiments switched to:
 
 ```text
 ros2 run khronos_ros khronos_node ...
 ```
 
-两者参数合成方式可能不同。
+The two workflows may compose parameters differently.
 
-当前恢复基线时：
+When restoring the baseline:
 
-> 首先使用 08-16 已验证成功的同一 launch 方式。
+> First use the exact launch method that succeeded on 08-16.
 
-只有 baseline 再次复现后，才允许改成 `ros2 run` 简化流程。
+Switch to a simplified `ros2 run` workflow only after the baseline has been reproduced.
 
 ---
 
-# 23. 第一个回归任务：复现 300-frame baseline
+# 23. First Regression Task: Reproduce the 300-Frame Baseline
 
-不要先修 strip。
+Do not fix the strip first.
 
-Agent 先：
+First record:
 
 ```text
-当前环境
-当前容器
-当前源码
-当前bag
+current environment
+current container
+current source
+current bag
 ```
 
-运行已知：
+Run the known configuration and verify:
 
 ```text
 hospital_p2000_smoke
 300 frames
 ```
 
-目标：
+Targets:
 
 ```text
-793±合理小差异 nodes
-Places存在
-Rooms存在
-Building存在
+793 nodes ± a reasonable small difference
+Places are present
+Rooms are present
+Building is present
 ```
 
-更严格：
+Stricter requirement:
 
-如果 deterministic：
+If the pipeline is deterministic:
 
 ```text
 793 / 3571 / 9 / 727 / 9 / 1
 ```
 
-完全复现。
+reproduce the baseline exactly.
 
-如果当前 baseline 本身只能输出 objects：
+If the current baseline itself produces only objects:
 
-> 问题根本不是 strip save。
+> The problem is not the strip-save logic.
 
-应该先定位 build/config/environment regression。
+First identify a build/configuration/environment regression.
 
 ---
 
-# 24. 如果当前 baseline 复现成功，再做 lightweight modification
+# 24. Make the Lightweight Modification Only After Reproducing the Baseline
 
-顺序：
+Sequence:
 
 ```text
 A. current unmodified source + 300 frames
@@ -1030,36 +1028,36 @@ B. apply lightweight serialization ONLY
    → compare graph
 ```
 
-每次只改一个变量。
+Change only one variable at a time.
 
 ---
 
-# 25. 不允许直接从 1200/3178 full run调试
+# 25. Do Not Debug Directly with the Full 1,200/3,178-Frame Runs
 
-当前每次 full run：
+Each full run:
 
 ```text
-耗时长
-内存高
-保存重
+takes a long time
+uses substantial memory
+has expensive save operations
 ```
 
-且会让 Agent 再次混淆输出。
+and increases the risk of conflating outputs again.
 
-只有：
+Only after:
 
 ```text
 300 baseline PASS
 300 lightweight PASS
 ```
 
-后：
+then:
 
 ```text
 1200 frames
 ```
 
-再：
+and then:
 
 ```text
 3178 frames
@@ -1067,38 +1065,38 @@ B. apply lightweight serialization ONLY
 
 ---
 
-# 26. 对 574-node degraded output 的当前判断
+# 26. Current Assessment of the 574-Node Degraded Output
 
-当前不能下结论：
+No conclusion can currently be made that:
 
 ```text
 strip dynamic_object_points broke DSG
 ```
 
-当前更合理的候选排序：
+Current hypotheses, in descending order of plausibility:
 
-1. **分析了错误 output 文件**
-2. **run/output/log 时间线混淆**
-3. **运行了错误 install overlay / stale binary**
-4. **使用了不同启动方式 / config composition**
-5. **config path错误导致某轮根本没正常运行**
-6. graph analysis script 解析错文件/schema
-7. lightweight modification副作用
-8. Khronos算法 regression
+1. **The wrong output file was analyzed.**
+2. **The run/output/log timeline was conflated.**
+3. **The wrong install overlay or a stale binary was used.**
+4. **A different launch method or configuration composition was used.**
+5. **A configuration-path error prevented a run from starting normally.**
+6. The graph-analysis script parsed the wrong file/schema.
+7. The lightweight modification caused a side effect.
+8. A Khronos algorithm regression occurred.
 
-先按 1→6 排除。
+First rule out hypotheses 1–6.
 
 ---
 
-# 27. Agent 必须维护 RUN_MANIFEST
+# 27. The Agent Must Maintain a RUN_MANIFEST
 
-以后每次运行都生成：
+Generate this for every future run:
 
 ```text
 RUN_MANIFEST.json
 ```
 
-内容：
+Contents:
 
 ```json
 {
@@ -1122,21 +1120,21 @@ RUN_MANIFEST.json
 }
 ```
 
-没有 manifest 的 run：
+Runs without a manifest:
 
-> 不再作为正式实验结论依据。
+> must not be used as evidence for formal experimental conclusions.
 
 ---
 
-# 28. 每次 output 自动生成 graph stats
+# 28. Generate Graph Statistics Automatically for Every Output
 
-结束后：
+After each run:
 
 ```text
 graph_stats.json
 ```
 
-包含：
+include:
 
 ```text
 nodes
@@ -1150,23 +1148,23 @@ dynamic_object_points bytes
 file size
 ```
 
-这样不会再靠人工猜。
+This avoids relying on manual guesses.
 
 ---
 
-# 29. 推荐最终修复方向
+# 29. Recommended Final Fix
 
-当前目标不是修改 Khronos mapping。
+The current goal is not to modify Khronos mapping.
 
-最终应该新增：
+The final solution should add:
 
 ```text
 save_rag_lightweight_dsg
 ```
 
-而不是 destructive 修改 live state。
+instead of destructively modifying live state.
 
-建议行为：
+Recommended behavior:
 
 ```text
 Full Khronos Graph
@@ -1182,13 +1180,13 @@ hospital_rag.json / sparkdsg
 
 ---
 
-# 30. 当前 Agent 严格执行顺序
+# 30. Strict Execution Order for the Agent
 
 ## Phase 1 — Provenance
 
 ```text
-1. 找到574-node文件
-2. 确认absolute path
+1. Locate the 574-node file.
+2. Confirm its absolute path.
 3. hash
 4. parent output dir
 5. matching log
@@ -1196,7 +1194,7 @@ hospital_rag.json / sparkdsg
 7. matching binary
 ```
 
-如果无法完整匹配：
+If the provenance cannot be matched completely:
 
 ```text
 STOP = INCONCLUSIVE
@@ -1206,21 +1204,21 @@ STOP = INCONCLUSIVE
 
 ## Phase 2 — Layer audit
 
-分别分析：
+Analyze separately:
 
 ```text
 known-good 1200 dsg
 574-node candidate
-同run其他所有DSG文件
+all other DSG files from the same run
 ```
 
-输出真实 layer stats。
+Report the actual layer statistics.
 
 ---
 
 ## Phase 3 — Baseline reproduction
 
-使用：
+Use:
 
 ```text
 300-frame smoke
@@ -1228,68 +1226,68 @@ known-good launch path
 unmodified backend
 ```
 
-确认 Places / Rooms / Building。
+Confirm that Places / Rooms / Building are present.
 
 ---
 
 ## Phase 4 — Build provenance
 
-加入：
+Add:
 
 ```text
 [HOSPITAL_LIGHT_SAVE_V1]
 ```
 
-marker。
+marker.
 
-确认修改源码被实际 binary 使用。
+Confirm that the modified source is used by the actual binary.
 
 ---
 
 ## Phase 5 — Lightweight save implementation
 
-禁止 live destructive clear。
+Do not destructively clear live data.
 
-实现：
+Implement:
 
 ```text
 serialization-time skip
-或独立 RAG exporter
+or a separate RAG exporter
 ```
 
 ---
 
 ## Phase 6 — 300-frame equivalence A/B
 
-要求 graph topology 完全不变。
+Require the graph topology to remain unchanged.
 
 ---
 
 ## Phase 7 — 1200 frames
 
-只有 Phase 6 PASS 才允许。
+Proceed only if Phase 6 passes.
 
 ---
 
 ## Phase 8 — Full P1000
 
-最后才运行 3178 frames。
+Run the 3,178-frame dataset only at the end.
 
 ---
 
-# 31. 给 Agent 的最高优先级指令
+# 31. Highest-Priority Instructions for the Agent
 
-> 当前不要再把“574 nodes only objects”归因于 `dynamic_object_points` strip。
+> Do not attribute “574 nodes, objects only” to the `dynamic_object_points` strip at this stage.
 >
-> 当前归档源码里 strip 修改根本不存在，`backend.cpp` 与 `.bak` 完全相同。
+> The archived source contains no strip modification; `backend.cpp` and its `.bak` file are identical.
 >
-> 同时最新 `voxel010_full.log` 是配置路径错误导致的启动 SIGABRT，和 degraded DSG 不是同一个问题。
+> The latest `voxel010_full.log` records a startup SIGABRT caused by an incorrect configuration path; it is a separate issue from the degraded DSG.
 >
-> 现在第一任务是建立 degraded output provenance：
+> The first task is to establish provenance for the degraded output:
 >
 > ```text
-> DSG文件
-> ↔ output目录
+> DSG file
+> ↔ output directory
 > ↔ experiment log
 > ↔ config
 > ↔ command
@@ -1297,6 +1295,6 @@ serialization-time skip
 > ↔ source hash
 > ```
 >
-> 未建立完整对应关系前，禁止继续修改 Khronos 核心代码。
+> Do not modify Khronos core code until the full correspondence is established.
 >
-> 然后用 300-frame known-good baseline 重新复现四层 DSG，再做 lightweight serialization A/B。
+> Then reproduce the four-layer DSG using the 300-frame known-good baseline and run the lightweight-serialization A/B test.

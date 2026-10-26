@@ -1,26 +1,26 @@
-# llm-rag 构建环境与依赖
+# LLM-RAG Build Environment and Dependencies
 
-本文档记录 Python/模型侧依赖的来源。ROS 2 系统依赖分别由 Khronos 和 Nav2 package.xml 声明，不要把 ROS apt 包改写成 pip 依赖。
+This document identifies Python/model dependencies and system requirements. ROS 2 dependencies are declared separately in the Khronos and Nav2 `package.xml` files; do not convert ROS apt packages into pip dependencies.
 
-## 已验证环境
+## Validated Environment
 
-| 项目 | 版本/来源 |
+| Component | Version/source |
 |---|---|
-| OS | WSL 2、Ubuntu 24.04 |
-| Python | 3.12；planner 的 pyproject 声明 requires-python >=3.10 |
+| OS | WSL 2 / Ubuntu 24.04 |
+| Python | 3.12; planner `pyproject.toml` declares `requires-python >=3.10` |
 | ROS | ROS 2 Jazzy |
-| Python 直接依赖 | `llm-rag/requirements.txt`，固定当前验证环境中的版本 |
-| ROS 依赖 | 各 ROS package 的 `package.xml`，通过 `rosdep` 安装 |
-| 本地 LLM | Ollama，默认 gemma4:e2b-it-qat |
-| Embedding | paraphrase-multilingual-MiniLM-L12-v2，revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42，CPU |
+| Python direct dependencies | `llm-rag/requirements.txt`; pins versions from the validated environment |
+| ROS dependencies | Declared in each ROS package's `package.xml` and installed with `rosdep` |
+| Local LLM | Ollama; default model `gemma4:e2b-it-qat` |
+| Embedding | `paraphrase-multilingual-MiniLM-L12-v2`, revision `e8f8c211226b894fcb81acc59f3b34ba3efd5f42`, CPU |
 
-`llm-rag/requirements.txt` 是 Python 运行和测试的安装清单，固定直接依赖版本并指定 CPU 版 PyTorch，避免安装 CUDA 运行时。它不锁定所有传递依赖；`llm-rag/planner/pyproject.toml` 保留包元数据和版本下限。不要使用 `pip install -e 'llm-rag/planner[dev]'`：当前 Setuptools 自动包发现会因多个顶层包而失败。本项目从仓库源码路径运行脚本，无需 editable install。
+`llm-rag/requirements.txt` is the installation manifest for Python runtime and tests. It pins direct dependency versions and selects CPU PyTorch to avoid installing CUDA runtime packages. It does not lock every transitive dependency; `llm-rag/planner/pyproject.toml` retains package metadata and minimum-version declarations. Do not use `pip install -e 'llm-rag/planner[dev]'`: Setuptools automatic package discovery currently fails because it finds multiple top-level packages. The project runs scripts from the repository source tree and does not require an editable install.
 
-这些固定版本取自当前已通过 Python 测试的 Python 3.12 环境；CPU PyTorch 发行包的安装命令/索引已按 PyTorch 官方安装页选择，但这份 requirements 集合尚未在全新虚拟环境整体安装验证。请在干净环境运行下方测试命令并记录任何解析或兼容问题。
+The pinned versions were taken from the Python 3.12 environment in which the Python test suite passed. The CPU PyTorch package index follows the official PyTorch installation guidance, but the complete requirements set has not yet been installed and verified in a fresh virtual environment. Run the tests below in a clean environment and record any resolver or compatibility issues.
 
-## 安装顺序
+## Installation Order
 
-从仓库根目录执行：
+Run from the repository root:
 
 ~~~bash
 python3 --version
@@ -30,18 +30,18 @@ python3 -m venv .venv
 ollama pull gemma4:e2b-it-qat
 ~~~
 
-确认 Ollama 服务已启动：
+Confirm that the Ollama service is running:
 
 ~~~bash
 ollama list
 curl -s http://127.0.0.1:11434/api/tags
 ~~~
 
-第一次 RAG 构建可能下载 pinned embedding model；构建流程将 embedding-device 固定为 cpu，避免与 Ollama 的 GPU 推理争用资源。
+The first RAG build may download the pinned embedding model. The build uses `embedding-device=cpu` to avoid competing with Ollama for GPU resources.
 
-## ROS 2 系统依赖
+## ROS 2 System Dependencies
 
-先按 [ROS 2 Jazzy Ubuntu 安装指南](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html) 安装 ROS 2 Desktop 与 ros-dev-tools，再从仓库根目录运行：
+First install ROS 2 Desktop and `ros-dev-tools` using the [ROS 2 Jazzy Ubuntu installation guide](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html), then run from the repository root:
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -50,13 +50,13 @@ rosdep update
 rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
 ~~~
 
-如果要从原始传感器/数据集重新构建 Khronos，而不是使用已有 DSG，应额外对 khronos/scene-graph-khronos/src 执行 rosdep，并按 khronos/README.md 编译 upstream workspace。
+To rebuild Khronos from raw sensors/datasets rather than use an existing DSG, also run rosdep on `khronos/scene-graph-khronos/src` and build the upstream workspace as described in `khronos/README.md`.
 
-## 外部输入不随仓库提供
+## External Inputs Not Included in the Repository
 
-- Hospital P1000 原始 DSG、mesh 和人工审阅语义 CSV（原始数据约 27 GB）。
-- Ollama 模型权重与 embedding 模型缓存。
-- RAG 输出 vector_db 是按 build manifest 重建的运行产物；历史任务链归档中包含其运行快照，但不应把它误认为当前 builder 输出。
-- Khronos 与 TartanGround 的原始数据集、校准文件和传感器 bag。
+- Original Hospital P1000 DSG, meshes, and manually reviewed semantic CSV (the complete raw dataset is approximately 27 GB).
+- Ollama model weights and the embedding-model cache.
+- The RAG `vector_db` is a generated artifact rebuilt from its build manifest. Historical task-chain archives contain runtime snapshots; these are not outputs from the current builder.
+- Original Khronos and TartanGround datasets, calibration files, and sensor bags.
 
-没有这些输入时仍可运行单元测试、加载归档 mission/结果、检查已打包地图；不能从零重建论文 RAG index 或重跑完整感知流程。
+Without these inputs, unit tests can still be run, archived missions/results can be loaded, and packaged maps can be inspected. The thesis RAG index cannot be rebuilt from scratch and the complete perception pipeline cannot be rerun.

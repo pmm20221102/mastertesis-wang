@@ -1,15 +1,15 @@
-# Khronos 源码与输入适配
+# Khronos Source and Input Adapters
 
-本模块包含两部分：
+This module contains two components:
 
-- scene-graph-khronos/：Khronos、Hydra、Spark-DSG 等 ROS 2 源码，用于从传感器或 bag 生成动态场景图。
-- tartanground-tools/：TartanGround 到 ROS 2 bag 的输入适配器。
+- `scene-graph-khronos/`: ROS 2 source for Khronos, Hydra, Spark-DSG, and related packages, used to generate dynamic scene graphs from sensors or bags.
+- `tartanground-tools/`: input adapter that converts TartanGround data into ROS 2 bags.
 
-正常论文 Nav2 运行使用已归档的 Hospital DSG 派生 RAG index 和打包地图，不必在每次启动时重建 Khronos 感知。只有从原始数据重新生成 DSG 时才需要编译本模块。Hospital 原始数据、mesh、校准和模型未随仓库提交。
+The normal thesis Nav2 workflow uses the archived Hospital-DSG-derived RAG index and packaged maps; Khronos perception does not need to be rebuilt for each launch. Build this module only when regenerating a DSG from raw data. The original Hospital data, meshes, calibration files, and models are not included in the repository.
 
 ## Khronos workspace
 
-依赖由 src 下各 package.xml 声明。Ubuntu 24.04 / ROS 2 Jazzy 环境中从仓库根目录执行：
+Dependencies are declared in the `package.xml` files under `src/`. From the repository root on Ubuntu 24.04 / ROS 2 Jazzy:
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -22,11 +22,11 @@ colcon build --base-paths src --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 ~~~
 
-具体传感器、语义模型和数据集配置位于对应 ROS package 的 launch/config 目录。选定的 TartanGround launch 还需要本地数据集和传感器校准，不能只靠源码编译得到论文 DSG。
+Sensor, semantic-model, and dataset settings are defined in each ROS package's `launch/` and `config/` directories. The selected TartanGround launch also requires a local dataset and sensor calibration; compiling the source alone cannot reproduce the thesis DSG.
 
 ## TartanGround ROS adapter
 
-ROS package 位于 tartanground-tools/tools/tartanground_khronos_bridge。依赖由 package.xml/setup.py 声明；输入为本地 TartanGround 数据集、pose、标签映射和相机配置，输出为 ROS 2 bag。
+The ROS package is at `tartanground-tools/tools/tartanground_khronos_bridge`. Dependencies are declared in `package.xml` and `setup.py`. Inputs are the local TartanGround dataset, poses, label mapping, and camera configuration; output is a ROS 2 bag.
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -38,4 +38,4 @@ source install/setup.bash
 ros2 run tartanground_khronos_bridge tartanground_to_ros2bag --help
 ~~~
 
-该 adapter 只负责数据转换，不执行导航；Hospital Nav2 任务接口位于 khronos-nav2-bridge/。
+This adapter only converts data; it does not perform navigation. The Hospital Nav2 task interface is in `khronos-nav2-bridge/`.

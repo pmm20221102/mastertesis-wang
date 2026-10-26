@@ -1,16 +1,12 @@
-# RAG Grounding Module — Final Results / RAG Grounding 模块 — 最终成果
+# RAG Grounding Module — Final Results
 
-## Overview / 概述
+## Overview
 
 This document records the final state of the Khronos 3DSG RAG Grounding module after iterative optimization from v14 through v18.
 
-本文档记录 Khronos 3DSG RAG Grounding 模块经过 v14 至 v18 迭代优化后的最终状态。
+## 1. System Architecture
 
----
-
-## 1. System Architecture / 系统架构
-
-### Pipeline / 流水线
+### Pipeline
 
 ```
 Natural Language Instruction
@@ -33,7 +29,7 @@ LLM Planner (PlanDraft → TaskPlan)
 Validator (role-specific, step-specific)
 ```
 
-### Key Components / 核心组件
+### Key Components
 
 | Component | File | Purpose |
 |-----------|------|---------|
@@ -49,15 +45,15 @@ Validator (role-specific, step-specific)
 
 ---
 
-## 2. Canonical Graph v2 / 规范图 v2
+## 2. Canonical Graph v2
 
-### Data Source / 数据来源
+### Data Source
 
 Raw DSG (Khronos output): `RAG/khronos_3dsg_rag/data/dsg.json`
 - 1,858 nodes, 6,205 edges
 - Scene: khronos_office (2026-06-20)
 
-### Canonical Graph Statistics / 规范图统计
+### Canonical Graph Statistics
 
 | Metric | Value |
 |--------|-------|
@@ -74,19 +70,14 @@ Raw DSG (Khronos output): `RAG/khronos_3dsg_rag/data/dsg.json`
 | Place → Room coverage | 98.9% |
 | Position coverage | 100% (1,262/1,262 unique Place positions) |
 
-### Key Fix / 关键修复
+### Key Fix
 
 v14 used RAG chunk metadata to build canonical graph → hierarchy pollution (26.4% validity).
 v15 introduced `export_canonical_graph.py` for direct raw DSG export → 100% validity.
 
-v14 使用 RAG chunk metadata 构建规范图 → 层级污染（26.4% 有效率）。
-v15 引入 `export_canonical_graph.py` 直接从 raw DSG 导出 → 100% 有效率。
+## 3. Benchmark v3
 
----
-
-## 3. Benchmark v3 / 基准测试 v3
-
-### Status / 状态
+### Status
 
 ```
 benchmark_status: ready
@@ -95,7 +86,7 @@ byte_identical_reproducibility: true
 manifest_hash_integrity: true
 ```
 
-### Category Distribution / 类别分布
+### Category Distribution
 
 | Category | Count | Description |
 |----------|-------|-------------|
@@ -110,21 +101,15 @@ manifest_hash_integrity: true
 | complex | 10 | Multiple constraints (Place+Room, aggregate) |
 | relation | 15 | inside/near/connected_to/aggregate |
 
-### Reproducibility / 可复现性
+### Reproducibility
 
 - Fixed seed (42) + sorted candidate IDs → byte-identical output
 - Manifest records: benchmark_file_hash, canonical_graph_hash, generator_code_hash
 - Same canonical graph + same seed → identical benchmark file
 
-固定 seed (42) + 排序的 candidate IDs → 字节级相同输出
-Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
-相同 canonical graph + 相同 seed → 相同 benchmark 文件
+## 4. Evaluation Results
 
----
-
-## 4. Evaluation Results / 评估结果
-
-### Oracle-Intent Mode (v3 benchmark) / Oracle 意图模式
+### Oracle-Intent Mode (v3 Benchmark)
 
 | Metric | Value |
 |--------|-------|
@@ -139,7 +124,7 @@ Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
 | Case failure count | 0 |
 | Avg latency | 271ms |
 
-### Category Breakdown / 分类别结果
+### Category Breakdown
 
 | Category | Accuracy | Cases |
 |----------|----------|-------|
@@ -156,16 +141,16 @@ Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
 
 ---
 
-## 5. Key Technical Improvements / 关键技术改进
+## 5. Key Technical Improvements
 
-### v14 → v15: Canonical Graph Fix / 规范图修复
+### v14 → v15: Canonical Graph Fix
 
 - Direct raw DSG canonical exporter (`export_canonical_graph.py`)
 - Hierarchy validity: 26.4% → 100%
 - Object→Place coverage: 0% → 100%
 - Place→Room coverage: 21.6% → 98.9%
 
-### v15 → v16: Hard Constraints / 硬约束
+### v15 → v16: Hard Constraints
 
 - `node_type` hard filter in `resolve_entity()`
 - `label` hard filter (exact canonical match)
@@ -173,7 +158,7 @@ Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
 - All query uses canonical index directly (exact label/type set)
 - Set P/R/F1: 0.616/1.0/0.763 → 1.0/1.0/1.0
 
-### v16 → v17: Complex/Relation Schema / 复杂/关系 Schema
+### v16 → v17: Complex/Relation Schema
 
 - `LocationConstraint` schema (Place + Room simultaneously)
 - `RelationConstraint.target_node_id` (full node ID)
@@ -181,7 +166,7 @@ Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
 - `aggregate_value` in ResolutionResult
 - Orchestrator uses `target_node_id` for relation resolution
 
-### v17 → v18: Evaluation & Benchmark Freeze / 评估与基准冻结
+### v17 → v18: Evaluation & Benchmark Freeze
 
 - Strict `grounding_case_success` per-category logic
 - Set macro/micro P/R/F1 in summary
@@ -195,11 +180,9 @@ Manifest 记录：benchmark_file_hash, canonical_graph_hash, generator_code_hash
 
 ---
 
-## 6. Remaining Work / 剩余工作
+## 6. Remaining Work
 
 The RAG Grounding module is now **complete**. The next phase should be:
-
-RAG Grounding 模块现已**完成**。下一阶段应为：
 
 1. **LLM Intent Parser Evaluation** — 100-case evaluation with qwen2.5/gemma4
 2. **LLM Task Planning Evaluation** — 50-case oracle-grounding planner benchmark
@@ -208,15 +191,13 @@ RAG Grounding 模块现已**完成**。下一阶段应为：
 
 ---
 
-## 7. Paper-Ready Claims / 论文可用结论
+## 7. Paper-Ready Claims
 
-### Can write / 可以写：
+### Claims That Can Be Made
 
 > Given oracle structured intents, the v18 scene-graph Grounding backend achieved 100% pipeline-status accuracy, 100% resolved target-ID accuracy, 100% set exact match, and 100% spatial target-ID accuracy across all 100 development benchmark cases. The canonical graph exporter achieved 100% hierarchy validity with 100% Object-to-Place and 98.9% Place-to-Room coverage.
 
-给定 oracle 结构化意图，v18 场景图 Grounding 后端在全部 100 条开发基准测试中实现了 100% 的流水线状态准确率、100% 的解析目标 ID 准确率、100% 的集合精确匹配和 100% 的空间目标 ID 准确率。规范图导出器实现了 100% 的层级有效率，Object→Place 覆盖率 100%，Place→Room 覆盖率 98.9%。
-
-### Cannot write / 不应写：
+### Claims That Must Not Be Made
 
 - End-to-end LLM+RAG accuracy = 100% (not tested with real LLM)
 - Natural-language understanding accuracy = 100% (oracle intent mode only)

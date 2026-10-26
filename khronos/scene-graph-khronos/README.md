@@ -1,10 +1,10 @@
 # Khronos 3DSG source workspace
 
-本目录是 Khronos/Hydra/Spark-DSG ROS 2 源码工作区。它消费传感器或 ROS bag 并输出动态场景图 DSG；下游 llm-rag/RAG/khronos_3dsg_rag/ 再将 DSG 转为 canonical graph 和检索索引。
+This directory is the Khronos/Hydra/Spark-DSG ROS 2 source workspace. It consumes sensor streams or ROS bags and produces dynamic scene graphs (DSGs). The downstream `llm-rag/RAG/khronos_3dsg_rag/` module converts a DSG into a canonical graph and retrieval index.
 
 ## Build
 
-依赖以各 ROS package.xml 为准。Ubuntu 24.04 / ROS 2 Jazzy：
+Dependencies are defined by each ROS package's `package.xml`. On Ubuntu 24.04 / ROS 2 Jazzy:
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -17,6 +17,6 @@ source install/setup.bash
 
 ## Runtime input/output
 
-Khronos 的具体输入 topic、图层、语义模型及输出目录由选择的 launch/config 决定。不同数据集配置不可互换；运行后在配置的 experiment output directory 中检查 DSG 和运行日志。原始 Hospital P1000 数据、mesh、bag、校准文件及语义权重均不在本仓库。
+Khronos input topics, graph layers, semantic models, and output directories depend on the selected launch/configuration. Dataset configurations are not interchangeable. After a run, inspect the configured experiment output directory for the DSG and logs. Original Hospital P1000 data, meshes, bags, calibration files, and semantic weights are not included in this repository.
 
-只运行论文中已打包的自然语言/Nav2流程时，可直接使用已有 RAG/地图产物，不必重建这一 upstream SLAM workspace。
+To run only the packaged natural-language/Nav2 workflow described in the thesis, use the existing RAG/map artifacts; rebuilding this upstream SLAM workspace is unnecessary.

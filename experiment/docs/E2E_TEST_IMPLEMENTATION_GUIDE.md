@@ -1,20 +1,20 @@
 # LLM + Semantic RAG + Graph Grounding + Simple Planner
-# End-to-End（E2E）测试实施指导
+# End-to-End (E2E) Test Implementation Guide
 
 ---
 
-# 0. 本阶段目标
+# 0. Phase Objective
 
-当前已经完成：
+The following components have already been completed:
 
 ```text
-Intent + Semantic RAG + Graph Grounding 联合测试
-Simple Planner v3 独立测试
+Intent + Semantic RAG + Graph Grounding integration test
+Independent Simple Planner v3 test
 Deterministic Compiler
 Plan Validator
 ```
 
-当前 Planner v3 结果：
+Current Planner v3 results:
 
 ```text
 granite4.1:3b
@@ -26,13 +26,13 @@ Strict Symbolic Plan Success ≈ 98.3%
 Final Validation Pass        ≈ 98.3%
 ```
 
-因此可以进入 End-to-End 测试。
+The project is therefore ready to proceed to end-to-end testing.
 
-本阶段只回答一个问题：
+This phase addresses one question:
 
-> 用户给出一条自然语言任务后，整个系统能否在不使用任何 Oracle 中间答案的情况下，生成正确、安全、可执行的最终计划？
+> Given a natural-language task, can the complete system generate a correct, safe, executable final plan without using any oracle intermediate answers?
 
-完整流程：
+Complete pipeline:
 
 ```text
 Natural Language
@@ -47,46 +47,46 @@ Natural Language
 
 ---
 
-# 1. 本阶段必须保持简单
+# 1. Keep This Phase Simple
 
-本轮 E2E 不增加新功能，不扩大系统边界。
+This E2E round must not add features or expand the system boundary.
 
-不要加入：
+Do not include:
 
 ```text
-走廊尽头推理
-房间功能推断
-动态物体重定位
-复杂 Place topology
-三个以上目标的长任务链
-真实 Nav2 执行
-跨数据集实验
+reasoning about corridor endpoints
+inference of room functions
+dynamic object re-localization
+complex Place topology
+long task chains with more than three targets
+real Nav2 execution
+cross-dataset experiments
 ```
 
-本轮只测试当前已经实现并单独验证过的能力：
+This round tests only capabilities that are already implemented and independently validated:
 
 ```text
-单目标导航
-Room 约束导航
-明确 source → destination
+single-target navigation
+Room-constrained navigation
+explicit source → destination
 escort
 avoid / prefer
 ambiguous
 not_found
 unsupported
-简单两步任务
+simple two-step tasks
 ```
 
 ---
 
-# 2. 开始前必须冻结的组件
+# 2. Components to Freeze Before Testing
 
-在 E2E Test 运行前，记录以下文件的 Hash：
+Before running the E2E test, record hashes for:
 
 ```text
 Intent Parser Prompt
 Intent schema
-Semantic Retriever 配置
+Semantic Retriever configuration
 Embedding model
 Vector DB
 Canonical Graph
@@ -99,114 +99,114 @@ E2E Benchmark
 E2E Evaluator
 ```
 
-E2E 正式 Test 开始后：
+Once the formal E2E test begins:
 
 ```text
-不得根据 Test 失败修改 Prompt
-不得修改 Semantic threshold
-不得修改 Ground Truth
-不得删除困难 case
-不得修改 Planner schema
+Do not modify prompts based on Test failures.
+Do not change the semantic threshold.
+Do not change the ground truth.
+Do not remove difficult cases.
+Do not modify the planner schema.
 ```
 
-只允许在 Dev 集上修复接口 Bug 和评分器 Bug。
+Only interface bugs and evaluator bugs may be fixed using the Dev set.
 
 ---
 
-# 3. 模型选择
+# 3. Model Selection
 
-第一轮只测试两个模型：
+Test only two models in the first round:
 
 ```text
-主模型：
+Primary model:
 granite4.1:3b
 
-对照模型：
+Comparison model:
 mistral:latest
 ```
 
-原因：
+Rationale:
 
 ```text
 Granite Planner v3 = 100%
-Granite 延迟更低
+Granite has lower latency.
 
-Mistral Joint Grounding 更稳定
+Mistral joint grounding is more stable.
 Mistral Planner v3 ≈ 98.3%
 ```
 
-不要重新运行全部七个模型。
+Do not rerun all seven models.
 
-统一配置：
+Shared configuration:
 
 ```text
 temperature = 0
 repeats = 3
 ```
 
-如果模型有特殊 thinking 模式：
+If a model has a special thinking mode:
 
 ```text
-必须关闭 thinking
-确保 content 中返回结构化结果
+Disable thinking.
+Ensure that `content` returns a structured result.
 ```
 
 ---
 
-# 4. E2E Benchmark 分为 Dev 和 Test
+# 4. Split the E2E Benchmark into Dev and Test Sets
 
 ## 4.1 Dev Set
 
-建议：
+Recommended size:
 
 ```text
-15–20 条
+15–20 cases
 ```
 
-用途：
+Purpose:
 
 ```text
-调试模块连接
-修复字段传递
-修复评分器
-验证 failure_stage
+debug module integration
+fix field propagation
+fix the evaluator
+validate `failure_stage`
 ```
 
-Dev 可以重复运行和修改。
+The Dev set may be rerun and changed.
 
 ---
 
 ## 4.2 Frozen Test Set
 
-建议：
+Recommended size:
 
 ```text
-50 条
+50 cases
 ```
 
-用途：
+Purpose:
 
 ```text
-正式论文结果
-模型对比
-最终失败分析
+formal thesis results
+model comparison
+final failure analysis
 ```
 
-Test 冻结后不得调参。
+Do not tune parameters after freezing the Test set.
 
-Dev 与 Test：
+Dev and Test sets:
 
 ```text
-任务类别可以相同
-自然语言表达不得重复
-Ground Truth case 不得重复
+may contain the same task categories
+must not reuse natural-language phrasings
+must not reuse ground-truth cases
 ```
 
 ---
 
-# 5. 推荐的 50 条 E2E Test 分布
+# 5. Recommended Distribution for the 50-Case E2E Test Set
 
-|类别|数量|
+|Category|Count|
 |---|---:|
 |single_navigate|12|
 |room_constrained_navigate|8|
@@ -217,25 +217,25 @@ Ground Truth case 不得重复
 |ambiguous_gate|3|
 |not_found_gate|3|
 |unsupported_gate|2|
-|总计|50|
+|Total|50|
 
-暂时不加入当前已删除的复杂类别：
+Do not reintroduce the complex categories that have been removed:
 
 ```text
 single_locate
 locate_then_navigate
-不明确的 multi_step
+ambiguous `multi_step`
 step-specific references
-复杂 relation / aggregate planning
+complex relation / aggregate planning
 ```
 
 ---
 
-# 6. 各类别设计
+# 6. Category Designs
 
-## 6.1 single_navigate：12 条
+## 6.1 `single_navigate`: 12 Cases
 
-用户指令：
+Example user instructions:
 
 ```text
 Go to something people can sit on.
@@ -243,7 +243,7 @@ Navigate to the wall-mounted storage unit.
 Go to the large office machine.
 ```
 
-完整链：
+Complete pipeline:
 
 ```text
 Intent:
@@ -253,8 +253,8 @@ Semantic RAG:
 surface target → canonical label
 
 Graph Grounding:
-如果多个实例 → ambiguous
-如果唯一实例 → resolved
+Multiple instances → `ambiguous`
+One unique instance → `resolved`
 
 Planner:
 navigate_to target
@@ -266,19 +266,19 @@ Validator:
 PASS
 ```
 
-为了生成可执行计划，single_navigate 应选择：
+For an executable plan, a `single_navigate` case should select:
 
 ```text
-通过 Room 约束或其他已实现约束后唯一的目标
+one target that is unique after applying a Room constraint or another implemented constraint
 ```
 
-无约束且多个候选时应放入 ambiguous 类别，而不是 single_navigate。
+If an unconstrained query has multiple candidates, put it in the `ambiguous` category rather than `single_navigate`.
 
 ---
 
-## 6.2 room_constrained_navigate：8 条
+## 6.2 `room_constrained_navigate`: 8 Cases
 
-例如：
+Examples:
 
 ```text
 Go to the chair in room 0756.
@@ -286,27 +286,27 @@ Navigate to the sign in room 0756.
 Go to the large office machine in room 0764.
 ```
 
-要求：
+Requirements:
 
 ```text
-LLM 正确提取 Room
-Semantic RAG 正确映射 label
-Graph Grounding 找到 Room 内唯一实体
-Planner 输出 navigate_to target
-Compiler 绑定正确 ID
+LLM correctly extracts the Room.
+Semantic RAG maps the label correctly.
+Graph Grounding finds one unique entity in the Room.
+The planner outputs a `navigate_to` target.
+The compiler binds the correct ID.
 ```
 
 ---
 
-## 6.3 ordered_source_destination：8 条
+## 6.3 `ordered_source_destination`: 8 Cases
 
-Instruction 必须明确：
+The instruction must specify the order explicitly:
 
 ```text
 First go to room 0752, then go to room 0756.
 ```
 
-不要写模糊的：
+Avoid ambiguous wording such as:
 
 ```text
 Navigate from 0752 to 0756.
@@ -326,9 +326,9 @@ Expected symbolic plan：
 
 ---
 
-## 6.4 escort：6 条
+## 6.4 `escort`: 6 Cases
 
-推荐使用高层宏动作。
+Use a high-level macro action.
 
 Instruction：
 
@@ -347,7 +347,7 @@ Expected symbolic plan：
 }
 ```
 
-Compiler 自动绑定：
+The compiler binds these automatically:
 
 ```text
 actor
@@ -356,11 +356,11 @@ destination
 executor
 ```
 
-不要让 LLM 输出 `role_refs` 或内部 ID。
+Do not ask the LLM to output `role_refs` or internal IDs.
 
 ---
 
-## 6.5 navigate_with_avoid：4 条
+## 6.5 `navigate_with_avoid`: 4 Cases
 
 Instruction：
 
@@ -368,7 +368,7 @@ Instruction：
 Navigate to the target while avoiding room 0752.
 ```
 
-LLM 只需输出：
+The LLM only needs to output:
 
 ```json
 {
@@ -378,31 +378,31 @@ LLM 只需输出：
 }
 ```
 
-Intent / Grounding 保存 avoid Room。
+Intent / Grounding retain the avoided Room.
 
-Compiler 自动附加真实 avoid Room ID。
+The compiler adds the actual avoided Room ID.
 
-不要让 Planner 输出 constraint reference。
+Do not ask the planner to output a constraint reference.
 
 ---
 
-## 6.6 navigate_with_prefer：4 条
+## 6.6 `navigate_with_prefer`: 4 Cases
 
-例如：
+Example:
 
 ```text
 Navigate to the target and prefer the shortest route.
 ```
 
-`shortest_route` 是：
+`shortest_route` is a:
 
 ```text
 routing policy
 ```
 
-不是 graph node ID。
+It is not a graph node ID.
 
-Compiler 自动附加：
+The compiler adds:
 
 ```json
 {
@@ -412,17 +412,17 @@ Compiler 自动附加：
 
 ---
 
-## 6.7 ambiguous_gate：3 条
+## 6.7 `ambiguous_gate`: 3 Cases
 
-例如：
+Example:
 
 ```text
 Go to a chair.
 ```
 
-场景中存在多个 chair。
+The scene contains multiple chairs.
 
-Expected：
+Expected behavior:
 
 ```text
 Grounding status = ambiguous
@@ -430,21 +430,21 @@ Final pipeline status = blocked / needs_clarification
 No executable plan
 ```
 
-Planner 不应被调用，或只返回：
+The planner should not be called, or it should return only:
 
 ```text
 ambiguous
 ```
 
-不能任意选择 ID。
+Do not choose an ID arbitrarily.
 
 ---
 
-## 6.8 not_found_gate：3 条
+## 6.8 `not_found_gate`: 3 Cases
 
-查询当前 ontology 不支持的明确概念。
+Query an explicit concept that is not supported by the current ontology.
 
-Expected：
+Expected behavior:
 
 ```text
 Semantic / Grounding = not_found
@@ -454,11 +454,11 @@ No node ID
 
 ---
 
-## 6.9 unsupported_gate：2 条
+## 6.9 `unsupported_gate`: 2 Cases
 
-使用机器人当前没有 executor 的任务。
+Use a task for which the robot currently has no executor.
 
-Expected：
+Expected behavior:
 
 ```text
 unsupported
@@ -467,12 +467,12 @@ No executable plan
 
 ---
 
-# 7. Ground Truth 设计
+# 7. Ground-Truth Design
 
-每条 E2E case 必须包含：
+Each E2E case must include:
 
 ```text
-自然语言 instruction
+Natural-language instruction
 Oracle Intent
 Expected Semantic Label
 Expected Grounding
@@ -481,9 +481,9 @@ Expected Compiled Plan
 Expected Final Status
 ```
 
-但 Oracle 字段只能用于评分。
+Oracle fields must only be used for scoring.
 
-推荐 schema：
+Recommended schema:
 
 ```json
 {
@@ -545,57 +545,57 @@ Expected Final Status
 
 ---
 
-# 8. Ground Truth 生成规则
+# 8. Ground-Truth Generation Rules
 
-必须先从 canonical graph 确定真实节点，再写自然语言。
+Identify the real nodes from the canonical graph before writing the natural-language instruction.
 
-顺序：
-
-```text
-选择真实 Room / Object / Agent
-→ 生成完整 Grounding candidate set
-→ 确定 status
-→ 定义 symbolic plan
-→ 由 Compiler 生成 expected compiled plan
-→ 最后写 instruction
-```
-
-禁止：
+Order of operations:
 
 ```text
-先编一句话
-→ 再猜 Ground Truth
+select a real Room / Object / Agent
+→ generate the complete grounding candidate set
+→ determine the status
+→ define the symbolic plan
+→ generate the expected compiled plan with the compiler
+→ write the instruction last
 ```
 
-Expected compiled plan 应尽可能由同一个 deterministic Compiler 从 Oracle symbolic plan 生成，避免手写不一致。
+Do not:
+
+```text
+write an instruction first
+→ then guess the ground truth
+```
+
+Generate the expected compiled plan from the oracle symbolic plan using the same deterministic compiler whenever possible. This avoids inconsistencies from manual authoring.
 
 ---
 
 # 9. E2E Benchmark Validator
 
-Validator 必须检查：
+The validator must check:
 
 ```text
-Case ID 唯一
-所有 expected ID 存在
-Room / Object 层级正确
-Expected semantic label 存在
-Expected candidate set 完整
-Expected status 与 candidate count 一致
-Expected symbolic refs 存在
-Expected actions 合法
-Expected compiled IDs 与 refs 一致
-Ambiguous/not_found/unsupported 没有 executable plan
-Benchmark hash 正确
+case IDs are unique
+all expected IDs exist
+Room / Object hierarchy is correct
+the expected semantic label exists
+the expected candidate set is complete
+the expected status is consistent with the candidate count
+expected symbolic references exist
+expected actions are valid
+compiled IDs match the references
+ambiguous / not_found / unsupported cases have no executable plan
+the benchmark hash is correct
 ```
 
-Validator 必须从 canonical graph 重新计算 Grounding。
+The validator must recompute grounding from the canonical graph.
 
 ---
 
-# 10. 禁止 Oracle 泄漏
+# 10. Prevent Oracle Leakage
 
-预测函数只能接收：
+The prediction function may only receive:
 
 ```python
 run_e2e(
@@ -605,7 +605,7 @@ run_e2e(
 )
 ```
 
-预测路径禁止接收：
+The prediction path must not receive:
 
 ```text
 oracle_intent
@@ -615,14 +615,14 @@ expected_symbolic_plan
 expected_compiled_plan
 ```
 
-推荐结构：
+Recommended structure:
 
 ```python
 prediction = run_e2e(instruction, model, runtime)
 score = evaluate_e2e(prediction, case_ground_truth)
 ```
 
-新增测试：
+Add this test:
 
 ```text
 test_prediction_path_has_no_oracle_fields
@@ -630,9 +630,9 @@ test_prediction_path_has_no_oracle_fields
 
 ---
 
-# 11. 真实 E2E 执行流程
+# 11. Production E2E Execution Flow
 
-每条 case 必须真实调用生产模块：
+Each case must invoke the production modules:
 
 ```text
 1. Intent Parser
@@ -643,27 +643,27 @@ test_prediction_path_has_no_oracle_fields
 6. Plan Validator
 ```
 
-不要使用：
+Do not use:
 
 ```text
-测试专用 ground_label()
-手工构造 predicted Grounding
-Oracle symbolic plan
+test-only `ground_label()`
+manually constructed predicted grounding
+oracle symbolic plan
 ```
 
 ---
 
-# 12. Planner 调用门控
+# 12. Planner Invocation Gate
 
-只有：
+Only when:
 
 ```text
 Grounding status = ready / resolved
 ```
 
-时才调用 Planner。
+Only then may the planner be called.
 
-以下状态：
+For these statuses:
 
 ```text
 ambiguous
@@ -671,14 +671,14 @@ not_found
 unsupported
 ```
 
-必须：
+the system must:
 
 ```text
-不调用 Planner
-不生成 executable plan
+not call the planner
+not generate an executable plan
 ```
 
-记录：
+Record:
 
 ```text
 planner_called = false
@@ -686,7 +686,7 @@ planner_called = false
 
 ---
 
-# 13. 每条结果必须保存的内容
+# 13. Data to Save for Every Result
 
 ```json
 {
@@ -749,9 +749,9 @@ planner_called = false
 
 ---
 
-# 14. Intent 评分
+# 14. Intent Scoring
 
-至少检查：
+Check at least:
 
 ```text
 Schema Validity
@@ -763,27 +763,27 @@ Wrong-provided Node Type Rate
 Intent Gate Success
 ```
 
-规则：
+Rules:
 
 ```text
-node_type 缺失
-→ 不直接失败，记录 provided rate
+missing `node_type`
+→ do not fail immediately; record the provided rate
 
-node_type 填错
-→ Intent 失败
+incorrect `node_type`
+→ Intent failure
 
-Ground Truth 无 Location
-但 LLM 多生成 Location
-→ Intent 失败
+ground truth has no Location
+but the LLM adds a Location
+→ Intent failure
 ```
 
-Target text 的语义正确性由 Semantic Retrieval 评价，不做字符串 exact match。
+Evaluate the semantic correctness of target text with Semantic Retrieval; do not require an exact string match.
 
 ---
 
-# 15. Semantic Retrieval 评分
+# 15. Semantic Retrieval Scoring
 
-对于 expected matched：
+For an expected `matched` result:
 
 ```python
 semantic_success = (
@@ -792,22 +792,22 @@ semantic_success = (
 )
 ```
 
-如果：
+If:
 
 ```text
-Top-1 label 正确
-但 status = not_found
+the top-1 label is correct
+but `status = not_found`
 ```
 
-仍然是 Semantic Stage 失败。
+the Semantic stage still fails.
 
-对于 expected not-found：
+For an expected not-found result:
 
 ```python
 semantic_success = status == "not_found"
 ```
 
-同时报告：
+Also report:
 
 ```text
 Label Hit@1
@@ -818,13 +818,13 @@ Not-found F1
 
 ---
 
-# 16. Grounding 评分
+# 16. Grounding Scoring
 
 ## Resolved
 
 ```text
-status 正确
-AND target ID 正确
+the status is correct
+AND the target ID is correct
 ```
 
 ## Ambiguous
@@ -836,7 +836,7 @@ AND candidate-set F1 = 1.0
 
 ## Resolved Set
 
-若 E2E Test 中保留集合 Grounding：
+If the E2E test includes set-based grounding:
 
 ```text
 status = resolved_set
@@ -852,9 +852,9 @@ AND node_ids = []
 
 ---
 
-# 17. Planner 评分
+# 17. Planner Scoring
 
-使用 Planner v3 simple 指标：
+Use the Planner v3 simple metrics:
 
 ```text
 Symbolic Schema Validity
@@ -865,7 +865,7 @@ Strict Symbolic Plan Success
 Repair Rate
 ```
 
-不评价 LLM 输出：
+Do not score these as LLM outputs:
 
 ```text
 executor
@@ -875,13 +875,13 @@ step number
 node IDs
 ```
 
-因为这些由 Compiler 负责。
+The compiler is responsible for these fields.
 
 ---
 
-# 18. Compiler 评分
+# 18. Compiler Scoring
 
-Compiler 是确定性模块，目标：
+The compiler is deterministic. Target:
 
 ```text
 Executor Mapping Accuracy       = 100%
@@ -891,19 +891,19 @@ Escort Actor Binding Accuracy   = 100%
 Step Numbering Accuracy         = 100%
 ```
 
-若 Compiler 失败，应记录为：
+If the compiler fails, record the failure as:
 
 ```text
 compiler
 ```
 
-而不是 Planner 失败。
+not as a planner failure.
 
 ---
 
-# 19. Validator 评分
+# 19. Validator Scoring
 
-至少检查：
+Check at least:
 
 ```text
 Allowed actions
@@ -916,7 +916,7 @@ Constraints
 Final plan schema
 ```
 
-安全指标：
+Safety metrics:
 
 ```text
 Invalid Node ID Rate
@@ -925,7 +925,7 @@ Wrong-role ID Rate
 Missing Required ID Rate
 ```
 
-目标全部为：
+The target for every metric is:
 
 ```text
 0
@@ -933,9 +933,9 @@ Missing Required ID Rate
 
 ---
 
-# 20. E2E Strict Success 定义
+# 20. E2E Strict Success Definition
 
-每条 case：
+For each case:
 
 ```python
 e2e_success = (
@@ -948,7 +948,7 @@ e2e_success = (
 )
 ```
 
-对于：
+For:
 
 ```text
 ambiguous
@@ -956,20 +956,20 @@ not_found
 unsupported
 ```
 
-成功定义为：
+Success means:
 
 ```text
-正确阻塞
-Planner 未被调用
-没有 executable plan
-没有 node ID 泄漏
+correctly blocked
+the planner was not called
+no executable plan was produced
+no node ID leaked
 ```
 
 ---
 
-# 21. Failure-by-stage
+# 21. Failure Attribution by Stage
 
-首个阻塞阶段：
+Record the first blocking stage:
 
 ```text
 intent_schema
@@ -987,7 +987,7 @@ compiler
 validator
 ```
 
-每条失败保存：
+Save for each failure:
 
 ```json
 {
@@ -999,13 +999,13 @@ validator
 }
 ```
 
-`failures.jsonl` 行数必须等于 summary 中的 failure count。
+The number of lines in `failures.jsonl` must equal the failure count in the summary.
 
 ---
 
-# 22. E2E 主指标
+# 22. Primary E2E Metrics
 
-## 总体
+## Overall
 
 ```text
 E2E Strict Success
@@ -1015,7 +1015,7 @@ Final Target-ID Accuracy
 Total Latency
 ```
 
-## 分阶段
+## By Stage
 
 ```text
 Intent Gate Success
@@ -1026,7 +1026,7 @@ Compiler Success
 Validator Success
 ```
 
-## 安全
+## Safety
 
 ```text
 Invalid Node ID Rate
@@ -1035,7 +1035,7 @@ Wrong-role ID Rate
 Missing Required ID Rate
 ```
 
-## 失败归因
+## Failure Attribution
 
 ```text
 Failure by Stage
@@ -1043,15 +1043,15 @@ Failure by Stage
 
 ---
 
-# 23. 重复运行与统计
+# 23. Repeated Runs and Statistics
 
-每个模型：
+For each model:
 
 ```text
 50 cases × 3 repeats = 150 runs
 ```
 
-报告：
+Report:
 
 ```text
 Mean Success
@@ -1061,17 +1061,17 @@ First-pass Planner Success
 Repair Rate
 ```
 
-对于 status-gate cases，应要求：
+For status-gate cases, require:
 
 ```text
-3/3 均正确阻塞
+all 3 of 3 runs to block correctly
 ```
 
 ---
 
-# 24. 延迟指标
+# 24. Latency Metrics
 
-保存：
+Save:
 
 ```text
 Intent latency
@@ -1083,7 +1083,7 @@ Validator latency
 Total latency
 ```
 
-报告：
+Report:
 
 ```text
 Mean
@@ -1091,13 +1091,13 @@ Median
 P95
 ```
 
-不要把模型首次加载时间混入普通 warm-query 延迟。
+Do not include the model's first-load time in ordinary warm-query latency.
 
-冷启动单独报告。
+Report cold-start latency separately.
 
 ---
 
-# 25. 推荐文件结构
+# 25. Recommended File Structure
 
 ```text
 eval/e2e/
@@ -1114,7 +1114,7 @@ eval/e2e/
     └── test_e2e_eval.py
 ```
 
-结果：
+Results:
 
 ```text
 eval/results/e2e_v1/
@@ -1134,7 +1134,7 @@ eval/results/e2e_v1/
 
 # 26. Run Manifest
 
-必须保存：
+Must save:
 
 ```text
 Git commit
@@ -1158,9 +1158,9 @@ Environment
 
 ---
 
-# 27. 必须新增的测试
+# 27. Tests to Add
 
-## 防泄漏
+## Leakage Prevention
 
 ```text
 test_e2e_prediction_receives_only_instruction
@@ -1178,7 +1178,7 @@ test_unsupported_does_not_call_planner
 test_blocked_case_has_no_executable_plan
 ```
 
-## 模块连接
+## Module Integration
 
 ```text
 test_intent_target_text_enters_semantic_retrieval
@@ -1188,7 +1188,7 @@ test_symbolic_plan_enters_compiler
 test_compiled_plan_enters_validator
 ```
 
-## 安全
+## Safety
 
 ```text
 test_final_ids_exist
@@ -1197,7 +1197,7 @@ test_wrong_role_id_rejected
 test_invalid_id_rate_zero
 ```
 
-## 评分
+## Scoring
 
 ```text
 test_spurious_location_causes_intent_failure
@@ -1208,9 +1208,9 @@ test_failure_count_matches_failures_file
 
 ---
 
-# 28. E2E 验收条件
+# 28. E2E Acceptance Criteria
 
-至少一个模型达到：
+At least one model must achieve:
 
 ```text
 E2E Strict Success             ≥ 80%
@@ -1218,7 +1218,7 @@ Final Validation Pass          ≥ 85%
 Intent Gate Success            ≥ 85%
 Semantic Stage Success         ≥ 90%
 Grounding Exact Success        ≥ 90%
-Planner Strict Success         ≥ 90%（条件于 Planner 被调用）
+Planner Strict Success         ≥ 90% (conditional on the planner being called)
 Compiler Success               = 100%
 Status Gate Accuracy           = 100%
 Final Target-ID Accuracy       ≥ 95%
@@ -1228,120 +1228,120 @@ Wrong-role ID Rate             = 0
 Failure Stage Coverage         = 100%
 ```
 
-E2E 分数低于独立模块是正常的。
+An E2E score lower than the independently tested module scores is expected.
 
-不要以：
+Do not use:
 
 ```text
-必须接近 100%
+must be close to 100%
 ```
 
-作为成功标准。
+as an acceptance criterion.
 
 ---
 
-# 29. 修复策略限制
+# 29. Repair Policy Constraints
 
-正式 Test 前允许在 Dev 上：
-
-```text
-修接口 Bug
-修字段传递
-修 evaluator
-修 validator
-```
-
-不允许：
+Before the formal Test, fixes on the Dev set may:
 
 ```text
-根据 Test case 调 Prompt
-给 Test query 加 alias
-修改 Semantic threshold 迎合 Test
-修改 expected plan
-删除失败 case
-增加规则 fallback 掩盖 LLM 错误
+fix interface bugs
+fix field propagation
+fix the evaluator
+fix the validator
 ```
 
-最多允许一次针对 Dev 的小型 Prompt 修复。
+Do not:
+
+```text
+modify prompts based on Test cases
+add aliases to Test queries
+change the semantic threshold to fit the Test set
+change expected plans
+remove failed cases
+add rule-based fallbacks to conceal LLM errors
+```
+
+Allow at most one small prompt fix targeted at the Dev set.
 
 ---
 
-# 30. E2E 结果分析
+# 30. E2E Result Analysis
 
-报告至少包含：
+The report must include at least:
 
 ```text
-Granite vs Mistral 总体结果
-每阶段成功率
-失败阶段分布
-各类别成功率
-延迟
-Repair 使用率
-安全指标
-3 次重复的一致性
+overall Granite vs. Mistral results
+success rate at each stage
+failure-stage distribution
+success rate by category
+latency
+repair usage rate
+safety metrics
+consistency across three repeats
 ```
 
-重点分析：
+Focus the analysis on:
 
 ```text
-失败是否仍集中在 Intent Room / Quantifier
-Planner 是否保持高准确率
-模块串联是否产生新的接口错误
+whether failures remain concentrated in Intent Room / Quantifier
+whether the planner retains high accuracy
+whether module integration introduces new interface errors
 ```
 
 ---
 
-# 31. 当前不需要做 Nav2 执行
+# 31. Nav2 Execution Is Not Required in This Phase
 
-本轮 E2E 的最终输出是：
+The final output of this E2E phase is:
 
 ```text
 Validated TaskPlan
 ```
 
-不是：
+It is not:
 
 ```text
-机器人真实到达目标
+physical robot arrival at the target
 ```
 
-Nav2 / 仿真执行属于下一层：
+Nav2/simulation execution belongs to the next evaluation layer:
 
 ```text
 Execution Evaluation
 ```
 
-不要把导航成功率混入本轮。
+Do not mix navigation success rates into this round.
 
 ---
 
-# 32. 论文中 E2E 的正确含义
+# 32. Correct Meaning of E2E in the Thesis
 
-本论文中的 E2E：
-
-```text
-自然语言
-→ 最终经过验证的可执行 TaskPlan
-```
-
-它不等于：
+In this thesis, E2E means:
 
 ```text
-自然语言
-→ 机器人在现实中完成任务
+natural language
+→ final validated executable TaskPlan
 ```
 
-论文中应明确区分：
+It does not mean:
+
+```text
+natural language
+→ the robot completing the task in the real world
+```
+
+The thesis must clearly distinguish:
 
 ```text
 Planning End-to-End
-和
+and
 Physical Execution End-to-End
 ```
 
 ---
 
-# 33. 最终交付物
+# 33. Final Deliverables
 
 ```text
 [ ] e2e_dev_v1.jsonl
@@ -1361,62 +1361,62 @@ Physical Execution End-to-End
 
 ---
 
-# 34. 推荐执行顺序
+# 34. Recommended Execution Order
 
 ```text
 Phase 0
-冻结 Joint Grounding 和 Planner v3
+freeze Joint Grounding and Planner v3
 
 Phase 1
-建立 15–20 条 E2E Dev
+create a 15–20-case E2E Dev set
 
 Phase 2
-实现真实生产模块串联
+integrate the production modules
 
 Phase 3
-修复 Dev 中的接口与 evaluator Bug
+fix interface and evaluator bugs on Dev
 
 Phase 4
-生成并验证 Frozen E2E Test 50
+generate and validate the frozen 50-case E2E Test set
 
 Phase 5
-运行 Granite + Mistral，repeats=3
+run Granite and Mistral with `repeats=3`
 
 Phase 6
-分析 Failure-by-stage
+analyze failures by stage
 
 Phase 7
-冻结结果并写论文
+freeze the results and write the thesis
 ```
 
 ---
 
-# 35. 最终原则
+# 35. Final Principle
 
-E2E 阶段不要再让 LLM承担确定性工作。
+Do not assign deterministic work to the LLM during the E2E phase.
 
-系统分工保持：
+Keep the system responsibilities separated:
 
 ```text
 LLM Intent Parser：
-理解自然语言
+understand natural language
 
 Semantic RAG：
-映射 canonical label
+map to a canonical label
 
 Graph Grounding：
-确定真实实体和 ID
+resolve the real entity and ID
 
 Simple Planner：
-输出高层 action sequence + role ref
+output a high-level action sequence and role reference
 
 Compiler：
-补 executor、ID、type、constraints、step number
+add executor, ID, type, constraints, and step number
 
 Validator：
-拒绝非法计划
+reject invalid plans
 ```
 
-最终目标：
+Final objective:
 
-> 验证这些已经独立通过的模块连接后，能否从自然语言稳定生成安全、正确、可执行的最终任务计划。
+> Verify whether these independently validated modules can be integrated to reliably generate a safe, correct, executable final task plan from natural language.
