@@ -23,6 +23,11 @@ dist/
 *.bag
 snapshots/
 data/
+# Khronos active-window `data/` contains required C++ source, not runtime data.
+!/khronos/scene-graph-khronos/src/khronos/khronos/src/active_window/data/
+!/khronos/scene-graph-khronos/src/khronos/khronos/src/active_window/data/*.cpp
+!/khronos/scene-graph-khronos/src/khronos/khronos/include/khronos/active_window/data/
+!/khronos/scene-graph-khronos/src/khronos/khronos/include/khronos/active_window/data/*.h
 
 # Model weights / 模型权重
 *.pt

@@ -153,9 +153,33 @@ ros2 bag play "$HOSPITAL_BAG" --clock --rate 1.0
 
 The historical Khronos run does not record its bag playback rate, so `1.0` defines a new reference profile and is not an exact replay of the August 2026 run.
 
-### Khronos Invocation Limitation
+### Portable Khronos Launch
 
-The checked-in `tartanground_hospital_khronos.launch.yaml` embeds absolute configuration paths rooted at `/home/ulmmt/Masterthesis-wang/tartanground_khronos/`; it does not expose the input, label-space, remap, or mapper paths as launch arguments. It therefore cannot be launched unchanged from an arbitrary checkout path. A new run must first provide those files at the expected paths or use a locally adapted launch file, and record the exact adaptation. The exact historical launch command and bag playback rate were not preserved. Do not claim a clean raw-data-to-Khronos rerun until those paths and the selected launch/configuration are resolved and recorded.
+The launch file uses ROS package-share paths for its packaged input, label-space, remap, mapper, and RViz configurations. It accepts `input_config`, `mapper_config`, `rviz_path`, `output_dir`, and `start_visualizer` arguments. Build the Khronos workspace as documented in [`khronos/README.md`](../khronos/README.md), then build the adapter as in the preceding section. In the terminal that will launch the mapper, source both overlays in this order:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source khronos/scene-graph-khronos/install/setup.bash
+source khronos/tartanground-tools/install/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+```
+
+Start the mapper in terminal 1:
+
+```bash
+export KHRONOS_OUTPUT=/absolute/path/to/khronos-output
+ros2 launch tartanground_khronos_bridge tartanground_hospital_khronos.launch.yaml \
+  use_gt_semantics:=true output_dir:="$KHRONOS_OUTPUT" start_visualizer:=false
+```
+
+Play the generated bag in terminal 2:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 bag play "$HOSPITAL_BAG" --clock --rate 1.0
+```
+
+The bag rate of `1.0` is a new reference profile; the historical playback rate and exact launch command were not retained. The historical Khronos commit `63faadde6ed92220e78fb2f6ca86dcc54bb5cf9` is unavailable, and its recorded worktree contained uncommitted source changes. The current Khronos source now builds from a clean checkout, but it cannot be claimed to reproduce the historical DSG until that source delta and original bag are recovered.
 
 The original Khronos output is outside Git at `datasets/Hospital-workstation-backup-20261006/tartanground_khronos/reports/khronos_output/fine_full_p1000/`. On the originating workstation, this snapshot is under `/home/nenlian/Masterthesis-wang/datasets/Hospital-workstation-backup-20261006/tartanground_khronos/`. Its `dsg.json` hash is `a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d`; its `mesh.ply` hash is `813bb3f534c9385edccbcfc71d3405ec81b5852c23061c68542e15debe40f268`. These match the hashes pinned by the RAG defaults and committed map manifest. After making the source snapshot available on another machine, set paths and verify before use:
 
