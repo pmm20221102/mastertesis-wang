@@ -76,6 +76,37 @@ def test_contains_and_parent_follow_correct_direction(relation):
     assert result.status == "resolved" and result.selected.node_id == ROOM
 
 
+def test_generic_room_with_object_relation_returns_selectable_room_candidates():
+    api = rag()
+    second_room = "100000000000006"
+    bed_a = "100000000000007"
+    bed_b = "100000000000008"
+    for node_id, kind, label, room_id in (
+        (second_room, "room", "unknown", ""),
+        (bed_a, "object", "bed", ROOM),
+        (bed_b, "object", "bed", second_room),
+    ):
+        node = SceneEntity(node_id=node_id, node_type=kind, label=label,
+                           position=[0, 0, 0], room_id=room_id)
+        api._index.nodes[node_id] = node
+        api._index.labels[label].append(node_id)
+        api._index.types[kind].append(node_id)
+    api._index.parents[bed_a] = [ROOM]
+    api._index.parents[bed_b] = [second_room]
+    api._index.children[ROOM].append(bed_a)
+    api._index.children[second_room] = [bed_b]
+
+    reference = EntityReference(
+        text="room", node_type="room", label="room",
+        relations=[RelationConstraint(relation="contains", target_text="bed",
+                                      target_node_type="object", target_label="bed")],
+    )
+    result = api.resolve_entity(reference)
+
+    assert result.status == "ambiguous"
+    assert {candidate.node_id for candidate in result.candidates} == {ROOM, second_room}
+
+
 def test_child_of_uses_parent_children():
     reference = EntityReference(text=FIRST,
         relations=[RelationConstraint(relation="child_of", target_node_id=ROOM)])

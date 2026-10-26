@@ -99,3 +99,11 @@ docker/
 !experiment/task-chain-60/runs/*/runtime_inputs/vector_db/
 !experiment/task-chain-60/runs/*/runtime_inputs/vector_db/**
 !experiment/task-chain-60/runs/*/runtime_inputs/rag_documents.jsonl
+
+# Intentional RAG assets shipped with the standalone navigation demo.
+!experiment/navigation-ui-demo/rag/rag_documents.jsonl
+!experiment/navigation-ui-demo/rag-fresh/rag_documents.jsonl
+!experiment/navigation-ui-demo/rag/vector_db/
+!experiment/navigation-ui-demo/rag/vector_db/**
+!experiment/navigation-ui-demo/rag-fresh/vector_db/
+!experiment/navigation-ui-demo/rag-fresh/vector_db/**

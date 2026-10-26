@@ -124,6 +124,18 @@ See all options with:
 
 The output JSON records the instruction, model and code summaries, RAG/map provenance, target candidates, route geometry, stage timings, and `execution_performed`. A target candidate does not mean it was reached; a successful plan-only result does not demonstrate physical robot motion.
 
+## Interactive WSL Navigation Demo
+
+A standalone browser-based demonstration is provided in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes the human-reviewed RAG build and a fresh no-review build; choose the active index in the GUI before planning.
+
+From WSL, start it with:
+
+~~~bash
+bash experiment/navigation-ui-demo/run_demo.sh
+~~~
+
+The GUI asks for a destination, presents selectable candidates when grounding is ambiguous, and can launch the isolated point-robot simulation in RViz2. It uses the packaged four-floor Khronos-only maps and a 0.5 m/s desired-speed profile. It does not control a physical robot.
+
 ## Nav2 Mission Interface
 
 The low-level runner consumes a frozen mission JSON, a map bundle, and an output path. Its default mode may send `NavigateToPose` goals; add `--plan-only` to validate route planning without sending navigation goals.

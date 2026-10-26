@@ -1,0 +1,162 @@
+{
+  "schema_version": "hospital-rag-build-manifest-v3",
+  "inputs": {
+    "dsg": {
+      "name": "dsg.json",
+      "sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+      "size_bytes": 14477768
+    },
+    "semantic_overrides": {
+      "name": "hospital-object-review-2026-10-12.csv",
+      "sha256": "29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5",
+      "size_bytes": 22208
+    }
+  },
+  "build_config": {
+    "dataset": "hospital_p1000",
+    "aliases": {
+      "door": [
+        "entrance",
+        "exit",
+        "gate"
+      ],
+      "corridor": [
+        "hallway",
+        "passage"
+      ],
+      "room": [
+        "area",
+        "space"
+      ],
+      "table": [
+        "desk"
+      ],
+      "chair": [
+        "seat"
+      ],
+      "person": [
+        "human",
+        "agent"
+      ],
+      "robot": [
+        "agent",
+        "mobile_base"
+      ],
+      "shelf": [
+        "shelving",
+        "rack"
+      ],
+      "wall": [
+        "partition"
+      ],
+      "floor": [
+        "ground",
+        "level"
+      ],
+      "门": [
+        "door",
+        "entrance",
+        "exit"
+      ],
+      "走廊": [
+        "corridor",
+        "hallway"
+      ],
+      "房间": [
+        "room"
+      ],
+      "桌子": [
+        "table",
+        "desk"
+      ],
+      "椅子": [
+        "chair",
+        "seat"
+      ],
+      "人": [
+        "person",
+        "human",
+        "agent"
+      ],
+      "机器人": [
+        "robot",
+        "agent"
+      ],
+      "架子": [
+        "shelf",
+        "shelving"
+      ]
+    },
+    "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
+    "embedding_model_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+    "embedding_device": "cpu",
+    "semantic_override_schema": "hospital_object_semantic_overrides_v1"
+  },
+  "build_config_sha256": "cf4b0768f9d4568237a3f3846dd98ae135819531ab4b83cee5056a1556132adf",
+  "toolchain": {
+    "python": "3.12.13",
+    "chromadb": "1.5.9",
+    "sentence_transformers": "5.5.1",
+    "transformers": "5.10.2",
+    "huggingface_hub": "1.18.0",
+    "torch": "2.12.1",
+    "numpy": "1.26.4"
+  },
+  "counts": {
+    "nodes": 3146,
+    "edges": 12380,
+    "documents": 6297
+  },
+  "artifacts": {
+    "build_config.json": {
+      "sha256": "66777f0c6eb4c6a76d4131a7a5f484785edcd0489c10c56f77401de8b15d47ec",
+      "size_bytes": 1220
+    },
+    "canonical_graph_v2.json": {
+      "sha256": "06534a4558557bceccc451e48ede0875bddec396ae593feb720febee48069c8b",
+      "size_bytes": 4560445
+    },
+    "canonical_graph_v2.manifest.json": {
+      "sha256": "7d61cb2e2f2ee201429f0a5df5d08d0193ce923407341d73a38cf94ba72d9607",
+      "size_bytes": 414
+    },
+    "rag_documents.jsonl": {
+      "sha256": "ce2d1458290a1795948f9125e8fff0a0a71c574fe7dd2c33284ead781553c5ab",
+      "size_bytes": 5500767
+    },
+    "semantic_overrides.json": {
+      "sha256": "b774341bc1c0338f8241c29f000360dc380310ef9bc8066e3eed3f6ca188b7cb",
+      "size_bytes": 19652
+    },
+    "vector_content_manifest.json": {
+      "sha256": "48efc2e01230cbfc6d0819a36c7a0c02c323c212c36e80af0a1eccc67cfcdbcc",
+      "size_bytes": 171
+    },
+    "vector_db/8bd366fc-c923-40db-91c4-0beab7ca8442/data_level0.bin": {
+      "sha256": "6f18cfa6a99890606e131f9a47c168f8dc556b5fe636670569547d953f64022c",
+      "size_bytes": 10056000
+    },
+    "vector_db/8bd366fc-c923-40db-91c4-0beab7ca8442/header.bin": {
+      "sha256": "3e908d30ec59a96226d16bcaa5d44eaf5e245f0f0851bc93407f4811271aab61",
+      "size_bytes": 100
+    },
+    "vector_db/8bd366fc-c923-40db-91c4-0beab7ca8442/index_metadata.pickle": {
+      "sha256": "89d91e55ca1817443a1830780b4b9c9deec8e819270734a1e1dc7e604ebdd799",
+      "size_bytes": 433332
+    },
+    "vector_db/8bd366fc-c923-40db-91c4-0beab7ca8442/length.bin": {
+      "sha256": "2b4056590760f2b841e475c9ffaccd682bfa28e239f0f46400ce49fc5316ff2f",
+      "size_bytes": 24000
+    },
+    "vector_db/8bd366fc-c923-40db-91c4-0beab7ca8442/link_lists.bin": {
+      "sha256": "e863ad294ce9938c44519968a8d6f8a032d66112ad15c50d9b5f14cc26fbb900",
+      "size_bytes": 53512
+    },
+    "vector_db/chroma.sqlite3": {
+      "sha256": "d8d16f676b27d2e3bebf5fe6d0131a6dcc375a2533462b364a0891de642b5283",
+      "size_bytes": 24453120
+    }
+  },
+  "build_id": "2415cc812fb6714ad41b23d765b5896b5cad7e35e09b612388794f8d99e1572a",
+  "artifact_instance_id": "0a409f4205a4e841591cda90ee39e83ef578ddac459a39da34185be754fbfd70"
+}

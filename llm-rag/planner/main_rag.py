@@ -16,7 +16,7 @@ import subprocess
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import yaml
 from pydantic import ValidationError
@@ -703,6 +703,44 @@ def _can_defer_instance_selection(grounding) -> bool:
     return saw_candidate_set
 
 
+def apply_grounding_selections(grounding, selections: dict[str, str]) -> None:
+    """Resolve explicit UI choices only when IDs belong to current RAG candidates."""
+    if not isinstance(selections, dict) or not selections:
+        raise ValueError("grounding selections must be a non-empty reference-to-node mapping")
+    pending = []
+    for reference_key, node_id in selections.items():
+        result = grounding.references.get(reference_key)
+        if result is None:
+            raise ValueError(f"unknown grounding reference: {reference_key}")
+        if not isinstance(node_id, str) or not node_id.strip():
+            raise ValueError(f"selected node ID for {reference_key} must be a non-empty string")
+        available = list(result.candidates)
+        if result.status == "resolved" and result.selected is not None:
+            available.append(result.selected)
+        selected = next((candidate for candidate in available
+                         if candidate.node_id == node_id), None)
+        if selected is None:
+            raise ValueError(f"selected node {node_id} is not a candidate for {reference_key}")
+        pending.append((result, selected))
+
+    for result, selected in pending:
+        result.selected = selected
+        result.selected_many = []
+        result.candidates = [selected]
+        result.status = "resolved"
+    grounding.recompute_status()
+
+
+def _emit_progress(callback: Callable[[dict], None] | None,
+                   stage: str, message: str, **details) -> None:
+    if callback is None:
+        return
+    try:
+        callback({"stage": stage, "message": message, "details": details})
+    except Exception:
+        logger.exception("Progress callback failed at stage %s", stage)
+
+
 def run_structured_task_planner(
     user_command: str,
     model_name: str | None = None,
@@ -710,6 +748,9 @@ def run_structured_task_planner(
     intent_prompt_profile: str | None = None,
     runtime_options: dict | None = None,
     task_chain_backend: str = "llm2",
+    interactive_selection: bool = False,
+    grounding_selections: dict[str, str] | None = None,
+    progress_callback: Callable[[dict], None] | None = None,
 ) -> PipelineResult:
     """Run the new structured pipeline: Intent → Grounding → Planning.
 
@@ -729,6 +770,7 @@ def run_structured_task_planner(
     if task_chain_backend not in ("llm2", "grounded_deterministic"):
         raise ValueError("task_chain_backend must be 'llm2' or 'grounded_deterministic'")
     model = model_name or get_default_model(config)
+    _emit_progress(progress_callback, "intent_parsing", "LLM 正在解析导航意图。")
 
     # Determine db_dir
     repair_enabled = config.get("bounded_repair_enabled", True)
@@ -781,6 +823,8 @@ def run_structured_task_planner(
         logger.info(f"Parsed intent: action={intent.action}, "
                    f"target={intent.target.text if intent.target else None}, "
                    f"destination={intent.destination.text if intent.destination else None}")
+        _emit_progress(progress_callback, "intent_parsed", "意图解析完成。",
+                       intent=intent_dict)
 
         # A parser-requested clarification is an intentional user-facing
         # outcome, not a navigation target that should be sent through RAG.
@@ -812,24 +856,51 @@ def run_structured_task_planner(
 
     # Stage 2: Grounding (RAG resolves entity references to node IDs)
     logger.info("Stage 2: Grounding entities...")
+    _emit_progress(progress_callback, "rag_grounding", "正在查询 RAG 并定位场景图目标。")
     t0 = time.perf_counter()
     try:
         if rag is None:
             rag = SceneGraphRAG(db_dir)
         grounding = GroundingOrchestrator(rag).ground_intent(intent)
-        grounding_dict = grounding.to_dict()
     except Exception as error:
         latency["grounding_ms"] = (time.perf_counter() - t0) * 1000
         return pipeline_result(status="system_error", intent=intent_dict, latency_ms=latency,
                               error=f"Grounding failed: {error}")
+    if grounding_selections:
+        try:
+            apply_grounding_selections(grounding, grounding_selections)
+        except ValueError as error:
+            grounding_dict = grounding.to_dict()
+            _emit_progress(progress_callback, "selection_rejected",
+                           "该候选已不匹配当前 RAG 结果，请重新选择。", error=str(error))
+            return pipeline_result(status="ambiguous", intent=intent_dict,
+                                  grounding=grounding_dict, latency_ms=latency,
+                                  error=str(error))
+    grounding_dict = grounding.to_dict()
     latency["grounding_ms"] = (time.perf_counter() - t0) * 1000
     logger.info(f"Grounding status: {grounding.status}")
+    _emit_progress(progress_callback, "rag_grounded", "RAG 目标定位完成。",
+                   grounding=grounding_dict)
 
     if grounding.status == "system_error":
         return pipeline_result(status="system_error", intent=intent_dict, grounding=grounding_dict,
                               latency_ms=latency, error="; ".join(grounding.errors))
 
     # Stage 3: Handle non-ready status
+    interactive_ambiguous = [
+        key for key, result in grounding.references.items()
+        if result.status == "ambiguous"
+        and key in getattr(grounding, "_required_references", set())
+    ]
+    if interactive_selection and interactive_ambiguous:
+        _emit_progress(progress_callback, "awaiting_user_selection",
+                       "找到多个匹配地点，请选择一个继续。",
+                       references=interactive_ambiguous)
+        return pipeline_result(
+            status="ambiguous", intent=intent_dict, grounding=grounding_dict,
+            latency_ms=latency,
+            error="Please select one of the matching destinations.",
+        )
     deferred_instance_selection = _can_defer_instance_selection(grounding)
     if grounding.status == "ambiguous" and not deferred_instance_selection:
         logger.warning(f"Ambiguous grounding: {grounding.errors}")
@@ -864,6 +935,7 @@ def run_structured_task_planner(
 
     # Stage 4: Build grounded task for planner
     logger.info("Stage 4: Building grounded task...")
+    _emit_progress(progress_callback, "planning", "目标已确定，正在生成任务链。")
     try:
         grounded_task = _build_grounded_task(intent, grounding, rag)
         grounded_task_dict = grounded_task
@@ -911,6 +983,7 @@ def run_structured_task_planner(
 
     # Stage 6: Validate plan against grounding
     logger.info("Stage 6: Validating plan...")
+    _emit_progress(progress_callback, "validating_plan", "正在检查任务链和目标约束。")
     t0 = time.perf_counter()
     validation_errors = validation_errors or _validate_grounded_plan(task_plan, grounding, grounded_task)
     if validation_errors and repair_enabled and task_chain_backend == "llm2":
@@ -930,6 +1003,12 @@ def run_structured_task_planner(
             planning_attempts[-1]["error"] = str(error)
             logger.warning(f"Plan repair failed: {error}")
     latency["validation_ms"] = (time.perf_counter() - t0) * 1000
+    _emit_progress(progress_callback,
+                   "plan_ready" if not validation_errors else "plan_invalid",
+                   "任务链生成完成。" if not validation_errors else "任务链未通过验证。",
+                   status="valid" if not validation_errors else "system_error",
+                   task_plan=json.loads(task_plan.model_dump_json()),
+                   grounded_task=grounded_task_dict)
 
     task_plan_dict = json.loads(task_plan.model_dump_json())
 

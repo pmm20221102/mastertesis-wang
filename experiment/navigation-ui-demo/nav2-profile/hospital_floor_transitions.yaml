@@ -1,0 +1,153 @@
+schema_version: hospital-floor-transitions-v1
+map_bundle_id: hospital-p1000-khronos-run-68606db0613a2639
+frame_id: map
+source_root: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only
+floors:
+  '0':
+    floor_z_m: -1.2
+    report_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/report.json
+    map_yaml_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/map.yaml
+    map_yaml_sha256: 93f4ca62d0c3063e2c161232d01efa5c6a04dcedbe6decd5a85b9161bede2f4c
+    map_pgm_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/map.pgm
+    map_pgm_sha256: da1f3a6893ac7228f5553a8def87c289c30974321f8fda026095199adff8d853
+  '1':
+    floor_z_m: 2.3
+    report_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_1/report.json
+    map_yaml_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_1/map.yaml
+    map_yaml_sha256: 9e4aeef5df2b62e52a8d81b98787b667aa1abc75757299a1c39e393f9bcc13ba
+    map_pgm_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_1/map.pgm
+    map_pgm_sha256: 2aaa3c8ad2d5ebed53241d3c164a6383ceb7db6c68cdb7d58c19d7511dc5b9c1
+  '2':
+    floor_z_m: 5.8
+    report_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_2/report.json
+    map_yaml_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_2/map.yaml
+    map_yaml_sha256: a872426daa84efaddcd3314b77db815d7df6ff9e00eed15057fe71221f2b2f4d
+    map_pgm_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_2/map.pgm
+    map_pgm_sha256: 922ce6d62039e304233e3bf7183bfc8b4acecc70b926ed410c059abcede4fe1a
+  '3':
+    floor_z_m: 9.3
+    report_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_3/report.json
+    map_yaml_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_3/map.yaml
+    map_yaml_sha256: 6c4f0886ec0bdb76cd3fa98b6b22fa352eb644f59139f3be0e3c24fdb8bb4a7f
+    map_pgm_path: khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_3/map.pgm
+    map_pgm_sha256: 59544040d0d115048e6b5273ff56ed8da7ae82f4959d98eb8a71cffa1e3324d4
+transitions:
+- transition_id: F0_TO_F1_VIDEO
+  from_floor: 0
+  to_floor: 1
+  entry_pose:
+    x: -3.25
+    y: 1.55
+    yaw: -1.7674839804789269
+  exit_pose:
+    x: -2.95
+    y: 2.45
+    yaw: 0.0
+  evidence:
+    type: P1000_RGB_pose
+    entry_frame: 2468
+    exit_frame: 2350
+  footprint_costs:
+    from: 0
+    to: 0
+- transition_id: F1_TO_F0_VIDEO
+  from_floor: 1
+  to_floor: 0
+  entry_pose:
+    x: -2.95
+    y: 2.45
+    yaw: 0.0
+  exit_pose:
+    x: -3.25
+    y: 1.55
+    yaw: -1.7674839804789269
+  evidence:
+    type: P1000_RGB_pose
+    entry_frame: 2350
+    exit_frame: 2468
+  footprint_costs:
+    from: 0
+    to: 0
+- transition_id: F1_TO_F2_MAIN
+  from_floor: 1
+  to_floor: 2
+  entry_pose:
+    x: -2.75
+    y: 2.25
+    yaw: 0.0
+  exit_pose:
+    x: 8.45
+    y: -3.35
+    yaw: 0.0
+  evidence:
+    type: projected_agent_validated_topology
+    source_waypoint_ids:
+    - 48453
+    - 41479
+  footprint_costs:
+    from: 0
+    to: 244
+- transition_id: F2_TO_F1_MAIN
+  from_floor: 2
+  to_floor: 1
+  entry_pose:
+    x: 8.45
+    y: -3.35
+    yaw: 0.0
+  exit_pose:
+    x: -2.75
+    y: 2.25
+    yaw: 0.0
+  evidence:
+    type: projected_agent_validated_topology
+    source_waypoint_ids:
+    - 41479
+    - 48453
+  footprint_costs:
+    from: 244
+    to: 0
+- transition_id: F2_TO_F3_MAIN
+  from_floor: 2
+  to_floor: 3
+  entry_pose:
+    x: 8.45
+    y: -3.35
+    yaw: 0.0
+  exit_pose:
+    x: -3.15
+    y: -5.65
+    yaw: 0.0
+  evidence:
+    type: projected_agent_validated_topology
+    source_waypoint_ids:
+    - 41479
+    - 33299
+  footprint_costs:
+    from: 244
+    to: 0
+- transition_id: F3_TO_F2_MAIN
+  from_floor: 3
+  to_floor: 2
+  entry_pose:
+    x: -3.15
+    y: -5.65
+    yaw: 0.0
+  exit_pose:
+    x: 8.45
+    y: -3.35
+    yaw: 0.0
+  evidence:
+    type: projected_agent_validated_topology
+    source_waypoint_ids:
+    - 33299
+    - 41479
+  footprint_costs:
+    from: 0
+    to: 244
+runtime_verification:
+  load_map_service: /map_server/load_map
+  require_result_code: 0
+  verify_against: LoadMap_response_geometry_and_costmap
+  do_not_verify_using: /map_server.yaml_filename_after_load_map
+  note: Dynamic LoadMap changed the published grid and costmap, but yaml_filename
+    remained the launch-time value.

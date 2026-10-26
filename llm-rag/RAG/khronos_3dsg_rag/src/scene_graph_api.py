@@ -665,17 +665,28 @@ class SceneGraphRAG:
         if quantifier == "all":
             return self._resolve_all_by_label(reference, index)
 
-        # Standard path: Semantic EntityResolver with hard filters
-        resolver = self._get_resolver()
-        base_candidates = resolver.resolve(
-            reference.text,
-            top_k=max(top_k * 10, 200),
-        )
+        # A type-only reference (for example, "room") is a request for the
+        # complete typed candidate pool. Start from graph nodes so structured
+        # relation filters such as "room containing bed" can narrow it before
+        # deciding whether the result is resolved or needs user selection.
+        if reference.label and self._is_type_label(reference) and reference.node_type:
+            expected_type = self._normalize_type(reference.node_type)
+            base_candidates = [
+                {"node_id": node.node_id, "score": 1.0}
+                for node in index.nodes.values()
+                if self._normalize_type(node.node_type) == expected_type
+            ]
+        else:
+            # Standard path: Semantic EntityResolver with hard filters.
+            resolver = self._get_resolver()
+            base_candidates = resolver.resolve(
+                reference.text,
+                top_k=max(top_k * 10, 200),
+            )
         # Supply normalized labels to candidate matching as well as hard filters.
         # Keep the raw reference (including location/relation constraints) intact.
-        if reference.label:
-            query_label = (reference.node_type if self._is_type_label(reference)
-                           else self._canonical_label(reference.label, index))
+        if reference.label and not self._is_type_label(reference):
+            query_label = self._canonical_label(reference.label, index)
             if query_label != reference.text:
                 extra = resolver.resolve(query_label, top_k=max(top_k * 10, 200))
                 by_id = {candidate["node_id"]: candidate for candidate in base_candidates}

@@ -1,0 +1,153 @@
+{
+  "schema_version": "hospital-rag-build-manifest-v3",
+  "inputs": {
+    "dsg": {
+      "name": "dsg.json",
+      "sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+      "size_bytes": 14477768
+    }
+  },
+  "build_config": {
+    "dataset": "hospital-p1000",
+    "aliases": {
+      "door": [
+        "entrance",
+        "exit",
+        "gate"
+      ],
+      "corridor": [
+        "hallway",
+        "passage"
+      ],
+      "room": [
+        "area",
+        "space"
+      ],
+      "table": [
+        "desk"
+      ],
+      "chair": [
+        "seat"
+      ],
+      "person": [
+        "human",
+        "agent"
+      ],
+      "robot": [
+        "agent",
+        "mobile_base"
+      ],
+      "shelf": [
+        "shelving",
+        "rack"
+      ],
+      "wall": [
+        "partition"
+      ],
+      "floor": [
+        "ground",
+        "level"
+      ],
+      "门": [
+        "door",
+        "entrance",
+        "exit"
+      ],
+      "走廊": [
+        "corridor",
+        "hallway"
+      ],
+      "房间": [
+        "room"
+      ],
+      "桌子": [
+        "table",
+        "desk"
+      ],
+      "椅子": [
+        "chair",
+        "seat"
+      ],
+      "人": [
+        "person",
+        "human",
+        "agent"
+      ],
+      "机器人": [
+        "robot",
+        "agent"
+      ],
+      "架子": [
+        "shelf",
+        "shelving"
+      ]
+    },
+    "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
+    "embedding_model_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+    "embedding_device": "cpu",
+    "semantic_override_schema": null
+  },
+  "build_config_sha256": "2ef988a06b2d1a7e87a49e9bcf88c79a55b77efe07d6161767f9e210591d0cf6",
+  "toolchain": {
+    "python": "3.12.13",
+    "chromadb": "1.5.9",
+    "sentence_transformers": "5.5.1",
+    "transformers": "5.10.2",
+    "huggingface_hub": "1.18.0",
+    "torch": "2.12.1",
+    "numpy": "1.26.4"
+  },
+  "counts": {
+    "nodes": 3146,
+    "edges": 12380,
+    "documents": 6297
+  },
+  "artifacts": {
+    "build_config.json": {
+      "sha256": "2f1bef72adc94fd9dc3a2164f024bc65e3644b1e9a5963211933f7bf95588733",
+      "size_bytes": 1185
+    },
+    "canonical_graph_v2.json": {
+      "sha256": "9e8f6aa04f7510b646f2b3d5e4c84eb4f0780e0e214acd83b5155a77a882acf9",
+      "size_bytes": 4559589
+    },
+    "canonical_graph_v2.manifest.json": {
+      "sha256": "7d61cb2e2f2ee201429f0a5df5d08d0193ce923407341d73a38cf94ba72d9607",
+      "size_bytes": 414
+    },
+    "rag_documents.jsonl": {
+      "sha256": "870a00a336da9a1a4c12469ff4236b92d9a6901531bdf1d0d75a5c488f2e4219",
+      "size_bytes": 5498747
+    },
+    "vector_content_manifest.json": {
+      "sha256": "5986bab5d60eb6050d5be97cd96c66b96e4c755dee578990f30abab671cd99d6",
+      "size_bytes": 171
+    },
+    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/data_level0.bin": {
+      "sha256": "168da40e3d3d4a7ed840987b6aade243df0c7bec4495ab726b16b06d6cb1845c",
+      "size_bytes": 10056000
+    },
+    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/header.bin": {
+      "sha256": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+      "size_bytes": 100
+    },
+    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/index_metadata.pickle": {
+      "sha256": "9ccd62bb596524eefafd1e144a95cf635d2361dc8800a63bd94ab29f6cbddf89",
+      "size_bytes": 433332
+    },
+    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/length.bin": {
+      "sha256": "52393867775b152b7ffbc6d7324ec268afddf3defbe3d10744efecdf92e5a998",
+      "size_bytes": 24000
+    },
+    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/link_lists.bin": {
+      "sha256": "45ff790424440fd5a9ac319128634c5cecaaa9ba849e092ceeb86dadaf5dc29c",
+      "size_bytes": 53512
+    },
+    "vector_db/chroma.sqlite3": {
+      "sha256": "c179181137c52e7151dfa9c2fe32f94a3a2f4b44960b1351e6c977ff8d9be10b",
+      "size_bytes": 24440832
+    }
+  },
+  "build_id": "aa9d8aa9c4bc745718a0878d15ce78d8f92400d1c934a22fbf450d0725838354",
+  "artifact_instance_id": "b121303a57b89f087cb4c84dfc1cf7daed43cf6f68ba6a0f5c889cb948d4594b"
+}

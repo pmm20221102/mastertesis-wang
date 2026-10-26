@@ -1,0 +1,21 @@
+schema_version: hospital-nav2-plan-defaults-v1
+map_bundle_id: hospital-p1000-khronos-run-68606db0613a2639
+model: gemma4:e2b-it-qat
+rag_source:
+  dsg_sha256: a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d
+  semantic_review_csv_sha256: 29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5
+  embedding_model: paraphrase-multilingual-MiniLM-L12-v2
+  embedding_model_revision: e8f8c211226b894fcb81acc59f3b34ba3efd5f42
+  embedding_device: cpu
+initial_state:
+  floor_id: 0
+  pose:
+    frame_id: map
+    x: 14.85
+    y: 3.65
+    yaw: 0.0
+initial_state_provenance:
+  source_artifact: experiments/hospital-e2e-nav2-gemma-e2b-crossfloor-v2-20261022/missions/HC-031.mission.json
+  source_field: initial_pose
+floor_z_tolerance_m: 0.25
+robot_model: point

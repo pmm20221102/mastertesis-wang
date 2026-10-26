@@ -1,0 +1,31 @@
+{
+  "schema_version": "hospital-navigation-demo-rag-profiles-v1",
+  "default_profile_id": "human-reviewed-v5",
+  "bundle": "nav2-profile/hospital_floor_transitions.yaml",
+  "profiles": [
+    {
+      "id": "human-reviewed-v5",
+      "label": "Human-reviewed RAG (v5)",
+      "rag_db": "rag/vector_db",
+      "defaults": "nav2-profile/hospital_nav2_plan_defaults.yaml",
+      "expected_build_id": "2415cc812fb6714ad41b23d765b5896b5cad7e35e09b612388794f8d99e1572a",
+      "review_csv_sha256": "29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5",
+      "source_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+      "defaults_sha256": "03c6c9f4ec6e8793ffd3c340dc19251da634234fd1898f7cf391203026b2f6fc",
+      "rag_manifest_sha256": "7ba3be5914355370ff16d8e37c65820ea647518076563dd334ea5f0e21c92418",
+      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639"
+    },
+    {
+      "id": "fresh-no-review",
+      "label": "Fresh RAG (no manual labels)",
+      "rag_db": "rag-fresh/vector_db",
+      "defaults": "nav2-profile/hospital_nav2_plan_defaults_fresh.yaml",
+      "expected_build_id": "aa9d8aa9c4bc745718a0878d15ce78d8f92400d1c934a22fbf450d0725838354",
+      "review_csv_sha256": null,
+      "source_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+      "defaults_sha256": "275cf403aed4b1764553a6b794d5ff9e0be0a3b5839b2dda7364ee74c061dc7b",
+      "rag_manifest_sha256": "857401ea0c5453e40317cff56b5922bc84d4a2078d9f9a884eee0cfcd0de6169",
+      "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639"
+    }
+  ]
+}

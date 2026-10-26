@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "source_dsg_hash": "a051980dbb1a3d19",
+  "total_nodes": 3146,
+  "node_type_counts": {
+    "object": 120,
+    "place": 2534,
+    "room": 21,
+    "building": 1,
+    "agent": 470
+  },
+  "total_hierarchy_edges": 3098,
+  "total_neighbor_edges": 9282,
+  "hierarchy_validity_pct": 100.0,
+  "object_place_coverage_pct": 99.2,
+  "place_room_coverage_pct": 99.1,
+  "position_coverage_pct": 100.0
+}

@@ -1,0 +1,634 @@
+{
+  "schema_version": "hospital_object_semantic_overrides_v1",
+  "provenance": {
+    "source_csv_name": "hospital-object-review-2026-10-12.csv",
+    "source_csv_sha256": "29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5",
+    "reviewed_row_count": 78
+  },
+  "items": [
+    {
+      "object_node_id": "5692549928996306944",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306945",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306946",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306949",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306950",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306951",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 85,
+      "label_type": "fine_ontology",
+      "fine_label_name": "staircase",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306952",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306953",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306954",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306956",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 55,
+      "label_type": "fine_ontology",
+      "fine_label_name": "floor",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306960",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 60,
+      "label_type": "fine_ontology",
+      "fine_label_name": "healthmonitor",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306962",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 72,
+      "label_type": "fine_ontology",
+      "fine_label_name": "chair",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306963",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306967",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 5,
+      "label_type": "fine_ontology",
+      "fine_label_name": "cabinet",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306968",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 89,
+      "label_type": "fine_ontology",
+      "fine_label_name": "sofa",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306970",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 85,
+      "label_type": "fine_ontology",
+      "fine_label_name": "staircase",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306981",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306985",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 55,
+      "label_type": "fine_ontology",
+      "fine_label_name": "floor",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306986",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306987",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306988",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 44,
+      "label_type": "fine_ontology",
+      "fine_label_name": "railing",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306990",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 3,
+      "label_type": "fine_ontology",
+      "fine_label_name": "acousticceiling",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306992",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 73,
+      "label_type": "fine_ontology",
+      "fine_label_name": "table",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306993",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306994",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306996",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306998",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 44,
+      "label_type": "fine_ontology",
+      "fine_label_name": "railing",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996306999",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307000",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307001",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307002",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307003",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 96,
+      "label_type": "fine_ontology",
+      "fine_label_name": "doorway",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307005",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 73,
+      "label_type": "fine_ontology",
+      "fine_label_name": "table",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307007",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 73,
+      "label_type": "fine_ontology",
+      "fine_label_name": "table",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307012",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307013",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 72,
+      "label_type": "fine_ontology",
+      "fine_label_name": "chair",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307014",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307016",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 89,
+      "label_type": "fine_ontology",
+      "fine_label_name": "sofa",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307017",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": null,
+      "label_type": "human_custom",
+      "fine_label_name": "screen",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307018",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 73,
+      "label_type": "fine_ontology",
+      "fine_label_name": "table",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307020",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 89,
+      "label_type": "fine_ontology",
+      "fine_label_name": "sofa",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307025",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 73,
+      "label_type": "fine_ontology",
+      "fine_label_name": "table",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307026",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307027",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 96,
+      "label_type": "fine_ontology",
+      "fine_label_name": "doorway",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307028",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307029",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307030",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 95,
+      "label_type": "fine_ontology",
+      "fine_label_name": "window",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307031",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307032",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307033",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307034",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307035",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307037",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 44,
+      "label_type": "fine_ontology",
+      "fine_label_name": "railing",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307038",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307039",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 85,
+      "label_type": "fine_ontology",
+      "fine_label_name": "staircase",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307040",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 78,
+      "label_type": "fine_ontology",
+      "fine_label_name": "stairs",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307041",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 96,
+      "label_type": "fine_ontology",
+      "fine_label_name": "doorway",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307042",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307043",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307044",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307045",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307046",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 72,
+      "label_type": "fine_ontology",
+      "fine_label_name": "chair",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307047",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 72,
+      "label_type": "fine_ontology",
+      "fine_label_name": "chair",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307049",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307050",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 28,
+      "label_type": "fine_ontology",
+      "fine_label_name": "sign",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307051",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 96,
+      "label_type": "fine_ontology",
+      "fine_label_name": "doorway",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307052",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307053",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307054",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307055",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 75,
+      "label_type": "fine_ontology",
+      "fine_label_name": "desk",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307057",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307059",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307060",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 55,
+      "label_type": "fine_ontology",
+      "fine_label_name": "floor",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307061",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": null,
+      "label_type": "human_custom",
+      "fine_label_name": "Entrance",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307062",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 95,
+      "label_type": "fine_ontology",
+      "fine_label_name": "window",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307063",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 71,
+      "label_type": "fine_ontology",
+      "fine_label_name": "wall",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307065",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 1,
+      "label_type": "fine_ontology",
+      "fine_label_name": "door",
+      "annotation_status": "human_confirmed"
+    },
+    {
+      "object_node_id": "5692549928996307066",
+      "original_semantic_label": 4294967295,
+      "fine_label_id": 101,
+      "label_type": "fine_ontology",
+      "fine_label_name": "metalmedicaltable",
+      "annotation_status": "human_confirmed"
+    }
+  ]
+}

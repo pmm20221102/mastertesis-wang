@@ -1,0 +1,11 @@
+{
+  "schema_version": "hospital-nav2-demo-profile-v1",
+  "profile_id": "human-reviewed-v5",
+  "rag_build_id": "2415cc812fb6714ad41b23d765b5896b5cad7e35e09b612388794f8d99e1572a",
+  "rag_manifest_sha256": "7ba3be5914355370ff16d8e37c65820ea647518076563dd334ea5f0e21c92418",
+  "review_csv_sha256": "29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5",
+  "source_dsg_sha256": "a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d",
+  "defaults_sha256": "03c6c9f4ec6e8793ffd3c340dc19251da634234fd1898f7cf391203026b2f6fc",
+  "bundle_sha256": "d361cbdf5c088030d53d8068be381aba675a6c3a90b7be88253aeafb76286157",
+  "map_bundle_id": "hospital-p1000-khronos-run-68606db0613a2639"
+}

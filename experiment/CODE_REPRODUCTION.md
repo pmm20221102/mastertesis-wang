@@ -252,6 +252,14 @@ test -s "$HOSPITAL_NAV2_PROFILE"
 
 The profile generator verifies that the RAG and map manifests refer to the same DSG. Free portal cells do not prove route connectivity; run the Nav2 plan-only check on this bundle before accepting the new transitions.
 
+### Launch the interactive navigation demo
+
+The standalone demo is in experiment/navigation-ui-demo. It bundles two Hospital P1000 RAG indexes and the matching run profiles. The GUI lets you select either the human-reviewed v5 index or the fresh no-review index before planning.
+
+    bash experiment/navigation-ui-demo/run_demo.sh
+
+The module README documents its provenance, dependencies, and behavior. Both profiles use the same packaged four-floor Khronos-only maps. RViz2 runs an isolated point-robot kinematic simulation with a 0.5 m/s desired-speed profile; it does not control physical hardware.
+
 If you open new terminals, restore the profile paths using the run directory printed above:
 
 ```bash

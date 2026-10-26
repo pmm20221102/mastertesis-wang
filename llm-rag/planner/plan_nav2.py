@@ -11,6 +11,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from typing import Callable
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
@@ -47,6 +48,16 @@ def _sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _emit_progress(callback: Callable[[dict], None] | None,
+                   stage: str, message: str, **details) -> None:
+    if callback is None:
+        return
+    try:
+        callback({"stage": stage, "message": message, "details": details})
+    except Exception:
+        pass
 
 
 def _stable_json_bytes(value) -> bytes:
@@ -295,7 +306,11 @@ def _run_ros_plan(mission_path: Path, bundle_path: Path, output_path: Path,
     return completed.returncode, result, diagnostics
 
 
-def run_instruction(args) -> dict:
+def run_instruction(args, *, progress_callback: Callable[[dict], None] | None = None,
+                    interactive_selection: bool = False,
+                    grounding_selections: dict[str, str] | None = None,
+                    before_nav2_callback: Callable[[], None] | None = None) -> dict:
+    _emit_progress(progress_callback, "checking_inputs", "正在检查 RAG、地图和运行配置。")
     config = load_config(LLM_DIR / "config_rag.yaml")
     bundle_path = Path(args.bundle).expanduser().resolve(strict=True)
     defaults_path = Path(args.defaults).expanduser().resolve(strict=True)
@@ -304,6 +319,9 @@ def run_instruction(args) -> dict:
     model_name = args.model or defaults.get("model", DEFAULT_MODEL)
     rag_info = verify_rag_build(args.db_dir,
                                 expected_source=defaults.get("rag_source"))
+    _emit_progress(progress_callback, "inputs_ready", "RAG 与地图配置校验通过。",
+                   rag_build_id=rag_info["build_id"],
+                   map_bundle_id=bundle["map_bundle_id"])
     canonical_path = Path(args.db_dir).expanduser().resolve().parent / "canonical_graph_v2.json"
     canonical_graph = json.loads(canonical_path.read_text(encoding="utf-8"))
     if args.floor_tolerance_m is not None:
@@ -318,9 +336,15 @@ def run_instruction(args) -> dict:
                          "num_predict": args.num_predict,
                          "request_timeout_s": args.request_timeout_s},
         task_chain_backend=args.task_chain_backend,
+        interactive_selection=interactive_selection,
+        grounding_selections=grounding_selections,
+        progress_callback=progress_callback,
     )
     pipeline_dict = pipeline.model_dump(mode="json") if hasattr(pipeline, "model_dump") else pipeline
     if pipeline_dict.get("status") != "valid":
+        _emit_progress(progress_callback, "pipeline_stopped",
+                       f"流程暂停：{pipeline_dict.get('status')}。",
+                       pipeline_result=pipeline_dict)
         return build_plan_record(args.instruction, pipeline_dict,
                                  {"status": "not_attempted"},
                                  {"status": "not_attempted"}, {
@@ -346,12 +370,15 @@ def run_instruction(args) -> dict:
                                          LLM_DIR / "config_rag.yaml"),
                                  })
 
+    _emit_progress(progress_callback, "mission_preparation", "正在编译有序导航任务。")
     mission_result = build_candidate_mission(
         pipeline_dict, bundle, defaults["initial_state"],
         task_id=f"instruction-{_sha256_bytes(args.instruction.encode('utf-8'))[:16]}",
         floor_tolerance_m=float(defaults["floor_z_tolerance_m"]),
         canonical_graph=canonical_graph,
     )
+    _emit_progress(progress_callback, "mission_ready", "有序导航任务已准备。",
+                   mission_result=mission_result)
     metadata = {
         "model_name": model_name,
         "model_digest": model_digest,
@@ -371,23 +398,36 @@ def run_instruction(args) -> dict:
         "ollama_config_sha256": _sha256_file(LLM_DIR / "config_rag.yaml"),
     }
     if mission_result.get("status") != "ready":
+        _emit_progress(progress_callback, "mission_not_ready", "导航任务未能编译。",
+                       mission_result=mission_result)
         return build_plan_record(args.instruction, pipeline_dict, mission_result,
                                  {"status": "not_attempted"}, metadata)
 
+    _emit_progress(progress_callback, "nav2_planning", "Nav2 正在计算路线。")
     with tempfile.TemporaryDirectory(prefix="hospital-nav2-plan-") as temporary_dir:
         temporary = Path(temporary_dir)
         mission_path = temporary / "candidate_mission.json"
         route_path = temporary / "nav2_plan.json"
         mission_path.write_text(json.dumps(mission_result["mission"], indent=2,
                                            ensure_ascii=False) + "\n", encoding="utf-8")
+        _emit_progress(progress_callback, "nav2_starting",
+                       "任务链已准备，正在启动隔离的 Nav2 仿真栈。")
+        if before_nav2_callback is not None:
+            before_nav2_callback()
+        _emit_progress(progress_callback, "nav2_route_planning", "Nav2 正在计算路线。")
         return_code, nav2_result, diagnostics = _run_ros_plan(
             mission_path, bundle_path, route_path, args.robot_model, args.ros_domain_id)
         if diagnostics:
             nav2_result["runner_stderr_tail"] = diagnostics
         if return_code and nav2_result.get("status") == "planned":
             nav2_result["status"] = "nav2_plan_failed"
-        return build_plan_record(args.instruction, pipeline_dict, mission_result,
-                                 nav2_result, metadata)
+        result = build_plan_record(args.instruction, pipeline_dict, mission_result,
+                                   nav2_result, metadata)
+        _emit_progress(progress_callback, "plan_complete",
+                       "路线规划完成。" if result["status"] == "planned" else
+                       f"路线规划未成功：{result['status']}。",
+                       plan_result=result)
+        return result
 
 
 def _effective_llm_runtime(config: dict, args) -> dict:

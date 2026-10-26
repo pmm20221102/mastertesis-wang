@@ -1,0 +1,80 @@
+{
+  "aliases": {
+    "chair": [
+      "seat"
+    ],
+    "corridor": [
+      "hallway",
+      "passage"
+    ],
+    "door": [
+      "entrance",
+      "exit",
+      "gate"
+    ],
+    "floor": [
+      "ground",
+      "level"
+    ],
+    "person": [
+      "human",
+      "agent"
+    ],
+    "robot": [
+      "agent",
+      "mobile_base"
+    ],
+    "room": [
+      "area",
+      "space"
+    ],
+    "shelf": [
+      "shelving",
+      "rack"
+    ],
+    "table": [
+      "desk"
+    ],
+    "wall": [
+      "partition"
+    ],
+    "人": [
+      "person",
+      "human",
+      "agent"
+    ],
+    "房间": [
+      "room"
+    ],
+    "机器人": [
+      "robot",
+      "agent"
+    ],
+    "架子": [
+      "shelf",
+      "shelving"
+    ],
+    "桌子": [
+      "table",
+      "desk"
+    ],
+    "椅子": [
+      "chair",
+      "seat"
+    ],
+    "走廊": [
+      "corridor",
+      "hallway"
+    ],
+    "门": [
+      "door",
+      "entrance",
+      "exit"
+    ]
+  },
+  "dataset": "hospital-p1000",
+  "embedding_device": "cpu",
+  "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_model_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "semantic_override_schema": null
+}
