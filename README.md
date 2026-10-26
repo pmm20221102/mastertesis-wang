@@ -40,6 +40,7 @@ Use rosdep to install the dependencies declared by the bridge and build the Hosp
 ~~~bash
 source /opt/ros/jazzy/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then sudo rosdep init; fi
 rosdep update
 rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
 cd khronos-nav2-bridge

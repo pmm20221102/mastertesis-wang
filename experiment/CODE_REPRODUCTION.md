@@ -36,6 +36,7 @@ Install ROS 2 Jazzy and `ros-dev-tools` using the [official Ubuntu installation 
 ```bash
 source /opt/ros/jazzy/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then sudo rosdep init; fi
 rosdep update
 rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src -r -y
 ```
@@ -69,6 +70,105 @@ colcon test-result --verbose
 ```
 
 The clean isolated build was verified successfully. A complete `colcon test` result was not established in the current WSL session; the Python bridge tests are included in the Python suite above, but `colcon test` should still be run by the reproducer and its result retained.
+
+## Full Raw-Data Track: TartanGround to Khronos
+
+This optional track starts before the DSG used by the RAG builder. The official [TartanGround documentation](https://tartanair.org/tartanground.html) describes the `Hospital` environment and `diff` robot trajectories. To download the thesis sequence and the front-left sensor modalities, use `tartanairpy`:
+
+```python
+import tartanair as ta
+
+ta.init("/path/to/TartanGround_Root")
+ta.download_ground(
+    env=["Hospital"],
+    version=["diff"],
+    traj=["P1000"],
+    modality=["image", "meta", "depth", "seg", "seg_labels"],
+    camera_name=["lcam_front"],
+    unzip=True,
+    delete_zip=False,
+    num_workers=4,
+)
+```
+
+Point `HOSPITAL_DATASET_ROOT` to the extracted `Hospital/Data_diff/P1000` trajectory directory (or another directory with the same flat layout), containing `image_lcam_front/`, `depth_lcam_front/`, `seg_lcam_front/`, and `pose_lcam_front.txt`. The P1000 metadata records 3,178 poses at a 0.1-second timestep. On the originating WSL workstation, the extracted sequence occupies 4.4 GB and the adapter's read-only audit passed with 3,178 images, 3,178 depth frames, 3,178 segmentation frames, and 3,178 poses.
+
+The validated workstation copy was at `/home/nenlian/Masterthesis-wang/datasets/Hospital-workstation-backup-20261006/tartanground_khronos/dataset/`; this path is local to that machine and is not in Git. Its metadata files had these hashes:
+
+```text
+P1000_metadata.json: 7d74b9f8f42668f180b4b058e633f3d3705e1ebe5d178df270584abe64ca0152
+seg_label_map.json:  4b2ea5e836c5298c5f506f76ae98aaa6ba38571ef4734eb6efb2c2e5afdd1b34
+```
+
+The adapter does not load a separate camera-calibration file: its source defines 640×640 pinhole intrinsics (`fx=fy=320`, `cx=cy=320`), a fixed `base_link` → `camera_optical_frame` transform, and NED → ROS ENU/FLU pose conversion. Treat these as part of the adapter revision and record the checked-out Git commit. The historical Khronos run used `ClosedSetImageReceiver` with TartanGround segmentation labels; the label map/remap configuration must be retained, but no separate online segmentation-model weights are needed for that closed-set path.
+
+Build the TartanGround adapter package from the repository root:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+cd khronos/tartanground-tools
+rosdep install --from-paths tools/tartanground_khronos_bridge --ignore-src -r -y
+colcon build --base-paths tools/tartanground_khronos_bridge --symlink-install
+source install/setup.bash
+cd ../..
+```
+
+Set the dataset root and run the adapter audit before writing a bag:
+
+```bash
+export HOSPITAL_DATASET_ROOT=/path/to/TartanGround_Root/Hospital/Data_diff/P1000
+ros2 run tartanground_khronos_bridge tartanground_to_ros2bag \
+  --dataset-root "$HOSPITAL_DATASET_ROOT" \
+  --camera lcam_front \
+  --start-frame 0 \
+  --num-frames 3178 \
+  --fps 10 \
+  --output /tmp/hospital-p1000-audit-only \
+  --audit-only
+```
+
+Expected output includes `data sync: image=3178 depth=3178 seg=3178 pose=3178`. This is a pre-conversion input check; it does not generate a bag. To write a new bag, use a new output path and omit `--audit-only`:
+
+```bash
+export HOSPITAL_BAG=/path/to/output/hospital-p1000-lcam-front-10hz
+ros2 run tartanground_khronos_bridge tartanground_to_ros2bag \
+  --dataset-root "$HOSPITAL_DATASET_ROOT" \
+  --camera lcam_front \
+  --start-frame 0 \
+  --num-frames 3178 \
+  --fps 10 \
+  --output "$HOSPITAL_BAG"
+ros2 run tartanground_khronos_bridge tartanground_audit_bag \
+  "$HOSPITAL_BAG" --expected-frames 3178 \
+  --json-out "$HOSPITAL_BAG.audit.json"
+ros2 bag info "$HOSPITAL_BAG"
+```
+
+The bag audit acceptance condition is 3,178 RGB, depth, semantic, and camera-info messages, at least 3,178 `/tf` messages, and at least one `/tf_static` message. Keep the JSON audit and `ros2 bag info` output with the run. The adapter synthesizes timestamps at the selected `--fps`; 10 Hz matches the P1000 metadata timestep. For a new reference run, play the generated bag with an explicit rate:
+
+```bash
+ros2 bag play "$HOSPITAL_BAG" --clock --rate 1.0
+```
+
+The historical Khronos run does not record its bag playback rate, so `1.0` defines a new reference profile and is not an exact replay of the August 2026 run.
+
+### Khronos Invocation Limitation
+
+The checked-in `tartanground_hospital_khronos.launch.yaml` embeds absolute configuration paths rooted at `/home/ulmmt/Masterthesis-wang/tartanground_khronos/`; it does not expose the input, label-space, remap, or mapper paths as launch arguments. It therefore cannot be launched unchanged from an arbitrary checkout path. A new run must first provide those files at the expected paths or use a locally adapted launch file, and record the exact adaptation. The exact historical launch command and bag playback rate were not preserved. Do not claim a clean raw-data-to-Khronos rerun until those paths and the selected launch/configuration are resolved and recorded.
+
+The original Khronos output is outside Git at `datasets/Hospital-workstation-backup-20261006/tartanground_khronos/reports/khronos_output/fine_full_p1000/`. On the originating workstation, this snapshot is under `/home/nenlian/Masterthesis-wang/datasets/Hospital-workstation-backup-20261006/tartanground_khronos/`. Its `dsg.json` hash is `a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d`; its `mesh.ply` hash is `813bb3f534c9385edccbcfc71d3405ec81b5852c23061c68542e15debe40f268`. These match the hashes pinned by the RAG defaults and committed map manifest. After making the source snapshot available on another machine, set paths and verify before use:
+
+```bash
+export HOSPITAL_KHRONOS_OUTPUT=/path/to/tartanground_khronos/reports/khronos_output/fine_full_p1000
+export HOSPITAL_DSG="$HOSPITAL_KHRONOS_OUTPUT/dsg.json"
+export HOSPITAL_MESH="$HOSPITAL_KHRONOS_OUTPUT/mesh.ply"
+sha256sum "$HOSPITAL_DSG" "$HOSPITAL_MESH"
+```
+
+The output log records 19:35:31–19:43:32 on 2026-08-19, with 3,178 frames, `lcam_front`, `ClosedSetImageReceiver`, a 0.1–5.0 m sensor range, and 24 main integration threads.
+
+The run records Khronos revision `63faadde6ed92220e78fb2f6ca86dcc54bb5cf9e`, but that commit object is unavailable in the current Khronos Git history. Its `git_status.txt` records uncommitted changes to `backend.cpp`, `khronos_pipeline.cpp`, and `khronos_ros/CMakeLists.txt`, as well as untracked packages/configuration. The available `scene-graph-khronos` source therefore cannot be claimed to reproduce that exact historical DSG generation.
 
 ## 3. Build the provenance-bearing Hospital RAG index
 
@@ -118,10 +218,13 @@ Install and start Ollama, then obtain the model pinned in the defaults file:
 
 ```bash
 ollama pull gemma4:e2b-it-qat
+ollama --version
 curl -s http://127.0.0.1:11434/api/tags
 ```
 
-In terminal 1, build the bridge as described above, return to the repository root, and start the point-robot Nav2 stack in an isolated ROS domain:
+The selected 60×4 run manifest records model digest `07ea59a474013479c8b6b802bef095c40e964a1d776ba02f264c0e30e1aede0c` for `gemma4:e2b-it-qat`. Compare the `/api/tags` digest with this value when attempting to reproduce that historical model. The historical Ollama server version is not recorded; retain `ollama --version` output for each new run.
+
+This single-plan workflow uses the four committed floor maps and their manifest; it does not need to regenerate them. In terminal 1, build the bridge as described above, return to the repository root, and start the point-robot Nav2 stack in an isolated ROS domain:
 
 ```bash
 cd /path/to/repository
