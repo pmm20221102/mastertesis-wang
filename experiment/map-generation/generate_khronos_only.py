@@ -118,6 +118,11 @@ MANUAL_TOPOLOGY_LINKS = [
 ]
 
 
+def resolve_topology_links(*, skip_manual: bool = False):
+    """Select recorded manual links, or use the input DSG's native topology."""
+    return [] if skip_manual else copy.deepcopy(MANUAL_TOPOLOGY_LINKS)
+
+
 def place_component_sizes(dsg_data):
     """Return PLACES-only undirected component sizes, largest first."""
     layer = dsg_data.get("layer_names", {}).get("PLACES", {"layer": 3, "partition": 0})
@@ -375,9 +380,8 @@ def build_floor(floor: int, floor_z: float, mesh: Path, dsg: Path,
             "mesh_occupied_wins_over_place_support": True,
         },
         "inputs": {
-            "geometry_yaml": str(base_yaml),
-            "geometry_yaml_sha256": sha256_file(base_yaml),
-            "geometry_pgm_sha256": sha256_file(metadata["image_path"]),
+            "geometry_manifest": str(GRID_GEOMETRY_MANIFEST),
+            "geometry_manifest_sha256": sha256_file(GRID_GEOMETRY_MANIFEST),
             "mesh": str(mesh),
             "mesh_sha256": sha256_file(mesh),
             "dsg": str(dsg),
@@ -428,6 +432,10 @@ def main():
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--mesh", type=Path, default=KHRONOS_ROOT / "mesh.ply")
     parser.add_argument("--dsg", type=Path, default=KHRONOS_ROOT / "dsg.json")
+    parser.add_argument(
+        "--no-manual-topology", action="store_true",
+        help="Use only topology in the supplied DSG; do not require historical Place IDs.",
+    )
     args = parser.parse_args()
     if args.output.exists() and any(args.output.iterdir()):
         raise FileExistsError(f"refusing to overwrite non-empty output: {args.output}")
@@ -436,7 +444,8 @@ def main():
     if repaired_dsg.exists():
         raise FileExistsError(f"refusing to overwrite derived DSG: {repaired_dsg}")
     original_data = json.loads(args.dsg.read_text(encoding="utf-8"))
-    repaired_data, topology_audit = repair_dsg_topology(original_data)
+    topology_links = resolve_topology_links(skip_manual=args.no_manual_topology)
+    repaired_data, topology_audit = repair_dsg_topology(original_data, topology_links)
     repaired_dsg.write_text(json.dumps(repaired_data, indent=2) + "\n", encoding="utf-8")
     reports = [
         build_floor(floor, floor_z, args.mesh, repaired_dsg, args.dsg,
@@ -445,7 +454,10 @@ def main():
     ]
     manifest = {
         "status": "GENERATED_AND_RECOMPUTED",
-        "condition": "khronos_only_clearance_khronos_global_planes_band005_200_manual_topology",
+        "condition": (
+            "khronos_only_clearance_khronos_global_planes_band005_200_"
+            + ("native_topology" if args.no_manual_topology else "manual_topology")
+        ),
         "map_count": len(reports),
         "floor_height_calibration": {
             "floor_z_by_floor_m": FLOOR_HEIGHTS,

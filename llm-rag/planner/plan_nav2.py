@@ -70,7 +70,8 @@ def verify_rag_build(db_dir: str | Path, *, expected_source: dict | None = None)
         raise ValueError("unsupported RAG build manifest schema")
     _validate_build_manifest(manifest)
     build_config = manifest.get("build_config")
-    if not isinstance(build_config, dict) or build_config.get("dataset") != "hospital_p1000":
+    if (not isinstance(build_config, dict)
+            or build_config.get("dataset") not in ("hospital_p1000", "hospital-p1000")):
         raise ValueError("RAG build is not labeled as Hospital P1000")
     if not build_config.get("embedding_model_revision"):
         raise ValueError("RAG manifest does not pin the embedding-model revision")
@@ -232,12 +233,16 @@ def _load_defaults(path: Path, map_bundle: dict) -> dict:
     if defaults.get("map_bundle_id") != map_bundle.get("map_bundle_id"):
         raise ValueError("Nav2 plan defaults and map bundle IDs do not match")
     expected_rag = defaults.get("rag_source")
+    required_rag_fields = (
+        "dsg_sha256", "embedding_model", "embedding_model_revision", "embedding_device"
+    )
     if (not isinstance(expected_rag, dict)
             or any(not isinstance(expected_rag.get(key), str) or not expected_rag[key]
-                   for key in ("dsg_sha256", "semantic_review_csv_sha256",
-                               "embedding_model", "embedding_model_revision",
-                               "embedding_device"))):
-        raise ValueError("Nav2 plan defaults must pin DSG, review CSV, and embedding provenance")
+                   for key in required_rag_fields)):
+        raise ValueError("Nav2 plan defaults must pin DSG and embedding provenance")
+    review_hash = expected_rag.get("semantic_review_csv_sha256")
+    if review_hash is not None and (not isinstance(review_hash, str) or not review_hash):
+        raise ValueError("semantic_review_csv_sha256 must be a hash or null")
     if not isinstance(defaults.get("model"), str) or not defaults["model"]:
         raise ValueError("Nav2 plan defaults must pin a local Ollama model name")
     if defaults.get("robot_model") not in ("point", "footprint"):

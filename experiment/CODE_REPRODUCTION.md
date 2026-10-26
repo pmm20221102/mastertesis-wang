@@ -194,6 +194,49 @@ The output log records 19:35:31–19:43:32 on 2026-08-19, with 3,178 frames, `lc
 
 The run records Khronos revision `63faadde6ed92220e78fb2f6ca86dcc54bb5cf9e`, but that commit object is unavailable in the current Khronos Git history. Its `git_status.txt` records uncommitted changes to `backend.cpp`, `khronos_pipeline.cpp`, and `khronos_ros/CMakeLists.txt`, as well as untracked packages/configuration. The available `scene-graph-khronos` source therefore cannot be claimed to reproduce that exact historical DSG generation.
 
+### Build a fresh RAG index and maps from a Khronos run
+
+The RAG index and maps are both generated from the same Khronos output: the RAG builder reads `dsg.json`; map generation reads both `dsg.json` and `mesh.ply`. Neither step requires the historical DSG/mesh hashes or historical map pixels. Use a new output directory for each run:
+
+```bash
+export HOSPITAL_KHRONOS_OUTPUT=/absolute/path/to/khronos-output
+export HOSPITAL_DSG="$HOSPITAL_KHRONOS_OUTPUT/dsg.json"
+export HOSPITAL_MESH="$HOSPITAL_KHRONOS_OUTPUT/mesh.ply"
+export HOSPITAL_RUN_OUTPUT="$(mktemp -d "$HOME/hospital-khronos-rebuild.XXXXXX")"
+export HOSPITAL_RAG_OUTPUT="$HOSPITAL_RUN_OUTPUT/rag"
+export HOSPITAL_MAP_OUTPUT="$HOSPITAL_RUN_OUTPUT/maps"
+test -s "$HOSPITAL_DSG" && test -s "$HOSPITAL_MESH"
+sha256sum "$HOSPITAL_DSG" "$HOSPITAL_MESH"
+```
+
+Build the provenance-bearing RAG index from this graph. Omitting `--review-csv` means the index uses Khronos semantic labels without human-review overrides; the build manifest records that no override CSV was applied.
+
+```bash
+.venv/bin/python llm-rag/RAG/khronos_3dsg_rag/src/main.py \
+  --config llm-rag/RAG/khronos_3dsg_rag/config.yaml build \
+  --reproducible \
+  --dataset hospital-p1000 \
+  --input "$HOSPITAL_DSG" \
+  --embedding-model paraphrase-multilingual-MiniLM-L12-v2 \
+  --embedding-model-revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
+  --embedding-device cpu \
+  --output "$HOSPITAL_RAG_OUTPUT"
+```
+
+Generate four new floor maps from the same Khronos graph and mesh. `--no-manual-topology` tells the generator to use edges in this DSG and skip historical Place-ID overrides. The output includes `dsg_topology_repaired.json`, per-floor maps and reports, and a `manifest.json` with input/output hashes. Grid resolution, extents, and floor elevations remain defined by the checked-in Hospital geometry manifest and `FLOOR_HEIGHTS`; map occupancy is recomputed from this run's Place and mesh data.
+
+```bash
+.venv/bin/python experiment/map-generation/generate_khronos_only.py \
+  --dsg "$HOSPITAL_DSG" \
+  --mesh "$HOSPITAL_MESH" \
+  --output "$HOSPITAL_MAP_OUTPUT" \
+  --no-manual-topology
+test -s "$HOSPITAL_RAG_OUTPUT/build_manifest.json"
+test -s "$HOSPITAL_MAP_OUTPUT/manifest.json"
+```
+
+If run-specific human-reviewed labels are available, pass them to the RAG build with `--review-csv /path/to/review.csv`; they must match the new DSG's object IDs. The historical 78-row CSV is tied to the historical graph and must not be applied to a different DSG by assumption. Map generation does not consume the RAG index. These commands create new RAG and map artifacts; a Nav2 run on those maps additionally requires a map bundle whose floor hashes and transition poses have been checked against the new outputs.
+
 ## 3. Build the provenance-bearing Hospital RAG index
 
 The planner verifies a `build_manifest.json` before accepting an index. Do not pass the archived `task-chain-60/.../runtime_inputs/vector_db` directly to `plan_nav2.py`: that copied runtime snapshot has no adjacent build manifest and the planner correctly rejects it.

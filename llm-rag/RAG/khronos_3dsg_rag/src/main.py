@@ -289,9 +289,8 @@ def _build_one(
             f.write(json.dumps({"doc_id": doc.doc_id, "text": doc.text, "metadata": doc.metadata}, ensure_ascii=False) + "\n")
 
     canonical_graph_path = None
-    if semantic_overrides_path is not None:
-        canonical_data = export_canonical_graph(graph, source_path=input_path)
-        canonical_graph_path, _ = save_canonical_graph(canonical_data, output_dir)
+    canonical_data = export_canonical_graph(graph, source_path=input_path)
+    canonical_graph_path, _ = save_canonical_graph(canonical_data, output_dir)
 
     # Build vector DB
     db_dir = output_dir / "vector_db"

@@ -76,6 +76,31 @@ def test_pipeline_provenance_hashes_prompt_grounding_and_nav2_adapters():
     assert all(len(value) == 64 for value in hashes.values())
 
 
+def test_run_defaults_allow_a_dsg_build_without_human_review_csv(tmp_path):
+    defaults = tmp_path / "fresh-run-defaults.yaml"
+    defaults.write_text(
+        """schema_version: hospital-nav2-plan-defaults-v1
+map_bundle_id: fresh-map-run
+model: gemma4:e2b-it-qat
+rag_source:
+  dsg_sha256: {dsg_hash}
+  semantic_review_csv_sha256: null
+  embedding_model: paraphrase-multilingual-MiniLM-L12-v2
+  embedding_model_revision: e8f8c211226b894fcb81acc59f3b34ba3efd5f42
+  embedding_device: cpu
+initial_state: {{floor_id: 0, pose: {{frame_id: map, x: 0.0, y: 0.0, yaw: 0.0}}}}
+floor_z_tolerance_m: 0.25
+robot_model: point
+""".format(dsg_hash="a" * 64),
+        encoding="utf-8",
+    )
+
+    loaded = plan_nav2._load_defaults(
+        defaults, {"map_bundle_id": "fresh-map-run"})
+
+    assert loaded["rag_source"]["semantic_review_csv_sha256"] is None
+
+
 def test_ros_plan_runner_uses_repository_root_for_relative_map_bundle_paths(
         monkeypatch, tmp_path):
     calls = {}
@@ -135,7 +160,7 @@ def test_rag_verification_allows_chroma_runtime_metadata_updates():
         dsg.write_text("dsg", encoding="utf-8")
         labels.write_text("reviewed labels", encoding="utf-8")
         config = {
-            "dataset": "hospital_p1000",
+            "dataset": "hospital-p1000",
             "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
             "embedding_model_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
             "embedding_device": "cpu",

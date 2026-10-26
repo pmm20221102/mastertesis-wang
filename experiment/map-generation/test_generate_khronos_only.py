@@ -1,6 +1,7 @@
 import sys
 import unittest
 import tempfile
+from unittest.mock import patch
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -18,11 +19,55 @@ from generate_khronos_only import (
     load_grid_geometry,
     place_component_sizes,
     repair_dsg_topology,
+    resolve_topology_links,
+    build_floor,
 )
+import generate_khronos_only as map_generator
 from fuse_places_into_occupancy import FREE, OCCUPIED, UNKNOWN, load_nav2_map, save_nav2_map
 
 
 class KhronosOnlyGridTests(unittest.TestCase):
+    def test_fresh_dsg_run_can_skip_historical_topology_links(self):
+        self.assertEqual(resolve_topology_links(skip_manual=True), [])
+        self.assertEqual(resolve_topology_links(skip_manual=False), MANUAL_TOPOLOGY_LINKS)
+
+    def test_build_floor_records_geometry_manifest_as_its_geometry_input(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            mesh = root / "mesh.ply"
+            dsg = root / "dsg.json"
+            mesh.write_bytes(b"mesh")
+            dsg.write_text("{}", encoding="utf-8")
+            metadata = {
+                "image": "map.pgm", "mode": "trinary", "width": 1, "height": 1,
+                "resolution": 0.1, "origin": [0.0, 0.0, 0.0], "negate": 0,
+                "occupied_thresh": 0.65, "free_thresh": 0.196,
+            }
+            grid = [[FREE]]
+
+            def save_map(output_dir, _grid, _metadata):
+                map_yaml = output_dir / "map.yaml"
+                map_yaml.write_text("image: map.pgm\\n", encoding="utf-8")
+                (output_dir / "map.pgm").write_bytes(b"P5\\n")
+                return map_yaml
+
+            with (patch.object(map_generator, "load_grid_geometry", return_value=metadata),
+                  patch.object(map_generator, "load_dsg_places",
+                               return_value=({"p": (0.0, 0.0, 0.0)}, [], {"p": 0.5})),
+                  patch.object(map_generator, "rasterize_place_support",
+                               return_value=[[True]]),
+                  patch.object(map_generator, "rasterize_mesh_obstacles",
+                               return_value=([[False]], {"projected_points": 0})),
+                  patch.object(map_generator, "save_nav2_map", side_effect=save_map),
+                  patch.object(map_generator, "load_nav2_map",
+                               return_value=(grid, metadata))):
+                report = build_floor(0, 0.0, mesh, dsg, dsg,
+                                     {"requested_links": []}, root / "maps")
+
+            self.assertEqual(report["inputs"]["geometry_manifest"],
+                             str(GRID_GEOMETRY_MANIFEST))
+            self.assertEqual(len(report["inputs"]["geometry_manifest_sha256"]), 64)
+
     def test_default_output_uses_a_fresh_rebuildable_directory(self):
         self.assertEqual(DEFAULT_OUTPUT.name, "hospital-p1000-khronos-only-generated")
 
