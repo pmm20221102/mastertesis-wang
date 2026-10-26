@@ -128,6 +128,8 @@ The output JSON records the instruction, model and code summaries, RAG/map prove
 
 A standalone browser demo is available in [experiment/navigation-ui-demo](experiment/navigation-ui-demo/README.md). It includes a manually reviewed RAG index and a fresh no-review index; the GUI lets you select either one before planning.
 
+For this demo, skip the RAG rebuild, map-generation, and run-profile packaging steps: the demo module bundles both RAG indexes and matching profiles, and reuses the maps already packaged in the repository. You still need to install the Python dependencies, build the ROS 2/Nav2 bridge, and have Ollama with the configured model.
+
 From the repository root in WSL:
 
 ~~~bash

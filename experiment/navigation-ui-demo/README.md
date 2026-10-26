@@ -2,6 +2,8 @@
 
 This is an optional, self-contained demonstration module for the thesis repository. It connects the natural-language planner to a selected Hospital P1000 RAG build, resolves destinations against the scene graph, compiles a navigation mission, and can display point-robot Nav2 execution in RViz2.
 
+> **Quick start:** For this packaged demo, you do not need to rebuild the RAG index, regenerate maps, or package a Nav2 run profile. The two RAG indexes and matching profiles are bundled, and the demo reuses the four-floor maps already packaged in the repository. You still need the Python dependencies, a built ROS 2/Nav2 bridge, and the local Ollama model listed below.
+
 ## Included RAG Profiles
 
 | GUI option | Build ID | Semantic review |
