@@ -25,7 +25,7 @@ From the repository root in WSL:
 
     bash experiment/navigation-ui-demo/run_demo.sh
 
-The script opens the local GUI at http://127.0.0.1:8765. Set HOSPITAL_UI_PYTHON if the project virtual environment is in a different location.
+The script opens the local GUI at http://127.0.0.1:8765. It selects a Python environment with the required dependencies from the project virtual environment, the standard Miniconda location, or PATH. Set HOSPITAL_UI_PYTHON to override the selection.
 
 Choose **Human-reviewed RAG (v5)** to use the manually supplemented labels, or **Fresh RAG (no manual labels)** to compare against the unreviewed build. Switching indexes clears the previous plan and stage outputs. The GUI validates each index against its source manifest and matching defaults before making it selectable.
 

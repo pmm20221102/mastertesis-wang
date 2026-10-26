@@ -31,12 +31,30 @@ export PYTHONNOUSERSITE=1
 export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 export ROS_STATIC_PEERS=""
 
-PYTHON_BIN="${HOSPITAL_UI_PYTHON:-$ROOT/.venv/bin/python}"
-if [[ ! -x "$PYTHON_BIN" ]]; then
-  PYTHON_BIN="$(command -v python3 || true)"
+PYTHON_CANDIDATES=()
+if [[ -n "${HOSPITAL_UI_PYTHON:-}" ]]; then
+  PYTHON_CANDIDATES+=("$HOSPITAL_UI_PYTHON")
+else
+  PYTHON_CANDIDATES+=("$ROOT/.venv/bin/python")
+  if [[ -n "${HOME:-}" ]]; then
+    PYTHON_CANDIDATES+=("$HOME/miniconda3/bin/python")
+  fi
+  SYSTEM_PYTHON="$(command -v python3 || true)"
+  if [[ -n "$SYSTEM_PYTHON" ]]; then
+    PYTHON_CANDIDATES+=("$SYSTEM_PYTHON")
+  fi
 fi
+
+PYTHON_BIN=""
+for candidate in "${PYTHON_CANDIDATES[@]}"; do
+  if [[ -x "$candidate" ]] && "$candidate" -c 'import yaml, chromadb, ollama, sentence_transformers' >/dev/null 2>&1; then
+    PYTHON_BIN="$candidate"
+    break
+  fi
+done
 if [[ -z "$PYTHON_BIN" ]]; then
-  echo "Python is unavailable. Install dependencies from llm-rag/BUILD_ENVIRONMENT.md." >&2
+  echo "No Python interpreter with the demo dependencies was found." >&2
+  echo "Install dependencies from llm-rag/BUILD_ENVIRONMENT.md or set HOSPITAL_UI_PYTHON." >&2
   exit 2
 fi
 
