@@ -52,6 +52,7 @@ Run from a clean repository root (do not leave a top-level colcon `log/` directo
   llm-rag/planner/tests \
   llm-rag/RAG/khronos_3dsg_rag/tests \
   experiment/map-generation/test_generate_khronos_only.py \
+  experiment/map-generation/test_package_nav2_run.py \
   experiment/tests
 ```
 
@@ -205,6 +206,7 @@ export HOSPITAL_MESH="$HOSPITAL_KHRONOS_OUTPUT/mesh.ply"
 export HOSPITAL_RUN_OUTPUT="$(mktemp -d "$HOME/hospital-khronos-rebuild.XXXXXX")"
 export HOSPITAL_RAG_OUTPUT="$HOSPITAL_RUN_OUTPUT/rag"
 export HOSPITAL_MAP_OUTPUT="$HOSPITAL_RUN_OUTPUT/maps"
+echo "Run artifacts: $HOSPITAL_RUN_OUTPUT"
 test -s "$HOSPITAL_DSG" && test -s "$HOSPITAL_MESH"
 sha256sum "$HOSPITAL_DSG" "$HOSPITAL_MESH"
 ```
@@ -234,6 +236,69 @@ Generate four new floor maps from the same Khronos graph and mesh. `--no-manual-
 test -s "$HOSPITAL_RAG_OUTPUT/build_manifest.json"
 test -s "$HOSPITAL_MAP_OUTPUT/manifest.json"
 ```
+
+Create a run-specific Nav2 bundle and defaults profile. This retains the reviewed directed transition template, updates every floor map path/hash, checks all transition endpoints and the initial pose against the new map's free cells, and pins the defaults to the RAG build inputs:
+
+```bash
+.venv/bin/python experiment/map-generation/package_nav2_run.py \
+  --maps-manifest "$HOSPITAL_MAP_OUTPUT/manifest.json" \
+  --rag-build "$HOSPITAL_RAG_OUTPUT" \
+  --output "$HOSPITAL_RUN_OUTPUT/nav2-profile"
+export HOSPITAL_NAV2_BUNDLE="$HOSPITAL_RUN_OUTPUT/nav2-profile/hospital_floor_transitions.yaml"
+export HOSPITAL_NAV2_DEFAULTS="$HOSPITAL_RUN_OUTPUT/nav2-profile/hospital_nav2_plan_defaults.yaml"
+export HOSPITAL_NAV2_PROFILE="$HOSPITAL_RUN_OUTPUT/nav2-profile/run_profile_manifest.json"
+test -s "$HOSPITAL_NAV2_PROFILE"
+```
+
+The profile generator verifies that the RAG and map manifests refer to the same DSG. Free portal cells do not prove route connectivity; run the Nav2 plan-only check on this bundle before accepting the new transitions.
+
+If you open new terminals, restore the profile paths using the run directory printed above:
+
+```bash
+export HOSPITAL_RUN_OUTPUT=/absolute/path/printed/above
+export HOSPITAL_RAG_OUTPUT="$HOSPITAL_RUN_OUTPUT/rag"
+export HOSPITAL_NAV2_BUNDLE="$HOSPITAL_RUN_OUTPUT/nav2-profile/hospital_floor_transitions.yaml"
+export HOSPITAL_NAV2_DEFAULTS="$HOSPITAL_RUN_OUTPUT/nav2-profile/hospital_nav2_plan_defaults.yaml"
+```
+
+For a fresh-map natural-language plan, start Nav2 on floor 0 from the generated bundle. Terminal 1:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source khronos-nav2-bridge/install/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=78
+export HOSPITAL_NAV2_MAP_F0="$(.venv/bin/python -c 'import os,yaml; print(yaml.safe_load(open(os.environ["HOSPITAL_NAV2_BUNDLE"]))["floors"]["0"]["map_yaml_path"])')"
+ros2 launch khronos_nav2_bridge hospital_nav2.launch.py \
+  map:="$HOSPITAL_NAV2_MAP_F0" \
+  params_file:=khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_point.yaml
+```
+
+Before planning, inspect the target labels available in the fresh canonical graph and choose an instruction that matches one:
+
+```bash
+.venv/bin/python -c 'import collections,json,os; g=json.load(open(os.path.join(os.environ["HOSPITAL_RAG_OUTPUT"],"canonical_graph_v2.json"))); print(collections.Counter((n.get("node_type"), n.get("label")) for n in g["nodes"].values()))'
+```
+
+Set `HOSPITAL_NAV2_INSTRUCTION` to a request grounded by one of those labels. After the launch reports `Managed nodes are active`, terminal 2 can submit it:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=78
+export HOSPITAL_NAV2_PYTHON="$PWD/.venv/bin/python"
+read -r -p "Instruction using one of the listed target labels: " HOSPITAL_NAV2_INSTRUCTION
+export HOSPITAL_NAV2_INSTRUCTION
+bash llm-rag/plan_hospital_nav2.sh \
+  --instruction "$HOSPITAL_NAV2_INSTRUCTION" \
+  --db-dir "$HOSPITAL_RAG_OUTPUT/vector_db" \
+  --bundle "$HOSPITAL_NAV2_BUNDLE" \
+  --defaults "$HOSPITAL_NAV2_DEFAULTS" \
+  --ros-domain-id 78 \
+  --output "$HOSPITAL_RUN_OUTPUT/fresh-map-plan.json"
+```
+
+No-review builds may contain objects or rooms labeled `unknown`; in that case the RAG can build successfully while an instruction such as “find a room with a bed” returns `target_not_found`. Supply review labels for the same DSG or choose a target label present in the canonical graph. The profile packager and direct cross-floor Nav2 smoke validate the map bundle and route mechanics independently of semantic labels.
 
 If run-specific human-reviewed labels are available, pass them to the RAG build with `--review-csv /path/to/review.csv`; they must match the new DSG's object IDs. The historical 78-row CSV is tied to the historical graph and must not be applied to a different DSG by assumption. Map generation does not consume the RAG index. These commands create new RAG and map artifacts; a Nav2 run on those maps additionally requires a map bundle whose floor hashes and transition poses have been checked against the new outputs.
 
@@ -281,13 +346,18 @@ test -s llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_2026102
 
 ## 4. Run one natural-language-to-Nav2 plan
 
-Install and start Ollama, then obtain the model pinned in the defaults file:
+Install Ollama using the [official Linux instructions](https://docs.ollama.com/linux). With systemd, enable and start its service; without systemd, run `ollama serve` in a dedicated terminal and keep it open. Obtain the model pinned in the defaults file:
 
 ```bash
+curl -fsSL https://ollama.com/install.sh | sh
+sudo systemctl enable --now ollama
+systemctl is-active ollama
 ollama pull gemma4:e2b-it-qat
 ollama --version
-curl -s http://127.0.0.1:11434/api/tags
+curl -fsS http://127.0.0.1:11434/api/tags
 ```
+
+On a machine without systemd, start `ollama serve` instead of running the `systemctl` commands. Then run `ollama pull` and the API check from another terminal. Keep the server running while the planner runs.
 
 The selected 60×4 run manifest records model digest `07ea59a474013479c8b6b802bef095c40e964a1d776ba02f264c0e30e1aede0c` for `gemma4:e2b-it-qat`. Compare the `/api/tags` digest with this value when attempting to reproduce that historical model. The historical Ollama server version is not recorded; retain `ollama --version` output for each new run.
 

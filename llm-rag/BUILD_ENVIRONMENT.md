@@ -22,19 +22,36 @@ The pinned versions were taken from the Python 3.12 environment in which the Pyt
 
 Run from the repository root:
 
+Create the Python environment and install the local Ollama server using the [official Linux installation guide](https://docs.ollama.com/linux):
+
 ~~~bash
 python3 --version
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade pip
 .venv/bin/pip install -r llm-rag/requirements.txt
+curl -fsSL https://ollama.com/install.sh | sh
+~~~
+
+The official installer creates a systemd service when systemd is running. Enable and start it, then download the model:
+
+~~~bash
+sudo systemctl enable --now ollama
+systemctl is-active ollama
 ollama pull gemma4:e2b-it-qat
 ~~~
 
-Confirm that the Ollama service is running:
+If the machine has no running systemd, start the server in a dedicated terminal and leave that process running:
 
 ~~~bash
+ollama serve
+~~~
+
+In another terminal, check the installed CLI, model, and API:
+
+~~~bash
+ollama --version
 ollama list
-curl -s http://127.0.0.1:11434/api/tags
+curl -fsS http://127.0.0.1:11434/api/tags
 ~~~
 
 The first RAG build may download the pinned embedding model. The build uses `embedding-device=cpu` to avoid competing with Ollama for GPU resources.

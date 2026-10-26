@@ -32,8 +32,18 @@ The following commands assume the repository root is the current directory. Inst
 ~~~bash
 python3 -m venv .venv
 .venv/bin/pip install -r llm-rag/requirements.txt
-ollama pull gemma4:e2b-it-qat
 ~~~
+
+Install Ollama from the [official Linux instructions](https://docs.ollama.com/linux):
+
+~~~bash
+curl -fsSL https://ollama.com/install.sh | sh
+sudo systemctl enable --now ollama
+ollama pull gemma4:e2b-it-qat
+curl -fsS http://127.0.0.1:11434/api/tags
+~~~
+
+If systemd is unavailable, run `ollama serve` in a dedicated terminal and keep it open, then run the model-pull and API-check commands in another terminal. See `llm-rag/BUILD_ENVIRONMENT.md` for version recording and service checks.
 
 Use rosdep to install the dependencies declared by the bridge and build the Hospital package:
 
