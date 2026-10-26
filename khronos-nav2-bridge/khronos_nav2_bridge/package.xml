@@ -4,7 +4,7 @@
   <description>Hospital P1000 Nav2 path planning, abstract floor transitions, and planar kinematic ANYmal C visualization.</description>
   <maintainer email="ulmmt@users.noreply.github.com">Khronos maintainers</maintainer><license>BSD</license>
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <depend>nav2_map_server</depend><depend>nav2_planner</depend><depend>nav2_controller</depend><depend>nav2_behaviors</depend><depend>nav2_bt_navigator</depend><depend>nav2_waypoint_follower</depend><depend>nav2_lifecycle_manager</depend><depend>nav2_costmap_2d</depend>
+  <depend>nav2_map_server</depend><depend>nav2_planner</depend><depend>nav2_navfn_planner</depend><depend>nav2_controller</depend><depend>nav2_behaviors</depend><depend>nav2_bt_navigator</depend><depend>nav2_waypoint_follower</depend><depend>nav2_lifecycle_manager</depend><depend>nav2_costmap_2d</depend>
   <depend>nav2_regulated_pure_pursuit_controller</depend><depend>nav2_msgs</depend>
   <depend>robot_state_publisher</depend><depend>xacro</depend><depend>geometry_msgs</depend><depend>nav_msgs</depend><depend>sensor_msgs</depend><depend>std_msgs</depend><depend>visualization_msgs</depend><depend>tf2_ros</depend>
   <exec_depend>launch</exec_depend><exec_depend>launch_ros</exec_depend><exec_depend>rviz2</exec_depend><exec_depend>nav2_rviz_plugins</exec_depend><exec_depend>tf2_tools</exec_depend>
