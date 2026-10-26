@@ -2,6 +2,8 @@
 
 This guide covers reproducing the software workflow in this repository. It does not reinterpret experimental findings or treat archived outputs as a rerun. The commands assume WSL 2 / Ubuntu 24.04, Python 3.12, ROS 2 Jazzy, and the repository root as the working directory.
 
+For the full raw-data → Khronos → RAG → Nav2 plan-only path and the steps not currently reproducible from this checkout, see [REPRODUCIBILITY_GAPS.md](REPRODUCIBILITY_GAPS.md).
+
 ## What can be reproduced from this checkout
 
 | Workflow | Reproduction status | Required inputs |
