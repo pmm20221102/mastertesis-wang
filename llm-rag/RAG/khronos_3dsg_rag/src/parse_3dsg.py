@@ -4,17 +4,20 @@ Supports two formats:
   1. SPARK-DSG format (Khronos output): nodes as list, edges with source/target
   2. Flat format (task planner style): entities + relations lists
 
-The parser is deliberately lenient — missing fields get defaults, no crashes.
+Missing optional fields get defaults; incompatible numeric object labels fail closed.
 """
 
 from __future__ import annotations
 
 import json
+import hashlib
 import logging
 import math
 from pathlib import Path
 from typing import Any
 import os
+
+import yaml
 
 from schemas import BBox, SceneEdge, SceneGraph, SceneNode
 
@@ -51,8 +54,50 @@ KHRONOS_LABEL_MAP_ADE20K: dict[int, str] = {
     14: "couch", 15: "light", 16: "appliance", 17: "thing",
     18: "deformable", 19: "dynamic_nonhuman", 20: "human",
 }
-if os.environ.get("RAG_LABEL_SPACE") == "ade20k":
-    KHRONOS_LABEL_MAP = KHRONOS_LABEL_MAP_ADE20K
+LABEL_SPACES = ("office", "ade20k", "hospital109")
+HOSPITAL_LABEL_SOURCE = (Path(__file__).resolve().parents[1] / "config" /
+                         "tartanground_hospital_p1000_fine_label_space.yaml")
+
+
+def resolve_label_space(dataset: str = "", label_space: str | None = None) -> tuple[dict[int, str], dict]:
+    """Select a per-call label map and its content-addressed source provenance.
+
+    Hospital datasets always use the fine ontology, even under a legacy ADE20K
+    environment. Unspecified legacy inputs retain Office with an explicit warning.
+    """
+    dataset = dataset.lower().replace("_", "-")
+    hospital = dataset.startswith("hospital")
+    if hospital and label_space and label_space != "hospital109":
+        raise ValueError("Hospital datasets require label space hospital109")
+    selected = label_space or ("hospital109" if hospital else os.environ.get("RAG_LABEL_SPACE"))
+    if not selected and "ade20k" in dataset:
+        selected = "ade20k"
+    if not selected:
+        selected = "office"
+        if "office" not in dataset:
+            logger.warning("No label space specified; using legacy Office. For Hospital, "
+                           "pass --dataset hospital-p1000 or --label-space hospital109.")
+    if selected not in LABEL_SPACES:
+        raise ValueError(f"unsupported label space {selected!r}; choose from {LABEL_SPACES}")
+
+    if selected == "hospital109":
+        source = HOSPITAL_LABEL_SOURCE
+        content = source.read_bytes()
+        payload = yaml.safe_load(content)
+        entries = payload.get("label_names", [])
+        labels = {entry["label"]: entry["name"] for entry in entries}
+        if (payload.get("total_semantic_labels") != 110 or len(entries) != 110
+                or set(labels) != set(range(110))
+                or any(not isinstance(name, str) or not name.strip() for name in labels.values())):
+            raise ValueError("Hospital109 label source must contain unique labels 0..109")
+        source_name = f"config/{source.name}"
+    else:
+        labels = KHRONOS_LABEL_MAP_ADE20K if selected == "ade20k" else KHRONOS_LABEL_MAP
+        source_name = "src/parse_3dsg.py"
+        content = Path(__file__).read_bytes()
+    return dict(labels), {"name": selected, "source": source_name,
+                          "source_sha256": hashlib.sha256(content).hexdigest(),
+                          "label_count": len(labels)}
 
 # layer number -> human-readable type name
 LAYER_TYPE_MAP: dict[int, str] = {
@@ -130,7 +175,7 @@ def _determine_type(attrs: dict, layer: int, partition: int) -> str:
     return node_type
 
 
-def _parse_spark_dsg(data: dict) -> SceneGraph:
+def _parse_spark_dsg(data: dict, label_map: dict[int, str]) -> SceneGraph:
     """Parse SPARK-DSG format (Khronos / Hydra native format)."""
     graph = SceneGraph()
 
@@ -158,8 +203,12 @@ def _parse_spark_dsg(data: dict) -> SceneGraph:
         # Determine semantic label
         sem_label_num = attrs.get("semantic_label")
         label = ""
-        if isinstance(sem_label_num, int) and sem_label_num in KHRONOS_LABEL_MAP:
-            label = KHRONOS_LABEL_MAP[sem_label_num]
+        if isinstance(sem_label_num, int) and sem_label_num in label_map:
+            label = label_map[sem_label_num]
+        elif (layer == 2 and isinstance(sem_label_num, int)
+              and sem_label_num != 4294967295):
+            raise ValueError(f"Object {raw_id} semantic label {sem_label_num} is outside the "
+                             "selected label space; use --dataset or --label-space explicitly")
         elif isinstance(sem_label_num, str):
             label = sem_label_num
 
@@ -308,12 +357,16 @@ def _apply_semantic_overrides(graph: SceneGraph, overrides_path: str | Path) -> 
 def parse_3dsg(
     path: str | Path,
     semantic_overrides_path: str | Path | None = None,
+    *,
+    dataset: str = "",
+    label_space: str | None = None,
 ) -> SceneGraph:
     """Auto-detect format and parse 3DSG JSON.
 
     Returns a SceneGraph with nodes, edges, and node_index populated.
     """
     data = load_json(path)
+    label_map, _ = resolve_label_space(dataset, label_space)
 
     # Detect SPARK-DSG format by checking for characteristic keys
     graph = None
@@ -321,7 +374,7 @@ def parse_3dsg(
         first = data["nodes"][0]
         if isinstance(first, dict) and "layer" in first and "attributes" in first:
             logger.info("Detected SPARK-DSG format (Khronos / Hydra)")
-            graph = _parse_spark_dsg(data)
+            graph = _parse_spark_dsg(data, label_map)
 
     # Flat format with entities + relations
     elif "entities" in data and isinstance(data["entities"], list):

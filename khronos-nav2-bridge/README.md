@@ -13,11 +13,28 @@ rosdep install --from-paths khronos-nav2-bridge/khronos_nav2_bridge --ignore-src
 cd khronos-nav2-bridge
 colcon build --packages-select khronos_nav2_bridge --symlink-install
 source install/setup.bash
+cd ..
 ~~~
 
 ## Mission interface
 
-The low-level runner takes a mission JSON, a floor-map bundle, and an output JSON path. `robot-model` must match the Nav2 profile that was launched. By default, execution mode sends goals to the Nav2 action server.
+The low-level runner takes a mission JSON, a floor-map bundle, and an output JSON path. It validates bundle hashes, floor IDs, the initial pose, and ordered transitions. `--plan-only` computes routes without sending `NavigateToPose`; execution mode sends goals and records each action result, map load, pose reset, and TF check. `--robot-model` must match the launched Nav2 profile.
+
+### Start a dedicated Hospital simulation
+
+Start Nav2 in an isolated ROS domain and wait for `Managed nodes are active` before using the runner. For the committed four-floor bundle, launch floor 0:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+source khronos-nav2-bridge/install/setup.bash
+export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=77
+ros2 launch khronos_nav2_bridge hospital_nav2.launch.py \
+  map:=khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/map.yaml \
+  params_file:=khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_point.yaml
+```
+
+Cross-floor missions load a map and reset the simulated pose at a configured portal. This software adapter does not model continuous stair or elevator motion. The interactive demo wraps startup and RViz2 visualization.
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash

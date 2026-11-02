@@ -375,6 +375,12 @@ def main():
         default="",
         help="Optional human-confirmed semantic sidecar for unknown object nodes",
     )
+    from parse_3dsg import LABEL_SPACES, resolve_label_space
+
+    parser.add_argument("--dataset", default="",
+                        help="Dataset name; hospital-p1000 selects Hospital109")
+    parser.add_argument("--label-space", choices=LABEL_SPACES, default="",
+                        help="Numeric label space; overrides legacy RAG_LABEL_SPACE")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -390,14 +396,22 @@ def main():
         sys.exit(1)
 
     print(f"Parsing DSG: {dsg_path}")
-    graph = parse_3dsg(
-        dsg_path,
-        semantic_overrides_path=args.semantic_overrides or None,
-    )
+    try:
+        _, label_provenance = resolve_label_space(args.dataset, args.label_space or None)
+        graph = parse_3dsg(
+            dsg_path,
+            semantic_overrides_path=args.semantic_overrides or None,
+            dataset=args.dataset,
+            label_space=label_provenance["name"],
+        )
+    except (FileNotFoundError, ValueError) as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(1)
     print(f"  Nodes: {len(graph.nodes)}, Edges: {len(graph.edges)}")
 
     print("Exporting canonical graph...")
     result = export_canonical_graph(graph, source_path=dsg_path)
+    result["manifest"]["label_space"] = label_provenance
 
     graph_path, manifest_path = save_canonical_graph(result, args.output_dir)
 

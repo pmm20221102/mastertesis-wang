@@ -14,5 +14,11 @@
   "hierarchy_validity_pct": 100.0,
   "object_place_coverage_pct": 99.2,
   "place_room_coverage_pct": 99.1,
-  "position_coverage_pct": 100.0
+  "position_coverage_pct": 100.0,
+  "label_space": {
+    "name": "hospital109",
+    "source": "config/tartanground_hospital_p1000_fine_label_space.yaml",
+    "source_sha256": "271eb9e71e5be5362f515fd9c65980f78ec56ae7b22708477aba1c1379f93f2b",
+    "label_count": 110
+  }
 }

@@ -31,7 +31,7 @@ from build_documents import build_all_documents
 from build_vector_db import (DEFAULT_EMBED_DEVICE, DEFAULT_EMBED_MODEL,
                              DEFAULT_EMBED_MODEL_REVISION, build_vector_db)
 from export_canonical_graph import export_canonical_graph, save_canonical_graph
-from parse_3dsg import parse_3dsg
+from parse_3dsg import LABEL_SPACES, parse_3dsg, resolve_label_space
 from query_rag import query_rag
 
 logger = logging.getLogger("khronos_3dsg_rag")
@@ -173,13 +173,15 @@ def _build_reproducible(input_path: str | Path, output_path: str | Path,
                         review_csv: str | Path | None = None,
                         embedding_model: str = DEFAULT_EMBED_MODEL,
                         embedding_model_revision: str | None = None,
-                        embedding_device: str = DEFAULT_EMBED_DEVICE) -> dict:
+                        embedding_device: str = DEFAULT_EMBED_DEVICE,
+                        label_space: str | None = None) -> dict:
     """Build a complete new index in staging, then atomically publish it."""
     source = Path(input_path)
     if not source.is_file():
         raise FileNotFoundError(f"DSG input not found: {source}")
     if semantic_overrides is not None and review_csv is not None:
         raise ValueError("provide either --semantic-overrides or --review-csv, not both")
+    _, label_provenance = resolve_label_space(dataset, label_space)
     if embedding_model_revision is None and embedding_model == DEFAULT_EMBED_MODEL:
         embedding_model_revision = DEFAULT_EMBED_MODEL_REVISION
     if (not isinstance(embedding_model_revision, str)
@@ -195,6 +197,7 @@ def _build_reproducible(input_path: str | Path, output_path: str | Path,
         raise FileNotFoundError(f"semantic label input not found: {input_labels}")
     build_config = {
         "dataset": dataset,
+        "label_space": label_provenance,
         "aliases": aliases,
         "embedding_model": embedding_model,
         "embedding_model_revision": embedding_model_revision,
@@ -227,7 +230,8 @@ def _build_reproducible(input_path: str | Path, output_path: str | Path,
                             semantic_overrides_path=str(override_path) if override_path else None,
                             embedding_model=embedding_model,
                             embedding_model_revision=embedding_model_revision,
-                            embedding_model_device=embedding_device)
+                            embedding_model_device=embedding_device,
+                            label_space=label_provenance["name"])
         if result.get("status") != "ok":
             raise RuntimeError(result.get("error", "RAG build failed"))
 
@@ -269,6 +273,7 @@ def _build_one(
     embedding_model: str = DEFAULT_EMBED_MODEL,
     embedding_model_revision: str | None = None,
     embedding_model_device: str | None = None,
+    label_space: str | None = None,
 ) -> dict:
     """Build a single RAG database. Runs in a subprocess for parallelism."""
     input_path = Path(input_path)
@@ -277,7 +282,9 @@ def _build_one(
     if not input_path.exists():
         return {"status": "error", "name": output_dir.name, "error": f"File not found: {input_path}"}
 
-    graph = parse_3dsg(input_path, semantic_overrides_path=semantic_overrides_path)
+    _, label_provenance = resolve_label_space(dataset, label_space)
+    graph = parse_3dsg(input_path, semantic_overrides_path=semantic_overrides_path,
+                       dataset=dataset, label_space=label_provenance["name"])
     docs = build_all_documents(graph, aliases=aliases, dataset=dataset or output_dir.name, source_file=input_path.name)
 
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -290,6 +297,7 @@ def _build_one(
 
     canonical_graph_path = None
     canonical_data = export_canonical_graph(graph, source_path=input_path)
+    canonical_data["manifest"]["label_space"] = label_provenance
     canonical_graph_path, _ = save_canonical_graph(canonical_data, output_dir)
 
     # Build vector DB
@@ -327,16 +335,19 @@ def cmd_build(args: argparse.Namespace) -> None:
             print("Error: --reproducible requires one explicit --input and --output.", file=sys.stderr)
             sys.exit(2)
         try:
+            dataset = args.dataset or Path(args.input).stem
             result = _build_reproducible(
                 args.input,
                 args.output,
                 aliases,
-                dataset=args.dataset or Path(args.input).stem,
+                dataset=dataset,
                 semantic_overrides=args.semantic_overrides or None,
                 review_csv=args.review_csv or None,
                 embedding_model=args.embedding_model,
                 embedding_model_revision=args.embedding_model_revision or None,
                 embedding_device=args.embedding_device,
+                label_space=(args.label_space or config.get("label_spaces", {}).get(dataset)
+                             or None),
             )
         except (FileExistsError, FileNotFoundError, ValueError, RuntimeError) as error:
             print(f"Error: {error}", file=sys.stderr)
@@ -352,6 +363,10 @@ def cmd_build(args: argparse.Namespace) -> None:
         if args.semantic_overrides:
             print("Error: --semantic-overrides is supported only for a single --input build.", file=sys.stderr)
             sys.exit(1)
+        if args.label_space or args.dataset:
+            print("Error: --dataset and --label-space require a single --input build; "
+                  "use config label_spaces for --all.", file=sys.stderr)
+            sys.exit(2)
         # Parallel build from config dsg_sources
         sources = config.get("dsg_sources", {})
         if not sources:
@@ -362,13 +377,15 @@ def cmd_build(args: argparse.Namespace) -> None:
         tasks = []
         for name, dsg_path in sources.items():
             out = output_root / name
-            tasks.append((dsg_path, str(out), aliases, name))
+            tasks.append((dsg_path, str(out), aliases, name,
+                          config.get("label_spaces", {}).get(name)))
 
         print(f"Building {len(tasks)} databases in parallel ...\n")
         t0 = time.time()
 
         with ProcessPoolExecutor(max_workers=min(len(tasks), 4)) as pool:
-            futures = {pool.submit(_build_one, inp, out, al, ds): ds for inp, out, al, ds in tasks}
+            futures = {pool.submit(_build_one, inp, out, al, ds, label_space=ls): ds
+                       for inp, out, al, ds, ls in tasks}
             for future in as_completed(futures):
                 result = future.result()
                 if result["status"] == "ok":
@@ -385,13 +402,19 @@ def cmd_build(args: argparse.Namespace) -> None:
         output_dir = args.output or config.get("output_dir", "outputs")
 
         print(f"Building from {input_path} ...\n")
-        result = _build_one(
-            input_path,
-            output_dir,
-            aliases,
-            dataset=Path(input_path).stem,
-            semantic_overrides_path=args.semantic_overrides or None,
-        )
+        dataset = args.dataset or Path(input_path).stem
+        try:
+            result = _build_one(
+                input_path,
+                output_dir,
+                aliases,
+                dataset=dataset,
+                semantic_overrides_path=args.semantic_overrides or None,
+                label_space=args.label_space or config.get("label_spaces", {}).get(dataset) or None,
+            )
+        except (FileNotFoundError, ValueError) as error:
+            print(f"Error: {error}", file=sys.stderr)
+            sys.exit(1)
 
         if result["status"] == "ok":
             print(f"[1/2] Parsed: {result['nodes']} nodes, {result['edges']} edges")
@@ -511,7 +534,9 @@ def main():
     p_build.add_argument("--reproducible", action="store_true",
                          help="Build in a new staging directory and write a provenance manifest")
     p_build.add_argument("--dataset", default="",
-                         help="Stable dataset label for document metadata in a reproducible build")
+                         help="Dataset for metadata and label selection; hospital-p1000 selects Hospital109")
+    p_build.add_argument("--label-space", choices=LABEL_SPACES, default="",
+                         help="Numeric semantic label space (single build); overrides legacy RAG_LABEL_SPACE")
     p_build.add_argument("--embedding-model", default=DEFAULT_EMBED_MODEL,
                          help="Sentence-Transformers model used to build the vector index")
     p_build.add_argument("--embedding-model-revision", default="",

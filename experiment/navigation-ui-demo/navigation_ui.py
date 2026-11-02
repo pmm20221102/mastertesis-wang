@@ -7,6 +7,7 @@ import argparse
 from collections import deque
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import signal
@@ -169,6 +170,7 @@ textarea,select{width:100%;border:1px solid #b8c5d2;border-radius:9px;padding:10
 </style></head><body><main>
 <header class="header"><h1>Hospital Navigation Console</h1><span class="tag">WSL · Point Robot Simulation · ROS_DOMAIN_ID 79</span></header>
 <div id="startup" class="notice" hidden></div>
+<div id="backend" class="notice"></div>
 <div class="grid"><section class="panel stage-column"><h2>Stage Outputs</h2><article class="stage-card"><h3>LLM1 Intent</h3><pre id="stage-intent" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RAG Grounding</h3><pre id="stage-rag" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Task Chain</h3><pre id="stage-mission" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Mission</h3><pre id="stage-mission-build" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Nav2 Route</h3><pre id="stage-nav2" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RViz Simulation</h3><pre id="stage-execution" class="stage-output">Run after route planning succeeds</pre></article></section><section class="panel"><h2>Navigation Request</h2><div class="muted">Enter a natural-language destination. If multiple places match, choose one below. After planning succeeds, you can run the planar kinematic simulation in RViz2.</div>
 <div class="profile-selector"><label for="rag-profile">RAG index</label><select id="rag-profile" aria-label="RAG index"></select><div class="muted">New run profiles are detected automatically. Changing the RAG clears the previous plan and stage outputs.</div><div class="row"><button id="refresh-rags" class="secondary">Refresh RAG list</button><span id="rag-refresh-status" class="muted">Scans configured run folders every 15 seconds.</span></div></div>
 <textarea id="instruction" placeholder="e.g., Take me to a room with a bed"></textarea><div class="row"><button id="plan">Plan Route</button><span id="status" class="status">Ready</span></div>
@@ -188,13 +190,13 @@ function renderChoices(groups){const root=$("choices");const nextKey=JSON.string
 function renderStageOutputs(s){const o=s.stage_outputs||{},items=[["intent","stage-intent","Waiting for input"],["rag","stage-rag","Waiting for input"],["task_chain","stage-mission","Waiting for input"],["mission","stage-mission-build","Waiting for input"],["nav2","stage-nav2","Waiting for input"],["execution","stage-execution","Run after route planning succeeds"]];for(const [key,id,fallback] of items){const el=$(id);el.textContent=Object.prototype.hasOwnProperty.call(o,key)?JSON.stringify(o[key],null,2):fallback}}
 let ragProfileOptionsKey=null;
 function renderRagProfiles(s){const options=s.rag_profiles||[],key=JSON.stringify(options);const select=$("rag-profile");if(key!==ragProfileOptionsKey){ragProfileOptionsKey=key;select.replaceChildren();for(const profile of options){const option=document.createElement("option");option.value=profile.id;option.textContent=profile.label;select.append(option)}}if(s.selected_rag_profile_id)select.value=s.selected_rag_profile_id}
-function render(s){renderStageOutputs(s);renderRagProfiles(s);const banner=$("startup");if(s.startup_error){banner.hidden=false;banner.className="notice error";banner.textContent=s.startup_error}else if(s.rag_build_id){banner.hidden=false;banner.className="notice";banner.textContent="RAG "+s.rag_build_id.slice(0,12)+" · "+s.rag_review_badge}$("status").textContent=s.stage_message||s.status||"Ready";$("plan").disabled=["running","demo_running"].includes(s.status);$("rag-profile").disabled=["running","demo_running"].includes(s.status);$("refresh-rags").disabled=["running","demo_running"].includes(s.status);$("demo").hidden=s.status!=="planned";$("demo").disabled=s.status==="demo_running";if(s.error)showMessage(s.error,"error");else if(s.status==="planned")showMessage(`Route planned: ${s.result?.path_length_m??"?"} m, ${s.result?.transition_count??0} floor transition(s). You can start the RViz2 simulation.`,"success");else if(s.status==="awaiting_selection")showMessage("Multiple places match. Choose a destination.","warning");else if(s.status==="target_not_found")showMessage("RAG could not ground this destination in the scene graph. Rephrase the request or add semantic labels to the graph.","warning");renderChoices(s.candidate_groups);
+function render(s){$("backend").textContent=s.task_chain_backend==="llm2"?"Task chain: LLM1 + RAG + LLM2 (full pipeline)":"Task chain: LLM1 + RAG + deterministic compiler (LLM2 bypassed)";renderStageOutputs(s);renderRagProfiles(s);const banner=$("startup");if(s.startup_error){banner.hidden=false;banner.className="notice error";banner.textContent=s.startup_error}else if(s.rag_build_id){banner.hidden=false;banner.className="notice";banner.textContent="RAG "+s.rag_build_id.slice(0,12)+" · "+s.rag_review_badge}$("status").textContent=s.stage_message||s.status||"Ready";$("plan").disabled=["running","demo_running"].includes(s.status);$("rag-profile").disabled=["running","demo_running"].includes(s.status);$("refresh-rags").disabled=["running","demo_running"].includes(s.status);$("demo").hidden=s.status!=="planned";$("demo").disabled=s.status==="demo_running";if(s.error)showMessage(s.error,"error");else if(s.status==="planned")showMessage(`Route planned: ${s.result?.path_length_m??"?"} m, ${s.result?.transition_count??0} floor transition(s). You can start the RViz2 simulation.`,"success");else if(s.status==="awaiting_selection")showMessage("Multiple places match. Choose a destination.","warning");else if(s.status==="target_not_found")showMessage("RAG could not ground this destination in the scene graph. Rephrase the request or add semantic labels to the graph.","warning");renderChoices(s.candidate_groups);
  const list=$("events");list.replaceChildren();for(const e of (s.events||[])){const li=document.createElement("li"),time=document.createElement("time"),span=document.createElement("span");time.textContent=e.time||"";span.textContent=e.message||e.stage||"";li.append(time,span);list.append(li)}if(s.demo_result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify({status:s.demo_result.status,reached_stops:s.demo_result.reached_stops,error:s.demo_result.error},null,2);$("result").replaceChildren(pre)}else if(s.result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify(s.result,null,2);$("result").replaceChildren(pre)}list.scrollTop=list.scrollHeight}
 async function poll(){try{render(await (await fetch("/api/state")).json())}catch(e){}timer=setTimeout(poll,700)}
 $("instruction").addEventListener("input",()=>{candidateGroupsKey=null});
 $("rag-profile").onchange=()=>{const select=$("rag-profile");select.disabled=true;post("/api/rag-profile",{profile_id:select.value}).then(()=>{candidateGroupsKey=null;$("choices").replaceChildren();showMessage("RAG profile changed. Previous results and outputs were cleared.","success")}).catch(e=>showMessage(e.message,"error")).finally(()=>{select.disabled=false})};
 $("refresh-rags").onclick=()=>{const button=$("refresh-rags");button.disabled=true;$("rag-refresh-status").textContent="Scanning configured run folders...";post("/api/rag-profiles/refresh").then(result=>{$("rag-refresh-status").textContent=result.error||("Scan complete. "+result.discovered+" new profile(s) found.")}).catch(e=>{$("rag-refresh-status").textContent=e.message}).finally(()=>{button.disabled=false})};
-$("plan").onclick=()=>{const instruction=$("instruction").value.trim();if(!instruction){showMessage("Enter a navigation request.","warning");return}post("/api/plan",{instruction}).then(()=>showMessage("Request submitted. Starting the simulation and analyzing the intent.")) .catch(e=>showMessage(e.message,"error"))};
+$("plan").onclick=()=>{const instruction=$("instruction").value.trim();if(!instruction){showMessage("Enter a navigation request.","warning");return}post("/api/plan",{instruction}).then(()=>showMessage("Request submitted. Analyzing intent and grounding destinations; Nav2 starts after mission preparation.")) .catch(e=>showMessage(e.message,"error"))};
 $("demo").onclick=()=>post("/api/demo").then(()=>showMessage("RViz2 is running the point-robot simulation.","success")).catch(e=>showMessage(e.message,"error"));
 $("stop").onclick=()=>post("/api/stop").then(()=>showMessage("Simulation stack stopped."));
 fetch("/api/state").then(r=>r.json()).then(s=>{if(s.startup_error)showMessage(s.startup_error,"error");render(s)}).finally(poll);
@@ -203,6 +205,9 @@ fetch("/api/state").then(r=>r.json()).then(s=>{if(s.startup_error)showMessage(s.
 
 class NavigationController:
     def __init__(self):
+        self.task_chain_backend = os.environ.get("HOSPITAL_TASK_CHAIN_BACKEND", "llm2")
+        if self.task_chain_backend not in ("llm2", "grounded_deterministic"):
+            raise ValueError("HOSPITAL_TASK_CHAIN_BACKEND must be llm2 or grounded_deterministic")
         self.profile_config_path = Path(os.environ.get(
             "HOSPITAL_RAG_PROFILE_CONFIG", str(DEFAULT_RAG_PROFILE_CONFIG))).expanduser()
         self.profile_root = self.profile_config_path.resolve().parent
@@ -509,7 +514,7 @@ class NavigationController:
         event = {"time": time.strftime("%H:%M:%S"), "stage": stage,
                  "message": message, "details": details}
         with self.state_lock:
-            if self.stop_requested and stage != "stopped":
+            if getattr(self, "stop_requested", False) and stage != "stopped":
                 return
             self.state["events"].append(event)
             self.state["events"] = self.state["events"][-120:]
@@ -533,7 +538,7 @@ class NavigationController:
         return value
 
     def _record_progress(self, event):
-        if self.stop_requested:
+        if getattr(self, "stop_requested", False):
             return
         stage = event.get("stage", "planner")
         message = PROGRESS_MESSAGES.get(
@@ -577,7 +582,7 @@ class NavigationController:
             }
         if key:
             with self.state_lock:
-                if self.stop_requested:
+                if getattr(self, "stop_requested", False):
                     return
                 outputs = dict(self.state.get("stage_outputs") or {})
                 outputs[key] = value
@@ -597,6 +602,7 @@ class NavigationController:
                 for item in self.rag_profiles.values()
             ]
             discovery_error = self.discovery_error
+        snapshot["task_chain_backend"] = self.task_chain_backend
         snapshot["rag_build_id"] = (rag_info or {}).get("build_id")
         snapshot["semantic_review_csv_sha256"] = (rag_info or {}).get(
             "semantic_review_csv_sha256")
@@ -661,6 +667,18 @@ class NavigationController:
         env.pop("PYTHONHOME", None)
         return env
 
+    @staticmethod
+    def _lifecycle_state(probe):
+        if probe.returncode != 0 or probe.stderr.strip():
+            return None
+        match = re.fullmatch(r"(unconfigured|inactive|active|finalized) \[(\d+)\]",
+                             probe.stdout.strip())
+        if not match:
+            return None
+        state, state_id = match.groups()
+        return state if {"unconfigured": "1", "inactive": "2", "active": "3",
+                         "finalized": "4"}[state] == state_id else None
+
     def _start_nav2(self):
         if self.nav2_process and self.nav2_process.poll() is None:
             return
@@ -675,16 +693,23 @@ class NavigationController:
             planner_probe = subprocess.run(
                 ["ros2", "lifecycle", "get", "/planner_server"],
                 capture_output=True, text=True, timeout=20, env=env)
+        except OSError as error:
+            raise RuntimeError("Could not run the ROS 2 Nav2 state check. Launch with "
+                               "experiment/navigation-ui-demo/run_demo.sh.") from error
         except subprocess.TimeoutExpired as error:
             raise RuntimeError(
                 "Nav2 discovery took longer than 20 seconds. The existing stack was "
                 "left untouched; wait briefly and retry.") from error
-        planner_state = (planner_probe.stdout + planner_probe.stderr).strip().lower()
-        if planner_probe.returncode != 0:
+        planner_state = (planner_probe.stdout + planner_probe.stderr).strip()
+        # Jazzy reports an absent node with a nonzero exit status. Only this
+        # exact diagnostic authorizes a cold start; transport/CLI errors do not.
+        node_missing = (planner_probe.returncode in (0, 1)
+                        and planner_state.casefold() == "node not found")
+        if not node_missing and planner_probe.returncode != 0:
             raise RuntimeError(
                 "ROS 2 Nav2 state check failed. Start the interface with "
                 "experiment/navigation-ui-demo/run_demo.sh so the ROS Jazzy environment is loaded.")
-        if "active" in planner_state:
+        if self._lifecycle_state(planner_probe) == "active":
             try:
                 map_probe = subprocess.run(
                     ["ros2", "param", "get", "/map_server", "yaml_filename"],
@@ -706,7 +731,10 @@ class NavigationController:
             self._append_event(
                 "nav2_ready", "An active Nav2 stack is using the same map. Reusing it.")
             return
-        if "not found" not in planner_state:
+        if not node_missing:
+            if self._lifecycle_state(planner_probe) is None:
+                raise RuntimeError(f"Unrecognized Nav2 lifecycle response: {planner_state!r}. "
+                                   "The existing stack was left untouched.")
             raise RuntimeError(
                 "Nav2 exists in this ROS domain but is not active. Stop or recover "
                 "that stack before starting another one.")
@@ -729,7 +757,7 @@ class NavigationController:
                                        capture_output=True, text=True, timeout=3,
                                        env=self._ros_env())
                 last_probe = (probe.stdout + probe.stderr).strip()
-                if probe.returncode == 0 and "active" in last_probe.lower():
+                if self._lifecycle_state(probe) == "active":
                     self._append_event("nav2_ready", "Nav2 is ready to calculate a route.")
                     return
             except subprocess.SubprocessError as error:
@@ -739,11 +767,14 @@ class NavigationController:
 
     def _read_logs(self, process, source):
         try:
-            for line in process.stdout:
-                # Drain child output to prevent a full pipe; terminal diagnostics
-                # stay out of the user-facing progress timeline.
-                _ = line
-        except Exception:
+            session_id = self.state.get("session_id") or "startup"
+            log_path = self.output_dir / f"{session_id}-{source}.log"
+            with log_path.open("a", encoding="utf-8") as stream:
+                for line in process.stdout:
+                    # Retain diagnostics without adding warnings to the UI timeline.
+                    stream.write(line)
+                    stream.flush()
+        except (OSError, AttributeError, TypeError):
             return
 
     def _runtime_args(self, instruction):
@@ -751,14 +782,14 @@ class NavigationController:
             instruction=instruction, model=self.defaults.get("model"), db_dir=str(self.rag_db),
             bundle=str(self.bundle_path), defaults=str(self.defaults_path), output=None,
             intent_prompt_profile="hospital_taskchain_surface_v1",
-            task_chain_backend="grounded_deterministic", num_ctx=4096, num_predict=512,
+            task_chain_backend=self.task_chain_backend, num_ctx=8192, num_predict=2048,
             request_timeout_s=360, floor_tolerance_m=None,
             robot_model=self.defaults.get("robot_model", "point"),
             ros_domain_id=self.ros_domain_id)
 
     def _plan_worker(self, instruction, selections):
         try:
-            self._append_event("planning_request", "Starting the LLM1, RAG, and task-chain planning pipeline.")
+            self._append_event("planning_request", f"Starting LLM1 + RAG + {self.task_chain_backend} task-chain planning.")
             result = plan_nav2.run_instruction(
                 self._runtime_args(instruction),
                 progress_callback=self._record_progress,
@@ -804,6 +835,7 @@ class NavigationController:
             "ambiguous": "Multiple destinations match. User selection is required.",
             "unsupported": "This navigation request is outside the supported capabilities.",
             "system_error": "The pipeline encountered a system error.",
+            "nav2_plan_failed": "Nav2 route planning failed. See the result for details.",
         }
         return messages.get(status, f"Pipeline finished: {status}")
 
@@ -814,7 +846,10 @@ class NavigationController:
         mission = result.get("mission_preparation") or {}
         return {"status": result.get("status"),
                 "execution_performed": result.get("execution_performed", False),
-                "error": result.get("error"), "model": result.get("model"),
+                "error": (result.get("error") or nav.get("error")
+                          or (result.get("pipeline_result") or {}).get("error")
+                          or mission.get("error")), "model": result.get("model"),
+                "task_chain_backend": result.get("task_chain_backend"),
                 "rag_build_id": (result.get("provenance") or {}).get("rag_build_id"),
                 "map_bundle_id": (result.get("provenance") or {}).get("map_bundle_id"),
                 "path_length_m": route.get("total_path_length_m"),

@@ -9,7 +9,7 @@ The normal thesis Nav2 workflow uses the archived Hospital-DSG-derived RAG index
 
 ## Khronos workspace
 
-Dependencies are declared in the `package.xml` files under `src/`. From the repository root on Ubuntu 24.04 / ROS 2 Jazzy:
+Dependencies are declared in the `package.xml` files under `src/`. See [BUILD_ENVIRONMENT.md](BUILD_ENVIRONMENT.md) for the native Ubuntu 24.04/Jazzy setup and optional downloader environment. The bundled navigation demo skips this Khronos workspace entirely. From the repository root:
 
 ~~~bash
 source /opt/ros/jazzy/setup.bash
@@ -18,11 +18,16 @@ rosdep update
 rosdep install --from-paths khronos/scene-graph-khronos/src --ignore-src -r -y
 cd khronos/scene-graph-khronos
 colcon list --base-paths src
-colcon build --base-paths src --cmake-args -DCMAKE_BUILD_TYPE=Release
+CMAKE_BUILD_PARALLEL_LEVEL=2 MAKEFLAGS=-j2 colcon build \
+  --base-paths src --executor sequential \
+  --cmake-args -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF \
+  -DSEMANTIC_INFERENCE_USE_TRT=OFF
 source install/setup.bash
 ~~~
 
-Sensor, semantic-model, and dataset settings are defined in each ROS package's `launch/` and `config/` directories. The selected TartanGround launch also requires a local dataset and sensor calibration; compiling the source alone cannot reproduce the thesis DSG.
+The reference closed-set path reads semantic images from the bag, so TensorRT and online segmentation weights are unnecessary. The default Hospital launch and RAG builder share the 109-class fine-semantic mapping plus Unknown (0). Calibration assumptions are defined in the TartanGround adapter source; a separate missing calibration file is not required for this profile. A new run may produce different nodes and maps from the historical thesis run.
+
+After bag playback ends, request `/finish_mapping_and_save` and wait for it to return before stopping the launch. Select the actual timestamped experiment directory and verify nonempty `dsg.json` and `mesh.ply` before building RAG/maps. The complete commands are in [the reproduction guide](../experiment/CODE_REPRODUCTION.md).
 
 ## TartanGround ROS adapter
 

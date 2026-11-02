@@ -12,6 +12,13 @@ dsg_sources:
   mock_office: "llm-rag/RAG/khronos_3dsg_rag/data/3DSG.json"
   khronos_office: "khronos/scene-graph-khronos/snapshots/2026_06_20-18_30_13/dsg.json"
 
+# Optional per-dataset numeric label spaces (also used by build --all).
+# hospital-p1000 automatically selects hospital109; never assign it office/ade20k.
+# Non-GT ADE20K inputs should explicitly use ade20k.
+label_spaces:
+  mock_office: office
+  khronos_office: office
+
 # Embedding model (sentence-transformers)
 embed_model: "paraphrase-multilingual-MiniLM-L12-v2"
 

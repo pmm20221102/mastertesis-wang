@@ -63,7 +63,7 @@ on domain 77:
 
 ```bash
 cd /path/to/Masterthesis-wang
-bash scripts/plan_hospital_nav2.sh \
+bash llm-rag/plan_hospital_nav2.sh \
   --instruction "Please take me to a room with a chair and a door." \
   --ros-domain-id 77 \
   --num-ctx 4096 \

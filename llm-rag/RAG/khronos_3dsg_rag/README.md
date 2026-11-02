@@ -61,12 +61,13 @@ khronos_3dsg_rag/
 
 ### Optional Human-Confirmed Fine-Semantic Overrides
 
-Hospital P1000 unknown object labels can be supplied as a separate, provenance-tracked sidecar. The parser applies only entries marked `human_confirmed` to matching object-layer nodes whose original Khronos `semantic_label` is the unknown sentinel `4294967295`. Raw DSG attributes are not changed. Fine-label IDs remain in the sidecar; the RAG parser uses the fine-label name as the node label because these IDs are not Khronos semantic-label IDs.
+Hospital P1000 unknown object labels can be supplied as a separate, provenance-tracked sidecar. The parser applies only entries marked `human_confirmed` to matching object-layer nodes whose original Khronos `semantic_label` is the unknown sentinel `4294967295`. Raw DSG attributes are not changed. Native numeric labels are decoded through the selected label space first; the sidecar supplies names only for unknown objects and cannot replace native labels.
 
 Export a separate canonical graph for the structured `SceneGraphRAG` index:
 
 ```bash
 python src/export_canonical_graph.py /path/to/hospital/full-data/dsg.json \
+  --dataset hospital-p1000 \
   --semantic-overrides /path/to/hospital-object-semantic-overrides.json \
   --output-dir outputs/hospital_p1000_manual_semantic_overlay
 ```
@@ -75,12 +76,62 @@ The single-input builder below writes both the canonical graph and optional Chro
 
 ```bash
 python src/main.py build \
+  --dataset hospital-p1000 \
   --input /path/to/hospital/full-data/dsg.json \
   --semantic-overrides /path/to/hospital-object-semantic-overrides.json \
   --output outputs/hospital_p1000_manual_semantic_overlay
 ```
 
 Non-confirmed entries, missing/non-object nodes, or nodes whose source label is not the unknown sentinel fail closed.
+
+### Numeric label spaces and compatibility
+
+Both ordinary and `--reproducible` single builds honor `--dataset hospital-p1000`
+and automatically select `hospital109` (also accepts `hospital_p1000`; Hospital
+dataset variants beginning with `hospital` use the same ontology). Independent
+canonical export supports the same `--dataset` and `--label-space` arguments.
+For an arbitrarily named input in the old build interface, use
+`--label-space hospital109`. No extra flag is needed with the Hospital dataset.
+
+The authoritative fine mapping is bundled byte-for-byte in
+`config/tartanground_hospital_p1000_fine_label_space.yaml`, copied from the
+implementation repository's
+`tartanground_khronos/tools/tartanground_khronos_bridge/config/tartanground_hospital_p1000_fine_label_space.yaml`.
+Its SHA256 is `3523465b4ff493b09d998ae61cee8fdee4851b2b9334561b42eaabda25a559d0`.
+It contains Unknown (0) plus 109 classes (1..109), including 1=door,
+5=cabinet, 72=chair, 109=nightstand. The target worktree's upstream
+`khronos/tartanground-tools/config/tartanground_hospital_label_space.yaml`
+is an older 14-class coarse mapping and must not decode fine Hospital output.
+Only `label_names` and `total_semantic_labels` are read from the bundled YAML;
+its original Docker remap path is retained as source data and is not accessed.
+
+Office retains its existing 0..18 mapping via `--label-space office`; ADE20K
+retains the existing grouped 0..20 mapping via `--label-space ade20k`.
+This ADE20K option is not a decoder for arbitrary raw ADE20K category IDs.
+Legacy `RAG_LABEL_SPACE` is read per call, after explicit label-space selection.
+Hospital dataset selection takes precedence over the environment and rejects
+explicit Office/ADE20K conflicts. For `build --all`, configure `label_spaces`
+by source name in `config.yaml`; global `--dataset`/`--label-space` are rejected.
+
+Unspecified legacy inputs retain Office with a warning. Numeric object labels
+outside the selected space fail before indexing (the unknown sentinel remains
+valid). Overlapping numeric IDs alone cannot identify a dataset; always declare
+the dataset or label space for Hospital input, even when all labels are below 19.
+
+Every builder/CLI canonical manifest records `label_space.name`, `source`,
+`source_sha256`, and `label_count`. Reproducible `build_config.json` and the build
+manifest's `build_config.label_space` record the same provenance, so mapping
+changes affect the existing config hash and build ID. The source is the bundled
+YAML for Hospital and `src/parse_3dsg.py` for the built-in Office/ADE20K maps.
+
+Existing packaged indexes are not repaired by changing parser code or adding a
+query flag. Rebuild **canonical graph, document corpus, and vector database
+together** into a new output directory, then have the main agent update planner,
+Nav2/demo index paths and package manifests consistently. A corrected packaged
+RAG can be used directly by the short flow without the source DSG, review CSV,
+label YAML, or a new build; its recorded label-space provenance should identify
+`hospital109`. Older packages without that provenance require inspection and,
+if decoded with Office, a full rebuild. This module does not rebuild packages.
 
 ### Reproducible Hospital P1000 build
 
@@ -350,7 +401,7 @@ ResolutionResult (status + candidates + selected)
 
 ```bash
 cd llm-rag/RAG/khronos_3dsg_rag
-python -m pytest src/ -v
+python -m pytest tests/ -v
 ```
 
 ---

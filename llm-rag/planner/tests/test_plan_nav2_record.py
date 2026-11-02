@@ -113,7 +113,12 @@ def test_ros_plan_runner_uses_repository_root_for_relative_map_bundle_paths(
     plan_nav2._run_ros_plan(tmp_path / "mission.json", tmp_path / "bundle.yaml",
                             tmp_path / "plan.json", "point", 77)
 
-    assert calls["cwd"] == plan_nav2.ROOT
+    import yaml
+    checkout = Path(__file__).resolve().parents[3]
+    assert calls["cwd"] == checkout
+    bundle = yaml.safe_load((checkout / "experiment/navigation-ui-demo/nav2-profile/hospital_floor_transitions.yaml").read_text())
+    for floor in bundle["floors"].values():
+        assert (calls["cwd"] / floor["map_yaml_path"]).is_file()
 
 
 def test_rag_build_verification_checks_source_and_embedding_device():

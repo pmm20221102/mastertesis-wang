@@ -1,0 +1,3 @@
+[submodule "khronos/tartanground-tools/tools/tartanairpy"]
+	path = khronos/tartanground-tools/tools/tartanairpy
+	url = https://github.com/castacks/tartanairpy.git

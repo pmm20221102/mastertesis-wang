@@ -9,6 +9,12 @@
   },
   "build_config": {
     "dataset": "hospital-p1000",
+    "label_space": {
+      "name": "hospital109",
+      "source": "config/tartanground_hospital_p1000_fine_label_space.yaml",
+      "source_sha256": "271eb9e71e5be5362f515fd9c65980f78ec56ae7b22708477aba1c1379f93f2b",
+      "label_count": 110
+    },
     "aliases": {
       "door": [
         "entrance",
@@ -87,14 +93,14 @@
     "embedding_device": "cpu",
     "semantic_override_schema": null
   },
-  "build_config_sha256": "2ef988a06b2d1a7e87a49e9bcf88c79a55b77efe07d6161767f9e210591d0cf6",
+  "build_config_sha256": "c83f3294cf1cf070522c4cbc4fe723f20b4cfd9c7a409c565436fc2303075138",
   "toolchain": {
-    "python": "3.12.13",
+    "python": "3.12.3",
     "chromadb": "1.5.9",
     "sentence_transformers": "5.5.1",
     "transformers": "5.10.2",
     "huggingface_hub": "1.18.0",
-    "torch": "2.12.1",
+    "torch": "2.12.1+cpu",
     "numpy": "1.26.4"
   },
   "counts": {
@@ -104,50 +110,50 @@
   },
   "artifacts": {
     "build_config.json": {
-      "sha256": "2f1bef72adc94fd9dc3a2164f024bc65e3644b1e9a5963211933f7bf95588733",
-      "size_bytes": 1185
+      "sha256": "ada7df315a2e5f34456a26d7ee3674c4d94e972234147d255a47a6e5b197b5e3",
+      "size_bytes": 1422
     },
     "canonical_graph_v2.json": {
-      "sha256": "9e8f6aa04f7510b646f2b3d5e4c84eb4f0780e0e214acd83b5155a77a882acf9",
-      "size_bytes": 4559589
+      "sha256": "1319fddbe486e51233eff8418ee501b2d6052cee443e839458535a3178db29d1",
+      "size_bytes": 4559821
     },
     "canonical_graph_v2.manifest.json": {
-      "sha256": "7d61cb2e2f2ee201429f0a5df5d08d0193ce923407341d73a38cf94ba72d9607",
-      "size_bytes": 414
+      "sha256": "675384394b795a323848a35501f0e3f9c69ab600c0764a0fba9ecbfa2d2442f9",
+      "size_bytes": 651
     },
     "rag_documents.jsonl": {
-      "sha256": "870a00a336da9a1a4c12469ff4236b92d9a6901531bdf1d0d75a5c488f2e4219",
-      "size_bytes": 5498747
+      "sha256": "0372f298c7de22b9fdba8ef44d358a761d709dfc9e3c06239ad01c0593e3adcb",
+      "size_bytes": 5499148
     },
     "vector_content_manifest.json": {
-      "sha256": "5986bab5d60eb6050d5be97cd96c66b96e4c755dee578990f30abab671cd99d6",
+      "sha256": "8c102c016ea65cde5434f2e34ceaa80ed7bfc9ef6da66d516df43437ac11e572",
       "size_bytes": 171
     },
-    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/data_level0.bin": {
-      "sha256": "168da40e3d3d4a7ed840987b6aade243df0c7bec4495ab726b16b06d6cb1845c",
+    "vector_db/chroma.sqlite3": {
+      "sha256": "0ebe77d11c218941c1ee3629b4bdfb09cfe8bcac0a2d16a87dd20cd66f02f404",
+      "size_bytes": 24432640
+    },
+    "vector_db/e3b5a0fb-c5d0-41e2-ae82-d24769564fe5/data_level0.bin": {
+      "sha256": "c5def40aa5035347533c1d68126c00a7c17f3b8dc70fcd1367aa7afda29f085f",
       "size_bytes": 10056000
     },
-    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/header.bin": {
-      "sha256": "d22819cfba1e67dfbf4c917ed5bb8af93d8833d560e60edc2e12ac69264b5d0d",
+    "vector_db/e3b5a0fb-c5d0-41e2-ae82-d24769564fe5/header.bin": {
+      "sha256": "3e908d30ec59a96226d16bcaa5d44eaf5e245f0f0851bc93407f4811271aab61",
       "size_bytes": 100
     },
-    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/index_metadata.pickle": {
-      "sha256": "9ccd62bb596524eefafd1e144a95cf635d2361dc8800a63bd94ab29f6cbddf89",
+    "vector_db/e3b5a0fb-c5d0-41e2-ae82-d24769564fe5/index_metadata.pickle": {
+      "sha256": "cdb69e5b244c05b73fb2b3c7e7e1ed32e0e6453cd09f6d7f9f15fed9015b8fc9",
       "size_bytes": 433332
     },
-    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/length.bin": {
-      "sha256": "52393867775b152b7ffbc6d7324ec268afddf3defbe3d10744efecdf92e5a998",
+    "vector_db/e3b5a0fb-c5d0-41e2-ae82-d24769564fe5/length.bin": {
+      "sha256": "12c94e313c2e0e3397193f319e0a00a372caadc6a3ff2afb426bc2577463e2e0",
       "size_bytes": 24000
     },
-    "vector_db/9e63da9b-8e35-4719-8409-ae797bac04d5/link_lists.bin": {
-      "sha256": "45ff790424440fd5a9ac319128634c5cecaaa9ba849e092ceeb86dadaf5dc29c",
+    "vector_db/e3b5a0fb-c5d0-41e2-ae82-d24769564fe5/link_lists.bin": {
+      "sha256": "f9a77b6447551e0cf7dce520f879a9da28970a97e41528bd1fb46f0249abe55f",
       "size_bytes": 53512
-    },
-    "vector_db/chroma.sqlite3": {
-      "sha256": "c179181137c52e7151dfa9c2fe32f94a3a2f4b44960b1351e6c977ff8d9be10b",
-      "size_bytes": 24440832
     }
   },
-  "build_id": "aa9d8aa9c4bc745718a0878d15ce78d8f92400d1c934a22fbf450d0725838354",
-  "artifact_instance_id": "b121303a57b89f087cb4c84dfc1cf7daed43cf6f68ba6a0f5c889cb948d4594b"
+  "build_id": "d10694264b2ee4222ce32a75a5dd10eff63208340dfaacd49add0843466757ca",
+  "artifact_instance_id": "d3966953ec3cc9821bf9afe22b031dea91166e2853889684b43e6e00bf9692b5"
 }

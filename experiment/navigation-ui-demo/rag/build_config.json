@@ -72,9 +72,15 @@
       "exit"
     ]
   },
-  "dataset": "hospital_p1000",
+  "dataset": "hospital-p1000",
   "embedding_device": "cpu",
   "embedding_model": "paraphrase-multilingual-MiniLM-L12-v2",
   "embedding_model_revision": "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
+  "label_space": {
+    "label_count": 110,
+    "name": "hospital109",
+    "source": "config/tartanground_hospital_p1000_fine_label_space.yaml",
+    "source_sha256": "271eb9e71e5be5362f515fd9c65980f78ec56ae7b22708477aba1c1379f93f2b"
+  },
   "semantic_override_schema": "hospital_object_semantic_overrides_v1"
 }

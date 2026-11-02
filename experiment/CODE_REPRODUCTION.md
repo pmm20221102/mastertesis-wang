@@ -2,7 +2,15 @@
 
 This guide covers reproducing the software workflow in this repository. It does not reinterpret experimental findings or treat archived outputs as a rerun. The commands assume WSL 2 / Ubuntu 24.04, Python 3.12, ROS 2 Jazzy, and the repository root as the working directory.
 
-For the full raw-data → Khronos → RAG → Nav2 plan-only path and the steps not currently reproducible from this checkout, see [REPRODUCIBILITY_GAPS.md](REPRODUCIBILITY_GAPS.md).
+Choose one path. The **short path** loads the committed RAG databases, maps, and matching profiles; it skips all Khronos compilation, raw-data conversion, RAG rebuilding, and map generation. The **full path** below builds Khronos, processes sensor data, then builds new RAG/maps and loads that run into the same GUI. New outputs need not have identical node counts or map pixels to the historical reconstruction.
+
+After common Python/Ollama setup and the Nav2 bridge build, the short path is:
+
+```bash
+bash experiment/navigation-ui-demo/run_demo.sh
+```
+
+The default GUI backend is LLM1 + RAG + LLM2. It starts Nav2 after mission preparation; successful route planning enables RViz2 execution. Select the bundled human-reviewed or no-review index in the GUI. See the [root quick start](../README.md) for the common setup. Historical experiment-replay gaps are listed separately in [REPRODUCIBILITY_GAPS.md](REPRODUCIBILITY_GAPS.md).
 
 ## What can be reproduced from this checkout
 
@@ -10,7 +18,7 @@ For the full raw-data → Khronos → RAG → Nav2 plan-only path and the steps 
 |---|---|---|
 | Python, RAG-builder, map-generation, and interface tests | Runnable from a clean checkout | Python dependencies in `llm-rag/requirements.txt` |
 | Khronos/Nav2 bridge compile | Runnable from a clean checkout | ROS 2 Jazzy, `ros-dev-tools`, dependencies declared by `package.xml` |
-| RAG builder | Runnable when given the recorded Hospital DSG and semantic-review CSV | DSG and CSV whose SHA-256 values match the defaults file; pinned embedding model revision |
+| RAG builder | Builds a new index from a compatible Hospital109 DSG | DSG; pinned encoder revision; optional labels for that same graph |
 | One natural-language instruction through planner and Nav2 plan-only | Runnable after building the provenance-bearing RAG index and starting the isolated Nav2 stack | Above inputs, Ollama model, built map bundle |
 | One archived Nav2 mission in plan-only mode | Runnable from the committed mission and map bundle | Built bridge package and ROS domain dedicated to this run |
 | Historical 60-task × 4-condition run | Outputs and runtime inputs are archived; exact batch replay is not currently available from this checkout | The original run driver/code snapshot is not included as an executable entry point; archived `vector_db` lacks the required `build_manifest.json` |
@@ -45,10 +53,10 @@ The system-first `PATH` is intentional: ROS Jazzy's Python modules must be loade
 
 ## 2. Run the software tests
 
-Run from a clean repository root (do not leave a top-level colcon `log/` directory; build the ROS package from its module directory in the next step):
+Run from the repository root after common setup. The repository-layout check ignores a top-level colcon `log/` directory identified by its `COLCON_IGNORE` marker:
 
 ```bash
-.venv/bin/python -m pytest -q \
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python -m pytest -q -p no:cacheprovider \
   llm-rag/planner/tests \
   llm-rag/RAG/khronos_3dsg_rag/tests \
   experiment/map-generation/test_generate_khronos_only.py \
@@ -56,7 +64,7 @@ Run from a clean repository root (do not leave a top-level colcon `log/` directo
   experiment/tests
 ```
 
-The expected clean-checkout result on the validated environment was **1192 passed, 16 skipped**. The skipped tests require external services or data. The root layout test intentionally rejects generated non-hidden directories at repository root; running `colcon build` from the repository root can create `log/` and make that test fail.
+The current branch suite returns **1262 passed, 16 skipped** in the validated environment. The skips require external services/data. Pytest auto-plugins are disabled because this project does not use third-party pytest entry points. The repository-layout check ignores a top-level `log/` directory when it carries colcon's `COLCON_IGNORE` marker; build ROS packages in their module directories to avoid creating it at the root.
 
 Build and test the ROS package from its own module directory so colcon artifacts remain inside that module:
 
@@ -74,7 +82,7 @@ The clean isolated build was verified successfully. A complete `colcon test` res
 
 ## Full Raw-Data Track: TartanGround to Khronos
 
-This optional track starts before the DSG used by the RAG builder. The official [TartanGround documentation](https://tartanair.org/tartanground.html) describes the `Hospital` environment and `diff` robot trajectories. To download the thesis sequence and the front-left sensor modalities, use `tartanairpy`:
+This track starts before the DSG used by the RAG builder. Follow [the Khronos build/environment guide](../khronos/BUILD_ENVIRONMENT.md), including the pinned downloader SDK and its recursive submodules. The official [TartanGround documentation](https://tartanair.org/tartanground.html) describes the `Hospital` environment and `diff` robot trajectories. Run the download example with the dedicated downloader interpreter, or supply existing extracted data:
 
 ```python
 import tartanair as ta
@@ -156,13 +164,15 @@ The historical Khronos run does not record its bag playback rate, so `1.0` defin
 
 ### Portable Khronos Launch
 
-The launch file uses ROS package-share paths for its packaged input, label-space, remap, mapper, and RViz configurations. It accepts `input_config`, `mapper_config`, `rviz_path`, `output_dir`, and `start_visualizer` arguments. Build the Khronos workspace as documented in [`khronos/README.md`](../khronos/README.md), then build the adapter as in the preceding section. In the terminal that will launch the mapper, source both overlays in this order:
+The launch uses ROS package-share paths and the fine-semantic Hospital109 label/remap configuration shared with the RAG builder. It accepts `input_config`, `mapper_config`, `rviz_path`, `output_dir`, and `start_visualizer`. Build Khronos as documented in [`khronos/BUILD_ENVIRONMENT.md`](../khronos/BUILD_ENVIRONMENT.md), then build the adapter. In each mapper, bag-playback, and control terminal, source the same overlays and use the same isolated domain:
 
 ```bash
 source /opt/ros/jazzy/setup.bash
 source khronos/scene-graph-khronos/install/setup.bash
 source khronos/tartanground-tools/install/setup.bash
 export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
+export ROS_DOMAIN_ID=80
+export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
 ```
 
 Start the mapper in terminal 1:
@@ -180,7 +190,18 @@ source /opt/ros/jazzy/setup.bash
 ros2 bag play "$HOSPITAL_BAG" --clock --rate 1.0
 ```
 
-The bag rate of `1.0` is a new reference profile; the historical playback rate and exact launch command were not retained. The historical Khronos commit `63faadde6ed92220e78fb2f6ca86dcc54bb5cf9` is unavailable, and its recorded worktree contained uncommitted source changes. The current Khronos source now builds from a clean checkout, but it cannot be claimed to reproduce the historical DSG until that source delta and original bag are recovered.
+After playback ends, request normal processing completion and saving. Wait for the service to return, then stop the launch with Ctrl+C:
+
+```bash
+ros2 service list -t | grep finish_mapping_and_save
+ros2 service call /finish_mapping_and_save std_srvs/srv/Empty '{}'
+```
+
+The output root contains a timestamped experiment subdirectory, whose path is printed by the mapper. Use that actual directory and verify nonempty `dsg.json` and `mesh.ply` before RAG/map generation. Bag playback ending alone is not the final save/selection step. Rate `1.0` defines this new reference workflow; it does not claim an exact replay of the historical reconstruction.
+
+### Historical source inputs (optional)
+
+The following original snapshot is useful for archival checks. It is not required when using the new Khronos outputs above. Historical source/replay limitations are documented in `REPRODUCIBILITY_GAPS.md`.
 
 The original Khronos output is outside Git at `datasets/Hospital-workstation-backup-20261006/tartanground_khronos/reports/khronos_output/fine_full_p1000/`. On the originating workstation, this snapshot is under `/home/nenlian/Masterthesis-wang/datasets/Hospital-workstation-backup-20261006/tartanground_khronos/`. Its `dsg.json` hash is `a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d`; its `mesh.ply` hash is `813bb3f534c9385edccbcfc71d3405ec81b5852c23061c68542e15debe40f268`. These match the hashes pinned by the RAG defaults and committed map manifest. After making the source snapshot available on another machine, set paths and verify before use:
 
@@ -200,7 +221,7 @@ The run records Khronos revision `63faadde6ed92220e78fb2f6ca86dcc54bb5cf9e`, but
 The RAG index and maps are both generated from the same Khronos output: the RAG builder reads `dsg.json`; map generation reads both `dsg.json` and `mesh.ply`. Neither step requires the historical DSG/mesh hashes or historical map pixels. Use a new output directory for each run:
 
 ```bash
-export HOSPITAL_KHRONOS_OUTPUT=/absolute/path/to/khronos-output
+export HOSPITAL_KHRONOS_OUTPUT=/absolute/path/to/khronos-output/ACTUAL_TIMESTAMP_DIRECTORY
 export HOSPITAL_DSG="$HOSPITAL_KHRONOS_OUTPUT/dsg.json"
 export HOSPITAL_MESH="$HOSPITAL_KHRONOS_OUTPUT/mesh.ply"
 export HOSPITAL_RUN_OUTPUT="$(mktemp -d "$HOME/hospital-khronos-rebuild.XXXXXX")"
@@ -209,6 +230,7 @@ export HOSPITAL_MAP_OUTPUT="$HOSPITAL_RUN_OUTPUT/maps"
 echo "Run artifacts: $HOSPITAL_RUN_OUTPUT"
 test -s "$HOSPITAL_DSG" && test -s "$HOSPITAL_MESH"
 sha256sum "$HOSPITAL_DSG" "$HOSPITAL_MESH"
+python3 -c 'import json,os; d=json.load(open(os.environ["HOSPITAL_DSG"])); assert d.get("nodes"), "empty DSG"; print("DSG nodes:",len(d["nodes"]))'
 ```
 
 Build the provenance-bearing RAG index from this graph. Omitting `--review-csv` means the index uses Khronos semantic labels without human-review overrides; the build manifest records that no override CSV was applied.
@@ -217,7 +239,7 @@ Build the provenance-bearing RAG index from this graph. Omitting `--review-csv` 
 .venv/bin/python llm-rag/RAG/khronos_3dsg_rag/src/main.py \
   --config llm-rag/RAG/khronos_3dsg_rag/config.yaml build \
   --reproducible \
-  --dataset hospital-p1000 \
+  --dataset hospital-p1000 --label-space hospital109 \
   --input "$HOSPITAL_DSG" \
   --embedding-model paraphrase-multilingual-MiniLM-L12-v2 \
   --embedding-model-revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
@@ -310,129 +332,22 @@ No-review builds may contain objects or rooms labeled `unknown`; in that case th
 
 If run-specific human-reviewed labels are available, pass them to the RAG build with `--review-csv /path/to/review.csv`; they must match the new DSG's object IDs. The historical 78-row CSV is tied to the historical graph and must not be applied to a different DSG by assumption. Map generation does not consume the RAG index. These commands create new RAG and map artifacts; a Nav2 run on those maps additionally requires a map bundle whose floor hashes and transition poses have been checked against the new outputs.
 
-## 3. Build the provenance-bearing Hospital RAG index
+## Historical experiment archives and validation boundaries
 
-The planner verifies a `build_manifest.json` before accepting an index. Do not pass the archived `task-chain-60/.../runtime_inputs/vector_db` directly to `plan_nav2.py`: that copied runtime snapshot has no adjacent build manifest and the planner correctly rejects it.
+The preceding section documents how to build a **new** Hospital109 index from a completed Khronos DSG. It does not require the old review CSV. The checked-in GUI also provides a short path using its two bundled indexes and maps.
 
-Set paths to the exact original inputs. The defaults in `khronos-nav2-bridge/khronos_nav2_bridge/config/hospital_nav2_plan_defaults.yaml` pin these input hashes:
+The following hashes identify inputs from the historical task-chain/default profile, not required inputs for the new-scene workflow:
 
-```text
-DSG SHA-256:              a051980dbb1a3d19caa8deeb3027eb534cb7f87760a0b0d906e26ca4a661f14d
-semantic-review CSV SHA-256: 29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5
-Embedding model:          paraphrase-multilingual-MiniLM-L12-v2
-Embedding revision:       e8f8c211226b894fcb81acc59f3b34ba3efd5f42
-Embedding device:         cpu
-```
+| Artifact | Historical SHA-256 |
+|---|---|
+| Hospital DSG | `a051980dbb1a3d19caa8deeb2b534cb7f87760a0b0d906e26ca4a661f14d` |
+| Human-review CSV | `29baf76d7bd2cda59b5e86e3a07fceb9411716cd59ba1e780b3b9808fd2ca6d5` |
+| Embedding revision | `e8f8c211226b894fcb81acc59f3b34ba3efd5f42` |
 
-The DSG hash was checked against the local Hospital source file. The matching semantic-review CSV was not present in this checkout or the inspected project experiment/review folders; obtain the original file and verify its hash before claiming an exact rebuild. Do not substitute another review file.
+The original matching review CSV is not included in this checkout. The historical task-chain archive contains predictions and runtime database files, but it does not include the matching Gold, scorer, and executable batch runner needed to independently recalculate the thesis score. See [REPRODUCIBILITY_GAPS.md](REPRODUCIBILITY_GAPS.md).
 
-```bash
-export HOSPITAL_DSG=/absolute/path/to/dsg.json
-export HOSPITAL_REVIEW_CSV=/absolute/path/to/original-semantic-review.csv
-sha256sum "$HOSPITAL_DSG" "$HOSPITAL_REVIEW_CSV"
+The current branch has passed the Khronos workspace compile (26 packages), the Nav2 bridge compile, the TartanGround adapter compile, ROS dependency checks, and the adapter's 3178-frame bag audit. A real GUI session completed LLM1 → reviewed RAG grounding → LLM2 → candidate selection → Nav2 cold start → RViz2 execution using the bundled map profile. Fresh reviewed and no-review RAG builds each produced 3,146 nodes, 12,380 edges, and 6,297 documents from the complete bundled DSG. A map set was regenerated from its matching mesh; the run profile validated, and an LLM2 plan-only route succeeded with that new profile. The TartanGround adapter test suite passed 23 tests; the combined Python suite passed 1262 tests with 16 skipped.
 
-.venv/bin/python llm-rag/RAG/khronos_3dsg_rag/src/main.py \
-  --config llm-rag/RAG/khronos_3dsg_rag/config.yaml build \
-  --reproducible \
-  --dataset hospital-p1000 \
-  --input "$HOSPITAL_DSG" \
-  --review-csv "$HOSPITAL_REVIEW_CSV" \
-  --embedding-model paraphrase-multilingual-MiniLM-L12-v2 \
-  --embedding-model-revision e8f8c211226b894fcb81acc59f3b34ba3efd5f42 \
-  --embedding-device cpu \
-  --output llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5
-```
+The full raw-data Khronos mapper was **not completed** in this verification. At the user's request it was stopped before processing all 3178 frames because the local machine was under resource pressure; partial outputs are not used as new RAG/map inputs and must not be treated as a completed run. The minimum RAM for a full mapping run has not been established. Use the bundled demo path when the machine cannot sustain that stage. The code under test compiles; that is separate from completing a full reconstruction.
 
-The output directory must not already exist. A successful build writes `canonical_graph_v2.json`, `rag_documents.jsonl`, `vector_db/`, and `build_manifest.json`. Check the manifest exists and inspect its hashes before using the index:
-
-```bash
-test -s llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5/build_manifest.json
-.venv/bin/python -m json.tool \
-  llm-rag/RAG/khronos_3dsg_rag/outputs/hospital_p1000_reproducible_20261024_v5/build_manifest.json \
-  >/dev/null
-```
-
-## 4. Run one natural-language-to-Nav2 plan
-
-Install Ollama using the [official Linux instructions](https://docs.ollama.com/linux). With systemd, enable and start its service; without systemd, run `ollama serve` in a dedicated terminal and keep it open. Obtain the model pinned in the defaults file:
-
-```bash
-curl -fsSL https://ollama.com/install.sh | sh
-sudo systemctl enable --now ollama
-systemctl is-active ollama
-ollama pull gemma4:e2b-it-qat
-ollama --version
-curl -fsS http://127.0.0.1:11434/api/tags
-```
-
-On a machine without systemd, start `ollama serve` instead of running the `systemctl` commands. Then run `ollama pull` and the API check from another terminal. Keep the server running while the planner runs.
-
-The selected 60×4 run manifest records model digest `07ea59a474013479c8b6b802bef095c40e964a1d776ba02f264c0e30e1aede0c` for `gemma4:e2b-it-qat`. Compare the `/api/tags` digest with this value when attempting to reproduce that historical model. The historical Ollama server version is not recorded; retain `ollama --version` output for each new run.
-
-This single-plan workflow uses the four committed floor maps and their manifest; it does not need to regenerate them. In terminal 1, build the bridge as described above, return to the repository root, and start the point-robot Nav2 stack in an isolated ROS domain:
-
-```bash
-cd /path/to/repository
-source /opt/ros/jazzy/setup.bash
-source khronos-nav2-bridge/install/setup.bash
-export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
-export ROS_DOMAIN_ID=77
-ros2 launch khronos_nav2_bridge hospital_nav2.launch.py \
-  map:=khronos-nav2-bridge/khronos_nav2_bridge/generated/hospital-p1000-khronos-only/floor_0/map.yaml \
-  params_file:=khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_point.yaml
-```
-
-Wait until the launch reports `Managed nodes are active`. In terminal 2, from the repository root:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
-export ROS_DOMAIN_ID=77
-export HOSPITAL_NAV2_PYTHON="$PWD/.venv/bin/python"
-bash llm-rag/plan_hospital_nav2.sh \
-  --instruction "Please take me into the room with the bed." \
-  --ros-domain-id 77 \
-  --output /tmp/hospital-nav2-plan.json
-```
-
-Use a new output path for every run; the program refuses to overwrite an existing result. For a successful plan-only run, inspect the JSON for `status: planned` and `execution_performed: false`. This confirms software planning against the loaded map, not physical robot movement. The exact end-to-end command could not be completed with the archived DB in this checkout because its required `build_manifest.json` is absent; rebuild the index in step 3 from the hash-matched inputs before running this command.
-
-## 5. Run one frozen Nav2 mission in plan-only mode
-
-This checks the mission-to-Nav2 path without sending `NavigateToPose` goals. First start the same isolated Nav2 stack as above. Then run from the repository root:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-source khronos-nav2-bridge/install/setup.bash
-export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
-export ROS_DOMAIN_ID=77
-/usr/bin/python3 khronos-nav2-bridge/khronos_nav2_bridge/scripts/run_task_chain_nav2.py \
-  --mission experiment/nav2-49/missions/HC-001.mission.json \
-  --bundle khronos-nav2-bridge/khronos_nav2_bridge/config/hospital_p1000_floor_transitions.yaml \
-  --output /tmp/HC-001-plan-only.json \
-  --plan-only \
-  --robot-model point
-```
-
-The verified result was `status: planned`, `execution_performed: false`, with one feasible candidate sequence. This is a software path-planning smoke test, not a replay of the historical 49-task execution batch.
-
-## 6. Verify archived experiment files without calling them reruns
-
-These commands validate archive counts only:
-
-```bash
-wc -l experiment/task-chain-60/public/tasks_en.jsonl
-for variant in full no_llm1 raw_dsg no_llm2; do
-  wc -l "experiment/task-chain-60/runs/surface-v1-llm2-60x4-20261020/predictions/${variant}.jsonl"
-done
-find experiment/nav2-49/missions -maxdepth 1 -name 'HC-*.mission.json' | wc -l
-find experiment/nav2-49/tasks -maxdepth 1 -name 'HC-*.result.json' | wc -l
-```
-
-Expected counts are 60 tasks, 60 predictions in each of four conditions, 49 missions, and 49 first-pass result files. These checks confirm the archive is complete by count; they do not reproduce model calls, regenerate metrics, or rerun navigation.
-
-## Current reproducibility boundary
-
-In this session, the Python suite passed **1192 tests with 16 skipped** after moving a generated root-level colcon `log/` directory out of the way for the layout check. An isolated ROS bridge build passed. The RAG pipeline produced a valid grounded task plan from the archived DB for the benchmark instruction “Please take me into the room with the bed.” The Nav2 mission runner independently produced a valid plan-only route for HC-001. The integrated `plan_nav2.py` call rejected the archived DB because the required provenance manifest is missing.
-
-Therefore this checkout currently supports software tests and separate planner/Nav2 smoke tests, but an exact clean-machine replay of the historical 60×4 run, and a verified integrated natural-language-to-Nav2 run from the archived index, are not established. Exact RAG reconstruction additionally requires the original semantic-review CSV with the pinned SHA-256 above. Keep these boundaries visible; do not present archived outputs or separate smoke tests as a full experiment rerun.
+The broad Python regression command completed with **1262 passed, 16 skipped**. It ran in the documented Python 3.12 environment with ROS Jazzy sourced and pytest auto-plugins disabled. The adapter tests passed with the local TartanGround dataset paths configured. The ROS route and RViz validation used an isolated simulation domain and does not establish physical robot or stair traversal.

@@ -13,6 +13,8 @@ setup(
          ["config/tartanground_input.yaml",
           "config/tartanground_hospital_label_space.yaml",
           "config/tartanground_hospital_remap.yaml",
+          "config/tartanground_hospital_p1000_fine_label_space.yaml",
+          "config/tartanground_hospital_p1000_fine_remap.yaml",
           "config/mapper_voxel010_fixed.yaml"]),
         ("share/" + package_name + "/launch",
          ["launch/tartanground_hospital_khronos.launch.yaml"]),

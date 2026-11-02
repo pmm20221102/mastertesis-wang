@@ -295,7 +295,7 @@ def _run_ros_plan(mission_path: Path, bundle_path: Path, output_path: Path,
     completed = subprocess.run(
         ["bash", str(child), str(mission_path), str(bundle_path),
          str(output_path), robot_model],
-        check=False, capture_output=True, text=True, env=environment, cwd=ROOT,
+        check=False, capture_output=True, text=True, env=environment, cwd=ROOT.parent,
     )
     if output_path.is_file():
         result = json.loads(output_path.read_text(encoding="utf-8"))

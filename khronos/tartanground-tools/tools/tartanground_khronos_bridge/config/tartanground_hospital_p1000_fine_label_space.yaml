@@ -1,0 +1,158 @@
+---
+total_semantic_labels: 110
+
+dynamic_labels: []
+
+invalid_labels:
+  - 0
+
+object_labels:
+  - 1
+  - 5
+  - 16
+  - 18
+  - 25
+  - 26
+  - 27
+  - 28
+  - 32
+  - 36
+  - 39
+  - 40
+  - 42
+  - 43
+  - 48
+  - 57
+  - 58
+  - 60
+  - 61
+  - 63
+  - 67
+  - 68
+  - 72
+  - 73
+  - 75
+  - 76
+  - 80
+  - 89
+  - 99
+  - 101
+  - 104
+  - 109
+
+surface_places_labels:
+  - 46
+  - 55
+  - 77
+
+label_names:
+  - {label: 0, name: Unknown}
+  - {label: 1, name: door}
+  - {label: 2, name: watercontainer}
+  - {label: 3, name: acousticceiling}
+  - {label: 4, name: clock}
+  - {label: 5, name: cabinet}
+  - {label: 6, name: building}
+  - {label: 7, name: tray}
+  - {label: 8, name: flowerpot}
+  - {label: 9, name: keyboard}
+  - {label: 10, name: bloodpressurecuff}
+  - {label: 11, name: switch}
+  - {label: 12, name: bandage}
+  - {label: 13, name: cableduct}
+  - {label: 14, name: garbagecan}
+  - {label: 15, name: notebook}
+  - {label: 16, name: fireextinguisher}
+  - {label: 17, name: roof}
+  - {label: 18, name: firstaidkit}
+  - {label: 19, name: firealarm}
+  - {label: 20, name: light}
+  - {label: 21, name: wire}
+  - {label: 22, name: syringe}
+  - {label: 23, name: forceps4}
+  - {label: 24, name: elevatordoor}
+  - {label: 25, name: dripstand}
+  - {label: 26, name: artificialrespiration}
+  - {label: 27, name: computer}
+  - {label: 28, name: sign}
+  - {label: 29, name: airconditiongvent}
+  - {label: 30, name: calendar}
+  - {label: 31, name: serratedcutter}
+  - {label: 32, name: microscope}
+  - {label: 33, name: stationaryset}
+  - {label: 34, name: canister}
+  - {label: 35, name: picture}
+  - {label: 36, name: emergencystretcher}
+  - {label: 37, name: ventilationgrill}
+  - {label: 38, name: mop}
+  - {label: 39, name: laboratorytable}
+  - {label: 40, name: elevator}
+  - {label: 41, name: flowerbed}
+  - {label: 42, name: medicalbag}
+  - {label: 43, name: rack}
+  - {label: 44, name: railing}
+  - {label: 45, name: phone}
+  - {label: 46, name: ground}
+  - {label: 47, name: electricoutlet}
+  - {label: 48, name: negatoscope}
+  - {label: 49, name: fence}
+  - {label: 50, name: lamp}
+  - {label: 51, name: tv}
+  - {label: 52, name: stapler}
+  - {label: 53, name: floorradiator}
+  - {label: 54, name: box}
+  - {label: 55, name: floor}
+  - {label: 56, name: fireextinguisherstand}
+  - {label: 57, name: rollingtable}
+  - {label: 58, name: sink}
+  - {label: 59, name: electricalshielddoor}
+  - {label: 60, name: healthmonitor}
+  - {label: 61, name: defibrillator}
+  - {label: 62, name: sky}
+  - {label: 63, name: monitor}
+  - {label: 64, name: cardboardbox}
+  - {label: 65, name: radiator}
+  - {label: 66, name: blinds}
+  - {label: 67, name: medicalscreen}
+  - {label: 68, name: couch}
+  - {label: 69, name: bottle}
+  - {label: 70, name: plant}
+  - {label: 71, name: wall}
+  - {label: 72, name: chair}
+  - {label: 73, name: table}
+  - {label: 74, name: medicine}
+  - {label: 75, name: desk}
+  - {label: 76, name: bed}
+  - {label: 77, name: road}
+  - {label: 78, name: stairs}
+  - {label: 79, name: scoop}
+  - {label: 80, name: console}
+  - {label: 81, name: aircompressor}
+  - {label: 82, name: pills}
+  - {label: 83, name: axe}
+  - {label: 84, name: flower}
+  - {label: 85, name: staircase}
+  - {label: 86, name: hook}
+  - {label: 87, name: cotton}
+  - {label: 88, name: computermouse}
+  - {label: 89, name: sofa}
+  - {label: 90, name: electricalshield}
+  - {label: 91, name: handdryer}
+  - {label: 92, name: toiletbrush}
+  - {label: 93, name: hammer}
+  - {label: 94, name: surgicalpallets}
+  - {label: 95, name: window}
+  - {label: 96, name: doorway}
+  - {label: 97, name: printer}
+  - {label: 98, name: laboratoryitems}
+  - {label: 99, name: exitsign}
+  - {label: 100, name: blanket}
+  - {label: 101, name: metalmedicaltable}
+  - {label: 102, name: forceps}
+  - {label: 103, name: documentfolder}
+  - {label: 104, name: operatingtable}
+  - {label: 105, name: drawer}
+  - {label: 106, name: sterilecontainer}
+  - {label: 107, name: instancedfoliageactor}
+  - {label: 108, name: paperstack}
+  - {label: 109, name: nightstand}

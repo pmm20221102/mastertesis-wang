@@ -1,48 +1,64 @@
-# Experiments: Datasets, Evaluations, and Results
+# Experiments: Data, Evaluation, Maps, and Demonstrations
 
-This module stores datasets, frozen inputs, evaluation scripts, and run outputs. Experiment records are an evidence archive; code refactors do not rerun or rewrite them automatically.
+This module stores public task inputs, historical run artifacts, Nav2 missions and results, generated-map tooling, and the interactive GUI demo. Archived outputs preserve the thesis evidence; the runnable commands for the complete workflow are in [CODE_REPRODUCTION.md](CODE_REPRODUCTION.md).
 
-For clean-environment setup, tests, a provenance-bearing RAG build, and a single Nav2 plan-only request, follow [CODE_REPRODUCTION.md](CODE_REPRODUCTION.md). It also lists historical batches that cannot currently be replayed from this repository and the missing inputs.
+## Reproduction choices
 
-## Main Thesis Experiments
+- **Bundled demo:** install the common Python, Ollama, ROS Jazzy, and Nav2 bridge requirements, then start [navigation-ui-demo](navigation-ui-demo/README.md). Its reviewed and no-review RAG builds, matching profiles, and maps are already included; no Khronos run or database build is needed.
+- **New scene run:** supply a compatible Khronos `dsg.json` and `mesh.ply` (or create them following the full guide), build RAG and maps from the same DSG, package a matching profile, then select that profile in the GUI.
+- **Historical score replay:** see the reproducibility-gap report. Some original Gold/scorer/runner inputs are not present, so saved result tables are not a replacement for independently recomputing every thesis metric.
 
-### 60-Task Task-Chain Ablation
+## Main thesis artifacts
 
-- Input: `task-chain-60/public/tasks_en.jsonl` contains 60 instructions.
-- Main run: `task-chain-60/runs/surface-v1-llm2-60x4-20261020/`.
-- Conditions: Full, No LLM1, Raw DSG, and No LLM2; each task-condition pair ran once, for 240 outputs.
-- Provenance files: `artifact_manifest.json`, `draft/system_lock.json`, and `run_manifest.json`.
-- `predictions/` stores condition outputs. `runtime_inputs/` stores the canonical graph, RAG documents, and index snapshot used by that run.
+### 60-task chain evaluation
 
-Datasets such as `final_intent_60` and `planning_generation_60` serve different evaluation purposes and are stored under `evaluations/taskchain/`; they are not the dataset used for this main ablation.
+`task-chain-60/public/tasks_en.jsonl` contains the 60 public instructions. The selected primary run is under `task-chain-60/runs/surface-v1-llm2-60x4-20261020/`; it records 240 outputs across Full, No LLM1, Raw DSG, and No LLM2. `artifact_manifest.json`, `draft/system_lock.json`, and `run_manifest.json` describe inputs, parameters, and provenance. The `runtime_inputs/` directory contains the snapshot used by the run.
 
-### 49 Nav2 Missions
+The selected fixed-scene instructions depend on the Hospital graph and its semantic labels. New scenes require new instructions/Gold validation; they do not inherit the historical score automatically. Other task sets such as `final_intent_60` and `planning_generation_60` serve different evaluations under `evaluations/taskchain/`.
 
-- Input: 49 mission files in `nav2-49/missions/`; the preparation report is `missions/preparation_report.json`.
-- First-pass results: 49 result JSON files in `nav2-49/tasks/`; `logs/` contains first-pass logs.
-- Diagnostic reruns: logs and results for six failed missions are stored separately under `retry-20261023/`; they do not overwrite first-pass results.
-- Thesis denominator: 43/49 on the first pass. Successes in the six reruns are supplementary diagnostics and do not replace the first-pass score.
+### 49-mission Nav2 batch
 
-These missions are an executable subset selected from an earlier Full prediction run. They do not represent a 49/60 task-chain success rate.
+`nav2-49/missions/` contains 49 prepared missions and `preparation_report.json` records their source Full predictions. They come from the **same primary Full prediction batch** used for task-chain scoring. The 49 denominator uses mission-preparation criteria, while 47/60 uses task-chain Gold criteria; they are different measurements of the same batch. The 49 missions comprise 42 Gold-accepted navigable chains and 7 Gold failures that still yielded map targets.
 
-### Other Artifacts
+`nav2-49/tasks/` stores the 49 first-pass result JSON files; `logs/` stores first-pass logs. First-pass completion is 43/49. Six diagnostic reruns under `retry-20261023/` are supplementary and do not replace the original first-pass score.
 
-- `four-floor-demo/`: standalone HC-031 four-floor RViz2 demonstration.
-- `map-generation/`: Khronos-only map generator, geometry manifest, and tests. Generated `output/` can be rebuilt and is not committed.
-- `interface-smoke/`: natural-language-to-Nav2 interface integration records; these are not benchmark results.
-- `evaluations/taskchain/`, `evaluations/semantic-rag/`, and `evaluations/retrieval/`: other evaluation cases, scripts, and historical results.
-- `evaluations/baseline/scene_graph.json`: optional fixture for baseline comparison in the RAG planner. The old baseline planner implementation is not included.
+### Four-floor HC-031 demonstration
 
-## Requirements for Full Replays
+`four-floor-demo/` stores the independent demonstration mission, result, summary, and recording. It shows three ordered Room targets and five configured map/pose floor transitions with a point-robot Nav2 visualization. It is a separate demonstration, not an additional benchmark trial or physical stair traversal.
 
-Archived missions, predictions, logs, and results can be used to verify thesis denominators; they are not evidence that a run has been reproduced. Rebuilding the full RAG index requires the local Hospital DSG, mesh, 78-row review CSV, and embedding model. Replaying Nav2 requires Ollama, a running isolated Nav2 stack, the matching map bundle, and a ROS domain. Absolute paths in historical manifests are preserved as run provenance and must not be treated as paths in the current checkout.
+### Other experiment modules
 
-## Quick Archive-Count Checks
+- `navigation-ui-demo/`: browser-based instruction, RAG selection, candidate clarification, planning, and RViz execution.
+- `map-generation/`: Khronos Place/Mesh to OccupancyGrid converter, geometry configuration, profile packaging, and focused tests.
+- `interface-smoke/`: interface checks and records, not benchmark outcomes.
+- `evaluations/taskchain/`, `evaluations/semantic-rag/`, and `evaluations/retrieval/`: separate historical task and retrieval evaluations.
+- `evaluations/baseline/scene_graph.json`: optional fixture for the baseline evaluator; the old baseline planner is not included.
 
-~~~bash
+## Data needed for each path
+
+The **bundled demo** needs no external scene files: both RAG databases, their map profiles, and the four-floor maps are committed. Human-reviewed RAG adds 78 checked labels for objects that are unknown in the source DSG; the fresh profile omits those manual additions. Both retain the same 42 native Hospital109 object labels. The GUI selects complete indexes, so target coverage can differ between choices.
+
+A **new scene run** needs a compatible Khronos DSG and matching mesh, plus the pinned embedding model revision. A review CSV or semantic-override JSON is optional and must refer to Object IDs in that same DSG. The full pipeline creates a new RAG, four maps, and a run profile tied by hashes.
+
+Recomputing the **historical 60×4 score** requires its original Gold, scorer, and runner snapshot. Gaps in those archived materials are listed in `REPRODUCIBILITY_GAPS.md`; prediction files alone do not reproduce the metric. Archived 49-mission results are not regenerated by merely opening the GUI.
+
+## Interfaces and provenance
+
+- Task input: one JSONL record per instruction with a stable `task_id`.
+- Planner output: a provenance JSON with intent, grounding, task-chain status, mission-preparation status, and route-planning result.
+- Nav2 input: an ordered mission JSON plus a floor bundle; Nav2 output: per-stop action and map-transition result JSON.
+- New scene run profile: a build manifest for RAG, map manifest, hashed floor bundle, defaults, and profile manifest. The GUI selects only profiles whose sources and hashes agree.
+
+Historical manifests may retain absolute paths from the originating workstation. Treat the recorded hashes as provenance; use current checkout paths for new runs.
+
+## Quick archive checks
+
+From the repository root:
+
+```bash
 wc -l experiment/task-chain-60/public/tasks_en.jsonl
 find experiment/nav2-49/missions -maxdepth 1 -name 'HC-*.mission.json' | wc -l
 find experiment/nav2-49/tasks -maxdepth 1 -name 'HC-*.result.json' | wc -l
-~~~
+```
 
-Expected counts are 60, 49, and 49, respectively. Matching these counts does not reproduce an experiment.
+Expected counts are 60, 49, and 49. These checks confirm file counts only; the reproduction guide documents build, score, and runtime verification separately.

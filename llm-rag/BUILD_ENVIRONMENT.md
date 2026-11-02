@@ -16,7 +16,7 @@ This document identifies Python/model dependencies and system requirements. ROS 
 
 `llm-rag/requirements.txt` is the installation manifest for Python runtime and tests. It pins direct dependency versions and selects CPU PyTorch to avoid installing CUDA runtime packages. It does not lock every transitive dependency; `llm-rag/planner/pyproject.toml` retains package metadata and minimum-version declarations. Do not use `pip install -e 'llm-rag/planner[dev]'`: Setuptools automatic package discovery currently fails because it finds multiple top-level packages. The project runs scripts from the repository source tree and does not require an editable install.
 
-The pinned versions were taken from the Python 3.12 environment in which the Python test suite passed. The CPU PyTorch package index follows the official PyTorch installation guidance, but the complete requirements set has not yet been installed and verified in a fresh virtual environment. Run the tests below in a clean environment and record any resolver or compatibility issues.
+The complete requirements set was installed into a fresh Python 3.12 virtual environment during the current reproduction check; `pip check` passed. CPU PyTorch comes from the configured official wheel index. Run the software tests after installation and retain the environment/package inventory with the run.
 
 ## Installation Order
 
@@ -72,9 +72,9 @@ To rebuild Khronos from raw sensors/datasets rather than use an existing DSG, al
 
 ## External Inputs Not Included in the Repository
 
-- Original Hospital P1000 DSG, meshes, and manually reviewed semantic CSV (the complete raw dataset is approximately 27 GB).
+- Raw Hospital P1000 sensor data, original DSG, and meshes for a new reconstruction. The short demo already includes its databases and maps; it needs none of these external inputs.
 - Ollama model weights and the embedding-model cache.
 - The RAG `vector_db` is a generated artifact rebuilt from its build manifest. Historical task-chain archives contain runtime snapshots; these are not outputs from the current builder.
 - Original Khronos and TartanGround datasets, calibration files, and sensor bags.
 
-Without these inputs, unit tests can still be run, archived missions/results can be loaded, and packaged maps can be inspected. The thesis RAG index cannot be rebuilt from scratch and the complete perception pipeline cannot be rerun.
+Without raw scene inputs, use the bundled GUI and archived missions after common runtime setup. New reconstruction requires the scene data. The committed semantic_overrides.json preserves the human-review labels for its original DSG; it does not apply to a different graph by assumption.

@@ -27,11 +27,11 @@ launch:
   # Ground-truth label configuration.
   - arg:
       name: labelspace_config
-      default: '$(find-pkg-share tartanground_khronos_bridge)/config/tartanground_hospital_label_space.yaml'
+      default: '$(find-pkg-share tartanground_khronos_bridge)/config/tartanground_hospital_p1000_fine_label_space.yaml'
       if: $(var use_gt_semantics)
   - arg:
       name: label_remap_config
-      default: '$(find-pkg-share tartanground_khronos_bridge)/config/tartanground_hospital_remap.yaml'
+      default: '$(find-pkg-share tartanground_khronos_bridge)/config/tartanground_hospital_p1000_fine_remap.yaml'
       if: $(var use_gt_semantics)
   - let:
       name: extra_yaml

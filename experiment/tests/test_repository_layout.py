@@ -6,7 +6,17 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_repository_has_only_the_four_project_roots():
     expected = {"llm-rag", "khronos", "khronos-nav2-bridge", "experiment"}
-    actual = {path.name for path in ROOT.iterdir() if path.is_dir() and not path.name.startswith(".")}
+    visible_dirs = {
+        path.name for path in ROOT.iterdir()
+        if path.is_dir() and not path.name.startswith(".")
+    }
+    # Colcon creates an ignored root-level log/ directory even when the build
+    # itself ran inside a package. That build artifact is not a project module.
+    generated_colcon_dirs = {
+        path.name for path in ROOT.iterdir()
+        if path.is_dir() and (path / "COLCON_IGNORE").is_file()
+    }
+    actual = visible_dirs - generated_colcon_dirs
     assert actual == expected
 
 
