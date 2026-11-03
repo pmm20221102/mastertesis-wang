@@ -146,3 +146,26 @@ The GUI writes per-session planning and demo JSON files under ~/.cache/hospital-
 
 
 The lifecycle probe must report exactly `active [3]` before reuse or startup readiness. An exact `Node not found` response permits a cold launch even with exit code 1. An inactive stack, unknown response, transport error, or failed map check blocks launching a competing stack. An active external stack is reused only after its map matches. The GUI keeps no process handle for a reused external stack and never stops it; select another isolated domain or ask its owner to stop/recover it when incompatible. Use `HOSPITAL_NAV2_DOMAIN_ID` to choose the simulation domain (default 79).
+
+## Example object descriptions
+
+Start with object descriptions that have a semantic label in the selected
+scene. The following examples use entries from the bundled v5
+[manual label file](rag/semantic_overrides.json).
+
+| Label recorded in v5 | Example input |
+|---|---|
+| healthmonitor | Take me to a room with a health monitor. |
+| screen | Take me to a room with a medical screen. |
+| metalmedicaltable | Take me to a room with a metal medical table. |
+| desk | Take me to a room with a desk. |
+| chair | Take me to a room with a chair. |
+| sofa | Take me to a room with a sofa. |
+| cabinet | Take me to a room with a cabinet. |
+| sign | Take me to a room with a sign. |
+
+The table lists searchable descriptions, not guaranteed routes. Multiple
+instances may prompt a choice. A match still needs a navigation anchor and a
+feasible route. With a replacement RAG, use labels present in that build.
+The [60 benchmark instructions](../task-chain-60/public/tasks_en.jsonl) include
+boundary cases with expected clarification or no-match responses.

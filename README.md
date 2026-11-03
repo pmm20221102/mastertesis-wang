@@ -119,3 +119,161 @@ Build ROS packages inside their module directory so generated `build/install/log
 The main 60×4 task-chain outputs, 49 prepared missions, first-pass results, and the independent four-floor demonstration are archived under `experiment/`. The 49 missions come from the same primary Full prediction batch, with different scoring/preparation criteria; 43/49 is the original first-pass completion count. Diagnostic reruns remain separate.
 
 Running the software on a new graph is distinct from recalculating the historical Gold metrics. Exact historical batch-replay materials that are not yet delivered are listed in [reproducibility gaps](experiment/REPRODUCIBILITY_GAPS.md). Archived outputs are not presented as a new run.
+## Reproduction for reviewers
+
+Install Ollama, the Python environment and the Nav2 bridge as described above.
+The [raw-data guide](experiment/CODE_REPRODUCTION.md) also covers the separate
+Khronos build. All setup, reconstruction, indexing, map generation, model
+inference and batch evaluation commands run in Ubuntu/WSL terminals. The
+interactive path opens a browser and RViz2.
+
+### Generate assets from a new Khronos run
+
+Replay the audited bag into Khronos, stop the mapper cleanly after playback, and
+take the final DSG and mesh from the same timestamped output directory. Build
+the RAG index from the DSG. Independently, generate the occupancy grids from the
+DSG Place nodes and connections plus the mesh, then package the maps and the RAG
+manifest as a matching Nav2 run profile. See the raw-data guide for the exact
+commands and expected output files. Newly reconstructed assets can differ from
+the archived Hospital assets. Review floor heights, initial poses and portal
+endpoints before testing them.
+
+To vary the reconstruction, copy a mapper YAML and pass its absolute path as
+mapper_config:=/path/to/mapper.yaml. The
+[0.10 m mapper example](khronos/tartanground-tools/tools/tartanground_khronos_bridge/config/mapper_voxel010.yaml)
+shows volumetric_map.voxel_size, truncation_distance and voxels_per_side. Voxel
+size controls reconstruction resolution and influences the mesh; occupancy-grid
+resolution is set separately during map generation. Under object_detector,
+ConnectedSemantics exposes min_cluster_size, grid_size, use_3d and
+use_full_connectivity. These affect how semantic pixels form object clusters.
+The tracker has separate association and observation thresholds.
+
+The documented Hospital109 run consumes dataset semantic images. For learned
+segmentation or open-vocabulary experiments, consult the bundled
+[semantic inference guide](khronos/scene-graph-khronos/src/semantic_inference/docs/open_set.md)
+for FastSAM/SAM and CLIP setup. This uses a different semantic input path.
+Changing object clustering in the mapper does not enable open vocabulary.
+Record model weights, vocabulary and relevant segmentation thresholds, and
+check that the downstream builder can interpret the resulting labels.
+
+### Shared default for the two testing paths
+
+Use **Human-reviewed RAG (v5)** for the Hospital evaluation and interactive
+demo. Its profile ID is human-reviewed-v5 and its build ID is
+32ac2c76a36d682943f024730db6b73fb85e4cede4c018be130975eddfcad7c7.
+It ships under experiment/navigation-ui-demo/rag and includes 78 manually
+reviewed object labels added to the native Hospital109 labels. The thesis uses
+manually supplemented semantics. The bundled v5 build is the reproducibility
+default; the historical run manifest records the original database hash.
+The Fresh RAG profile uses the same scene with the original labels alone.
+
+For terminal inference, set RAG_DB to the bundled vector_db directory as shown
+below, or point it to another compatible build. Use that build's matching
+graph and maps for navigation. For the GUI, use the profile selector and
+HOSPITAL_RAG_DISCOVERY_ROOTS. With a new graph, use scene-specific instructions
+and gold before reporting benchmark accuracy. Old target IDs and manual labels
+are tied to their source graph.
+
+### A. Terminal evaluation: inference, gold scoring and Nav2 execution
+
+From the repository root, smoke-check the inference interface with one of the
+public instructions after Ollama is running:
+
+    set -o pipefail
+    RAG_DB="$PWD/experiment/navigation-ui-demo/rag/vector_db"
+    RUN_DIR="$(mktemp -d)"
+    .venv/bin/python llm-rag/planner/main_rag.py \
+      --mode structured --model gemma4:e2b-it-qat --db-dir "$RAG_DB" \
+      --command 'Please take me into the room with the bed.' \
+      --output-json "$RUN_DIR/HC-001.result.json" 2>&1 | tee "$RUN_DIR/HC-001.log"
+
+For a fresh Full evaluation, run the following in the same Bash terminal.
+The loop saves each planner JSON, captures both output streams and wraps the
+results in the format expected by the gold scorer.
+
+    export RAG_DB RUN_DIR
+    .venv/bin/python - <<'PY'
+    import json
+    import os
+    import subprocess
+    import sys
+    import time
+    from pathlib import Path
+
+    out = Path(os.environ["RUN_DIR"])
+    tasks = Path("experiment/task-chain-60/public/tasks_en.jsonl")
+    with (out / "predictions.jsonl").open("x", encoding="utf-8") as stream:
+        for line in tasks.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            task = json.loads(line)
+            task_id = task["task_id"]
+            result_path = out / f"{task_id}.batch-result.json"
+            print(f"Running {task_id}", flush=True)
+            start = time.monotonic()
+            with (out / f"{task_id}.batch.log").open("w", encoding="utf-8") as log:
+                subprocess.run(
+                    [sys.executable, "llm-rag/planner/main_rag.py",
+                     "--mode", "structured", "--model", "gemma4:e2b-it-qat",
+                     "--db-dir", os.environ["RAG_DB"],
+                     "--command", task["instruction"], "--output-json", str(result_path)],
+                    stdout=log, stderr=subprocess.STDOUT, check=True,
+                )
+            elapsed_ms = (time.monotonic() - start) * 1000
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            stream.write(json.dumps({"task_id": task_id, "repeat": 1,
+                                     "elapsed_ms": elapsed_ms, "result": result}) + "\n")
+            stream.flush()
+    PY
+    .venv/bin/python experiment/task-chain-60/score_predictions.py \
+      "$RUN_DIR/predictions.jsonl" --output "$RUN_DIR/gold-scores.json"
+
+The loop's elapsed time includes launching a Python process for each task.
+Use it for local diagnostics, rather than comparing it with historical model
+latency. If a command exits with an error, inspect that task's log and use a
+new run directory for a fresh attempt.
+
+The [scoring README](experiment/task-chain-60/README.md) also gives the
+commands to rescore the four archived conditions. The historical 60-by-4
+inference runner is not included. The single-instruction CLI is an interface
+for generating new Full predictions; a fresh run can produce different scores.
+
+For Nav2, use the mission preparation and execution scripts under
+khronos-nav2-bridge/khronos_nav2_bridge/scripts. The archived missions under
+experiment/nav2-49/missions can be replayed with the matching Hospital bundle
+and an isolated bridge stack. For fresh predictions,
+prepare_multifloor_missions.py requires a classification, start poses and a
+map bundle alongside the predictions. Regenerate or review those inputs for
+the new run rather than reusing the historical eligibility list or fixed start
+on different maps. There is no single checked-in command that takes a fresh
+60-row inference file through automatic eligibility selection, execution and
+aggregation.
+
+Only route-ready missions enter Nav2. Gold correctness and navigation
+eligibility are separate: the historical 49 prepared missions included 42
+gold-correct navigation tasks and 7 other tasks with convertible targets.
+A gold-correct clarification or no-match response has no navigation goal.
+Run eligible missions without --plan-only, record one result JSON per
+mission, and report completed missions divided by submitted missions.
+Report reruns separately. See the [bridge README](khronos-nav2-bridge/README.md)
+for ROS startup and runner inputs.
+
+### B. Interactive evaluation: GUI and RViz2
+
+Use the bundled demo command above with the default Human-reviewed RAG (v5).
+Paste any instruction from public/tasks_en.jsonl or enter a new natural-language
+request. Start with the [example object descriptions](experiment/navigation-ui-demo/README.md#example-object-descriptions).
+Confirm a candidate if asked and start navigation in RViz2 once a
+route is ready. The GUI displays intermediate outputs and reports runtime
+validation and execution. The fixed gold evaluation is available through
+path A.
+
+### Logs and review artifacts
+
+Capture terminal stdout and stderr for each stage, with pipefail enabled
+when using tee. Keep the Khronos effective configuration and run logs, RAG
+build manifest and map manifest, model name/digest and effective request
+options, per-instruction JSON and logs, gold score JSON, and per-mission
+Nav2 results and ROS logs. Keep GUI session JSON and diagnostics under
+~/.cache/hospital-nav2-ui. Console output alone does not record the full
+provenance or the gold and execution decisions.
