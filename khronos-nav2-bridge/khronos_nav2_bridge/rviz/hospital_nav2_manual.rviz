@@ -21,8 +21,9 @@ Visualization Manager:
     - Class: rviz_default_plugins/Map
       Name: Global Costmap
       Enabled: true
-      Alpha: 0.20
+      Alpha: 0.55
       Color Scheme: costmap
+      Draw Behind: false
       Topic:
         Value: /global_costmap/costmap
         Reliability Policy: Reliable
