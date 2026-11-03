@@ -238,25 +238,28 @@ commands to rescore the four archived conditions. The historical 60-by-4
 inference runner is not included. The single-instruction CLI is an interface
 for generating new Full predictions; a fresh run can produce different scores.
 
-For Nav2, use the mission preparation and execution scripts under
-khronos-nav2-bridge/khronos_nav2_bridge/scripts. The archived missions under
-experiment/nav2-49/missions can be replayed with the matching Hospital bundle
-and an isolated bridge stack. For fresh predictions,
-prepare_multifloor_missions.py requires a classification, start poses and a
-map bundle alongside the predictions. Regenerate or review those inputs for
-the new run rather than reusing the historical eligibility list or fixed start
-on different maps. There is no single checked-in command that takes a fresh
-60-row inference file through automatic eligibility selection, execution and
-aggregation.
+Start the isolated simulation stack as described in the
+[bridge README](khronos-nav2-bridge/README.md) and wait until it is active.
+From the repository root, source the ROS and bridge overlays and set the
+same simulation domain:
 
-Only route-ready missions enter Nav2. Gold correctness and navigation
-eligibility are separate: the historical 49 prepared missions included 42
-gold-correct navigation tasks and 7 other tasks with convertible targets.
-A gold-correct clarification or no-match response has no navigation goal.
-Run eligible missions without --plan-only, record one result JSON per
-mission, and report completed missions divided by submitted missions.
-Report reruns separately. See the [bridge README](khronos-nav2-bridge/README.md)
-for ROS startup and runner inputs.
+    source /opt/ros/jazzy/setup.bash
+    source khronos-nav2-bridge/install/setup.bash
+    export ROS_DOMAIN_ID=77
+    /usr/bin/python3 experiment/task-chain-60/run_nav2_batch.py \
+      "$RUN_DIR/predictions.jsonl" --output-dir "$RUN_DIR/nav2"
+
+Use --prepare-only with a separate output directory to inspect eligibility
+without ROS. The defaults use the reviewed v5 canonical graph and its map
+profile. To replace them, pass --graph, --bundle and --defaults from the
+same build used to ground the predictions and launch Nav2 with its initial
+floor map.
+
+Only runtime-valid chains that the adapter can convert are submitted. The
+batch saves preparation exclusions, mission JSON, Nav2 result JSON, logs and
+summary.json. Navigation success rate is completed divided by submitted.
+Gold scoring is separate. The historical 49 missions used the archived
+batch's preparation procedure; the new adapter can select a different set.
 
 ### B. Interactive evaluation: GUI and RViz2
 
