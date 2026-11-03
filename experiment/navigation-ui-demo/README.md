@@ -149,23 +149,45 @@ The lifecycle probe must report exactly `active [3]` before reuse or startup rea
 
 ## Example object descriptions
 
-Start with object descriptions that have a semantic label in the selected
-scene. The following examples use entries from the bundled v5
-[manual label file](rag/semantic_overrides.json).
+The bundled Human-reviewed RAG (v5) canonical graph contains 120 Object nodes
+with 24 distinct labels. The table includes both native and manually reviewed
+labels. Counts refer to graph nodes. Label spelling is preserved as stored.
 
-| Label recorded in v5 | Example input |
-|---|---|
-| healthmonitor | Take me to a room with a health monitor. |
-| screen | Take me to a room with a medical screen. |
-| metalmedicaltable | Take me to a room with a metal medical table. |
-| desk | Take me to a room with a desk. |
-| chair | Take me to a room with a chair. |
-| sofa | Take me to a room with a sofa. |
-| cabinet | Take me to a room with a cabinet. |
-| sign | Take me to a room with a sign. |
+| Object label | Instances |
+|---|---:|
+| door | 26 |
+| stairs | 11 |
+| table | 11 |
+| wall | 11 |
+| sofa | 10 |
+| cabinet | 9 |
+| chair | 6 |
+| desk | 4 |
+| doorway | 4 |
+| floor | 3 |
+| railing | 3 |
+| sign | 3 |
+| staircase | 3 |
+| elevator | 2 |
+| exitsign | 2 |
+| healthmonitor | 2 |
+| nightstand | 2 |
+| window | 2 |
+| acousticceiling | 1 |
+| bed | 1 |
+| Entrance | 1 |
+| medicalscreen | 1 |
+| metalmedicaltable | 1 |
+| screen | 1 |
 
-The table lists searchable descriptions, not guaranteed routes. Multiple
-instances may prompt a choice. A match still needs a navigation anchor and a
-feasible route. With a replacement RAG, use labels present in that build.
-The [60 benchmark instructions](../task-chain-60/public/tasks_en.jsonl) include
-boundary cases with expected clarification or no-match responses.
+Try these instructions:
+
+- Take me to a room with a health monitor.
+- Please take me into the room with the bed.
+- Take me to a room that has a desk and a sign.
+
+A recorded label can have multiple instances. Confirm the destination if the
+GUI asks. Navigation also requires a usable anchor and route. If you select a
+different RAG build, use descriptions grounded in that build's own labels.
+The [60 benchmark instructions](../task-chain-60/public/tasks_en.jsonl) also
+include cases that expect clarification or a no-match response.
