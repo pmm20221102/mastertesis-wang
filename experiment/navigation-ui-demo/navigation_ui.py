@@ -233,7 +233,7 @@ class NavigationController:
                       "demo_result": None, "error": None}
         self.last_result = None
         self.last_mission_path = None
-        self.nav2_process = self.rviz_process = self.demo_process = None
+        self.nav2_process = self.rviz_process = self.demo_process = self.labels_process = None
         self.output_dir = Path(os.environ.get(
             "HOSPITAL_UI_OUTPUT_DIR", str(Path.home() / ".cache" / "hospital-nav2-ui")
         )).expanduser()
@@ -873,6 +873,14 @@ class NavigationController:
             result_path = self.output_dir / f"{session_id}-demo-result.json"
             mission_path.write_text(json.dumps(mission, indent=2, ensure_ascii=False) + "\n",
                                     encoding="utf-8")
+            if not self.labels_process or self.labels_process.poll() is not None:
+                with (self.output_dir / f"{session_id}-map-labels.log").open("w") as log:
+                    self.labels_process = subprocess.Popen(
+                        ["/usr/bin/python3", str(Path(__file__).with_name("map_labels.py")),
+                         "--bundle", str(self.bundle_path), "--graph",
+                         str(self.rag_db.parent / "canonical_graph_v2.json")],
+                        cwd=ROOT, env=self._ros_env(), stdout=log,
+                        stderr=subprocess.STDOUT, start_new_session=True)
             if not self.rviz_process or self.rviz_process.poll() is not None:
                 self.rviz_process = subprocess.Popen(
                     ["rviz2", "-d", str(self.rviz_path)], cwd=ROOT,
@@ -977,7 +985,7 @@ class NavigationController:
     def stop(self):
         with self.state_lock:
             self.stop_requested = True
-        for attr in ("demo_process", "rviz_process", "nav2_process"):
+        for attr in ("demo_process", "rviz_process", "labels_process", "nav2_process"):
             self._stop_process(attr)
         self.last_result = None
         self.last_mission_path = None

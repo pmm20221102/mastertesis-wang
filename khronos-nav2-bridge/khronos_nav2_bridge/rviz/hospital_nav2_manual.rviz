@@ -37,6 +37,13 @@ Visualization Manager:
         Value: /local_costmap/costmap
         Reliability Policy: Reliable
         Durability Policy: Transient Local
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Floor and Room Labels
+      Enabled: true
+      Topic:
+        Value: /hospital/map_labels
+        Reliability Policy: Reliable
+        Durability Policy: Transient Local
     - Class: rviz_default_plugins/RobotModel
       Name: ANYmal C Visual Model
       Enabled: true
