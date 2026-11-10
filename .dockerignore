@@ -5,3 +5,7 @@
 **/install
 **/log
 .pytest_cache
+docker-data/
+*.log
+SOURCE_REVISION
+desktop.png

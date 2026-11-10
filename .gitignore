@@ -106,3 +106,5 @@ mesh.ply
 !experiment/navigation-ui-demo/rag/vector_db/**
 !experiment/navigation-ui-demo/rag-fresh/vector_db/
 !experiment/navigation-ui-demo/rag-fresh/vector_db/**
+
+/docker-data/

@@ -5,18 +5,25 @@ services:
     volumes:
       - models:/root/.ollama
   demo:
-    build: .
+    init: true
+    build:
+      context: .
+      target: full
     depends_on: [ollama]
     environment:
       OLLAMA_HOST: http://ollama:11434
       HOSPITAL_NAV2_DOMAIN_ID: "79"
       ROS_DOMAIN_ID: "79"
+      HOSPITAL_RAG_DISCOVERY_ROOTS: /data
       ROS_AUTOMATIC_DISCOVERY_RANGE: LOCALHOST
     ports:
       - "127.0.0.1:8765:8765"
       - "127.0.0.1:6080:6080"
     volumes:
       - cache:/root/.cache
+      - ./docker:/opt/thesis/docker:ro
+      - ./docker-data:/data
+      - ${HOSPITAL_DATASET_ROOT:-./docker-data/input}:/input:ro
     shm_size: 1gb
 volumes:
   models:

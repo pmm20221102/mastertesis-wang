@@ -20,4 +20,5 @@ p.write_text(yaml.safe_dump(config))
 PY
 export HOSPITAL_RAG_PROFILE_CONFIG=/opt/thesis/experiment/navigation-ui-demo/rag_profiles.json
 export HOSPITAL_NAV2_PARAMS=/opt/thesis/khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_rviz.yaml
+/opt/venv/bin/python docker/check_environment.py &
 exec /opt/venv/bin/python experiment/navigation-ui-demo/navigation_ui.py --host 0.0.0.0 --port 8765

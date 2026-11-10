@@ -274,7 +274,7 @@ void ExperimentManager::logData() {
     }
 
     // Save the resulting spatio-temporal map (final state only).
-    khronos_->save(data_dir_);
+    khronos_->save(data_dir_, config.save_full_state);
     logger_->log("Saved final spatio-temporal map to '" + data_dir_.path().string() + "'.");
     logger_->setFlag("Experiment Finished Cleanly");
   }

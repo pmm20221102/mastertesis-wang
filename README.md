@@ -24,8 +24,8 @@ The root README is the only root Markdown document. Module documentation describ
 
 ## Docker and SSH on a GPU workstation
 
-The [Docker guide](docker/README.md) packages the Hospital browser demo,
-Ollama GPU inference, Nav2 and a browser desktop for RViz2. The client uses an
+The [Docker guide](docker/README.md) builds the complete Khronos and sensor-adapter environment, RAG and map
+tools, Ollama GPU inference, the Hospital demo, Nav2, RViz2 and recording tools. The client uses an
 SSH tunnel and a browser. Human-reviewed RAG (v5) is selected by default.
 
 ## 1. Clone and install the common runtime

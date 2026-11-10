@@ -19,6 +19,17 @@ uses Cyclone DDS, with which the subsequent planning and execution passed.
 
 This note describes what is still needed to reproduce the Hospital P1000 software pipeline **starting with the raw TartanGround data, running Khronos, and ending with a Nav2 plan**. It complements [`CODE_REPRODUCTION.md`](CODE_REPRODUCTION.md), whose runnable path starts from an already available Hospital DSG and review CSV. This is a software planning workflow: a successful plan does not demonstrate physical robot motion or physical safety.
 
+The complete container environment was subsequently built with all 26
+Khronos packages and the data adapter. A 3178-frame P1000 bag was generated.
+Normal final saving at 0.10 m was verified after forwarding save_full_state
+to the final-save call. The wrapper disables periodic snapshots and selects
+lightweight final saving, preserving the final DSG, mesh and 4D map.
+The complete script generated a fresh RAG, four maps and a run profile
+continuously. A generated-scene F0-to-F2 navigation trial succeeded.
+The RViz2 recorder produced a verified 90-second H.264 MP4. Startup component
+checks are shown at the browser desktop's environment.html page.
+
+
 ## Target artifact flow
 
 ```text
