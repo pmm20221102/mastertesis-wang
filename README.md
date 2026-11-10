@@ -22,6 +22,12 @@ The short path does not compile or run Khronos, regenerate a RAG index, or requi
 
 The root README is the only root Markdown document. Module documentation describes its own inputs, outputs, and dependencies.
 
+## Docker and SSH on a GPU workstation
+
+The [Docker guide](docker/README.md) packages the Hospital browser demo,
+Ollama GPU inference, Nav2 and a browser desktop for RViz2. The client uses an
+SSH tunnel and a browser. Human-reviewed RAG (v5) is selected by default.
+
 ## 1. Clone and install the common runtime
 
 Recommended platform: WSL2 or native Ubuntu 24.04, Python 3.12, ROS 2 Jazzy Desktop. Install ROS using the [official Jazzy Ubuntu instructions](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html), including `ros-dev-tools`.

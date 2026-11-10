@@ -4,6 +4,9 @@ This is an optional, self-contained demonstration module for the thesis reposito
 
 > **Quick start:** For this packaged demo, you do not need to rebuild the RAG index, regenerate maps, or package a Nav2 run profile. The two RAG indexes and matching profiles are bundled, and the demo reuses the four-floor maps already packaged in the repository. You still need the Python dependencies, a built ROS 2/Nav2 bridge, and the local Ollama model listed below.
 
+For a remote GPU workstation, follow the [Docker and SSH guide](../../docker/README.md).
+It exposes both this GUI and the RViz2 desktop through an SSH tunnel.
+
 ## Included RAG Profiles
 
 | GUI option | Build ID | Semantic review |
