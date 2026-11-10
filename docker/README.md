@@ -37,6 +37,82 @@ RViz2 runs inside the workstation container. The browser desktop displays its
 window on the client. The navigation button starts the workstation process;
 viewing it requires the remote desktop connection above.
 
+### Linux Bash client
+
+Connect to the KIT VPN first if required. Replace USER@WORKSTATION with your
+own SSH account and workstation hostname. Docker commands below run on the
+workstation. SSH forwarding and browser commands run on the Linux laptop.
+
+In laptop terminal 1, log in to the workstation:
+
+~~~bash
+ssh USER@WORKSTATION
+~~~
+
+On the workstation, enter your clone of thesis-final. For a new installation,
+clone the repository and build the image first:
+
+~~~bash
+git clone --branch thesis-final --recurse-submodules https://github.com/pmm20221102/mastertesis-wang.git
+cd mastertesis-wang
+docker compose build
+docker compose up -d ollama
+docker compose exec ollama ollama pull gemma4:e2b-it-qat
+docker compose up -d demo
+~~~
+
+For an existing deployment, enter its project directory and start it with
+docker compose up -d. Then inspect the services and environment:
+
+~~~bash
+docker compose ps
+docker compose exec -T demo /opt/venv/bin/python docker/check_environment.py
+docker compose logs --tail 30 demo
+exit
+~~~
+
+In laptop terminal 2, establish the tunnel and leave it running:
+
+~~~bash
+ssh -N -o ExitOnForwardFailure=yes \
+  -L 28765:127.0.0.1:8765 \
+  -L 26080:127.0.0.1:6080 \
+  USER@WORKSTATION
+~~~
+
+In laptop terminal 1, check the forwarded pages and open them in the local
+desktop browser:
+
+~~~bash
+curl --fail --silent --output /dev/null --write-out 'Demo HTTP %{http_code}\\n' http://127.0.0.1:28765/
+curl --fail --silent --output /dev/null --write-out 'Desktop HTTP %{http_code}\\n' http://127.0.0.1:26080/vnc.html
+xdg-open 'http://127.0.0.1:26080/environment.html'
+xdg-open 'http://127.0.0.1:28765/'
+xdg-open 'http://127.0.0.1:26080/vnc.html?autoconnect=true&resize=scale&host=127.0.0.1&port=26080&path=websockify&encrypt=false'
+~~~
+
+If the laptop shell has no desktop session, open these URLs manually in the
+laptop browser. Keep Human-reviewed RAG (v5) selected and try this instruction:
+
+~~~text
+Take me to a room with a metal medical table.
+~~~
+
+Click Plan Route, confirm a candidate if requested, then click Run Navigation
+in RViz2. The remote desktop URL above connects automatically. When opening
+the desktop through the environment page instead, click Open RViz2 desktop
+and then Connect.
+
+After the demonstration, click Stop Simulation in the Demo. To stop the
+workstation containers, log in again, enter the deployment directory and run:
+
+~~~bash
+docker compose down
+~~~
+
+Press Ctrl+C in laptop terminal 2 to close the SSH tunnel. Models and session
+outputs remain in the persistent volumes.
+
 ### Windows PowerShell client
 
 After starting the containers on the workstation, open a PowerShell window
