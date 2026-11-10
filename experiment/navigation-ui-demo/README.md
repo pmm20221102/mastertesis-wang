@@ -194,3 +194,12 @@ GUI asks. Navigation also requires a usable anchor and route. If you select a
 different RAG build, use descriptions grounded in that build's own labels.
 The [60 benchmark instructions](../task-chain-60/public/tasks_en.jsonl) also
 include cases that expect clarification or a no-match response.
+
+## Explicit floor requests
+
+The maintained parser carries an explicit destination floor in a per-stop
+floor_id field. For Hospital, F0 means the ground floor, F1 the first floor,
+F2 the second floor and F3 the third floor. RAG filters room candidates by
+the Hospital floor planes and Room heights before destination selection.
+An unqualified later stop does not inherit the previous stop's floor.
+The archived 60-task results retain their original prompts and outputs.

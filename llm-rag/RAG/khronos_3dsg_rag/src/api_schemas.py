@@ -49,6 +49,7 @@ class EntityReference:
     locations: list[Any] = field(default_factory=list)
     relations: list[Any] = field(default_factory=list)
     aggregate: Any | None = None
+    floor_id: int | None = None
 
 
 @dataclass

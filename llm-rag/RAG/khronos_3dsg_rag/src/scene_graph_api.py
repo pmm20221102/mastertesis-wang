@@ -19,6 +19,9 @@ from canonical_index import CanonicalGraphIndex, get_canonical_index
 
 logger = logging.getLogger(__name__)
 
+# Same floor planes and nearest-height convention as the Hospital UI.
+HOSPITAL_FLOOR_HEIGHTS = {0: -1.2, 1: 2.3, 2: 5.8, 3: 9.3}
+
 NEAR_RADIUS_M = 3.0
 SEMANTIC_RELATION_TOP_K = 5
 SEMANTIC_RELATION_THRESHOLD = 0.35
@@ -316,6 +319,7 @@ class SceneGraphRAG:
                 pool = [c for c in pool if c.name.lower() == reference.name.lower()]
             if getattr(reference, "attributes", None):
                 return []
+            pool = self._apply_floor_filter(reference, pool, index)
             return self._apply_location_filter(reference, pool, index)
         relations = getattr(reference, "relations", [])
         origin_rank = reference.quantifier in ("nearest", "farthest")
@@ -337,6 +341,47 @@ class SceneGraphRAG:
             allowed.intersection_update(c.node_id for c in self._rank_pool(
                 eligible, anchors, reference.quantifier == "farthest"))
         return [c for c in candidates if c.node_id in allowed]
+
+    def _apply_floor_filter(self, reference, candidates, index):
+        """Filter before ranking/selection using room geometry, never entity text.
+
+        Object height is not a floor plane: use its containing room instead.
+        Missing/nonfinite geometry or an equidistant floor cannot prove a match.
+        Unqualified requests retain their original pool.
+        """
+        import math
+
+        floor_id = getattr(reference, "floor_id", None)
+        if floor_id is None:
+            return candidates
+        if type(floor_id) is not int or floor_id not in HOSPITAL_FLOOR_HEIGHTS:
+            return []
+
+        def matches(candidate):
+            node = index.get_node(candidate.node_id)
+            if node is None:
+                return False
+            if self._normalize_type(node.node_type) != "room" and node.room_id:
+                node = index.get_node(node.room_id)
+                if node is None:
+                    return False
+            position = node.position or node.bbox_center
+            if not position or len(position) < 3:
+                return False
+            try:
+                z = float(position[2])
+            except (TypeError, ValueError, OverflowError):
+                return False
+            if not math.isfinite(z):
+                return False
+            distances = {floor: abs(height - z)
+                         for floor, height in HOSPITAL_FLOOR_HEIGHTS.items()}
+            nearest = min(distances.values())
+            floors = [floor for floor, distance in distances.items()
+                      if math.isclose(distance, nearest, rel_tol=0, abs_tol=1e-9)]
+            return floors == [floor_id]
+
+        return [candidate for candidate in candidates if matches(candidate)]
 
     def _apply_location_filter(self, reference: EntityReference, candidates: list, index: 'CanonicalGraphIndex') -> list:
         """Apply location constraints to filter candidates.

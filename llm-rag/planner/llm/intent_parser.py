@@ -280,7 +280,11 @@ Rules:
 8. A connector or access object (such as an opening, doorway, passage, or steps between levels) is an object clue, not a named area. Set destination to "room" and preserve its descriptive phrase in objects. When the phrase says a connector links area A and area B, those areas are context for ONE connector stop, not two destinations, unless the user separately asks to visit A and B. Do not put the connector phrase in destination.
 9. In this task interface, "where", "which", and "how can I get to" questions request a navigation destination; use action "navigate", not a factual answer or clarification.
 10. If the requested destination depends only on an earlier visit or choice that is absent from the available context, use "ask_clarification"; do not turn the historical reference into an object clue. Use exactly {"action":"ask_clarification","stops":[],"clarification":"one short question"}.
-11. Output no keys beyond the required schema. Use English and return valid JSON only.
+11. Preserve every explicitly requested destination floor as that stop's structured floor_id (integer 0..3). UI numbering is F0=0 (ground floor), F1=1 (first floor), F2=2 (second floor), F3=3 (third floor); numeric floor 0..3 and F0..F3 use those exact IDs, without a one-floor shift. Keep floor constraints separate from destination and objects; never rely on text alone to carry a floor. Do not infer a floor from room numbers, objects, current robot location, or vague phrases such as "another floor". If no floor is specified, omit floor_id or use null. A floor applies only to the destination(s) explicitly qualified by it; do not carry it to a later unqualified stop. Ask for clarification if the requested floor cannot be represented by F0..F3.
+12. Output no keys beyond the required schema. Use English and return valid JSON only.
+
+Instruction: "Take me to a room on the second floor with a bed, then a room on F0 with a chair."
+Output: {"action":"navigate","stops":[{"order":1,"destination":"room","objects":["bed"],"floor_id":2},{"order":2,"destination":"room","objects":["chair"],"floor_id":0}]}
 
 Illustrative example (not from the evaluation tasks):
 Instruction: "Please take me to a room with a lamp and a small table."
@@ -344,6 +348,7 @@ def simple_taskchain_to_task_intent(
             node_type="room",
             label="room" if generic_room or stop.objects else None,
             relations=relations,
+            floor_id=stop.floor_id,
         )
         steps.append(IntentStep(action="navigate", target=target))
     return TaskIntent(action="navigate", steps=steps)
@@ -1162,6 +1167,7 @@ def _parse_entity_ref(data: dict | None) -> EntityReference | None:
         label=data.get("label"),
         name=data.get("name"),
         room=data.get("room"),
+        floor_id=data.get("floor_id"),
         relations=data.get("relations", []),
         attributes=data.get("attributes", {}),
         position=data.get("position"),

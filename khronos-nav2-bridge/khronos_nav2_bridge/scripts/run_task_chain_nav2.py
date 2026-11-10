@@ -22,6 +22,35 @@ class TaskExecutionFailure(RuntimeError):
         self.stage = stage
 
 
+def wait_for_navigation_result(handle, wait, action_timeout, cancel_timeout=20.0):
+    """A cancel acknowledgement alone is insufficient: require a terminal result."""
+    result_future = handle.get_result_async()
+    try:
+        result = wait(result_future, action_timeout, "NavigateToPose result")
+        if result.status not in (4, 5, 6):  # SUCCEEDED, CANCELED, ABORTED
+            raise RuntimeError("NavigateToPose returned a nonterminal result")
+        return {"status": "succeeded" if result.status == 4 else "failed",
+                "action_status": int(result.status), "batch_safe": True}
+    except Exception as error:
+        failure = {"status": "failed", "reason": f"{type(error).__name__}: {error}",
+                   "batch_safe": False, "cancel_requested": True}
+        try:
+            response = wait(handle.cancel_goal_async(), cancel_timeout,
+                            "NavigateToPose cancellation acknowledgement")
+            failure["cancel_return_code"] = int(response.return_code)
+        except Exception as cancel_error:
+            failure["cancel_error"] = f"{type(cancel_error).__name__}: {cancel_error}"
+        # A rejected/late cancel may race with normal completion. Only a final
+        # action result proves that no old navigation goal remains active.
+        try:
+            terminal = wait(result_future, cancel_timeout, "NavigateToPose terminal result")
+            failure["action_status"] = int(terminal.status)
+            failure["batch_safe"] = terminal.status in (4, 5, 6)
+        except Exception as terminal_error:
+            failure["terminal_error"] = f"{type(terminal_error).__name__}: {terminal_error}"
+        return failure
+
+
 def _succeeded(result):
     if result is True or result == "succeeded":
         return True
@@ -826,23 +855,24 @@ def ros_main(compiled, bundle, output_path, action_timeout, robot_model="footpri
             _, pose = self._pose(value)
             goal = NavigateToPose.Goal()
             goal.pose = pose
+            self.batch_safe = False
             handle = self._wait(self.nav_client.send_goal_async(goal), 20.0,
                                 "NavigateToPose acceptance")
             if not handle.accepted:
-                return {"status": "failed", "reason": "goal rejected"}
-            result = self._wait(handle.get_result_async(), action_timeout,
-                                "NavigateToPose result")
+                self.batch_safe = True
+                return {"status": "failed", "reason": "goal rejected", "batch_safe": True}
+            result = wait_for_navigation_result(handle, self._wait, action_timeout)
+            self.batch_safe = result["batch_safe"]
             final_pose = None
             try:
                 final_pose = normalize_nav2_pose(self._current_pose(), bundle["frame_id"])
             except Exception:
                 pass
-            return {"status": "succeeded" if result.status == GoalStatus.STATUS_SUCCEEDED
-                    else "failed", "action_status": int(result.status),
-                    "final_pose": final_pose}
+            return {**result, "final_pose": final_pose}
 
     rclpy.init()
     node = Nav2Adapter()
+    node.batch_safe = True
     started = time.monotonic()
     candidate_mode = compiled.get("schema_version") == CANDIDATE_MISSION_SCHEMA
     task_id = compiled["task_id"]
@@ -931,6 +961,8 @@ def ros_main(compiled, bundle, output_path, action_timeout, robot_model="footpri
             task_id, "failed", error=state["error"]))
         return 2
     finally:
+        state["batch_safe"] = node.batch_safe
+        _atomic_json(output_path, state)
         node.destroy_node()
         if rclpy.ok():
             rclpy.shutdown()

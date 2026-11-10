@@ -2,8 +2,24 @@
 
 from __future__ import annotations
 
-from typing import Literal
-from pydantic import BaseModel, Field
+from typing import Annotated, Literal
+from pydantic import BaseModel, BeforeValidator, Field
+
+
+def _normalize_floor_id(value):
+    """Hospital UI numbering: numeric 0..3 and F0..F3, without ordinal shifts."""
+    if isinstance(value, str):
+        value = value.strip().upper()
+        if value.startswith("F"):
+            value = value[1:]
+        if value in {"0", "1", "2", "3"}:
+            return int(value)
+    if type(value) is int and 0 <= value <= 3:
+        return value
+    raise ValueError("floor_id must be 0..3 or F0..F3")
+
+
+FloorId = Annotated[int, BeforeValidator(_normalize_floor_id), Field(ge=0, le=3)]
 
 
 class LocationConstraint(BaseModel):
@@ -47,6 +63,7 @@ class EntityReference(BaseModel):
     label: str | None = None
     name: str | None = None
     room: str | None = None  # backward compatible
+    floor_id: FloorId | None = None  # explicit Hospital floor; None means unrestricted
     locations: list[LocationConstraint] = Field(default_factory=list)  # new: multi-location
     relations: list[RelationConstraint] = Field(default_factory=list)
     attributes: dict[str, str] = Field(default_factory=dict)

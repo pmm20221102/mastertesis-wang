@@ -206,6 +206,12 @@ results in the format expected by the gold scorer.
     import time
     from pathlib import Path
 
+    sys.path.insert(0, str(Path("experiment/task-chain-60").resolve()))
+    from run_nav2_batch import load_batch_sources
+    profile = Path("experiment/navigation-ui-demo/nav2-profile")
+    _, _, _, provenance, _ = load_batch_sources(
+        Path(os.environ["RAG_DB"]), profile / "hospital_floor_transitions.yaml",
+        profile / "hospital_nav2_plan_defaults.yaml")
     out = Path(os.environ["RUN_DIR"])
     tasks = Path("experiment/task-chain-60/public/tasks_en.jsonl")
     with (out / "predictions.jsonl").open("x", encoding="utf-8") as stream:
@@ -228,7 +234,8 @@ results in the format expected by the gold scorer.
             elapsed_ms = (time.monotonic() - start) * 1000
             result = json.loads(result_path.read_text(encoding="utf-8"))
             stream.write(json.dumps({"task_id": task_id, "repeat": 1,
-                                     "elapsed_ms": elapsed_ms, "result": result}) + "\n")
+                                     "elapsed_ms": elapsed_ms, "result": result,
+                                     "provenance": provenance}) + "\n")
             stream.flush()
     PY
     .venv/bin/python experiment/task-chain-60/score_predictions.py \
@@ -252,14 +259,23 @@ same simulation domain:
     source /opt/ros/jazzy/setup.bash
     source khronos-nav2-bridge/install/setup.bash
     export ROS_DOMAIN_ID=77
-    /usr/bin/python3 experiment/task-chain-60/run_nav2_batch.py \
-      "$RUN_DIR/predictions.jsonl" --output-dir "$RUN_DIR/nav2"
+    .venv/bin/python experiment/task-chain-60/run_nav2_batch.py \
+      "$RUN_DIR/predictions.jsonl" --db-dir "$RAG_DB" --output-dir "$RUN_DIR/nav2"
 
 Use --prepare-only with a separate output directory to inspect eligibility
 without ROS. The defaults use the reviewed v5 canonical graph and its map
-profile. To replace them, pass --graph, --bundle and --defaults from the
-same build used to ground the predictions and launch Nav2 with its initial
-floor map.
+profile. Run batch with the inference Python environment (including Chroma);
+it invokes the ROS runner with /usr/bin/python3. To replace the profile, use
+the same --db-dir, --bundle and --defaults both when capturing provenance
+above and when running batch; --graph defaults to the verified RAG build's
+canonical graph. Launch Nav2 with that profile's initial floor map.
+Unknown or mismatched prediction provenance is rejected before preparation.
+Legacy graph_sha256/database_sha256/raw_dsg_sha256 records require the exact
+original graph, SQLite snapshot and DSG; if unavailable, regenerate predictions.
+The batch stops with exit code 2 when the runner cannot confirm a terminal
+navigation goal (including missing or malformed results), and records the
+unprocessed tasks in summary.json. A cancel acknowledgement alone does not
+permit the next task.
 
 Only runtime-valid chains that the adapter can convert are submitted. The
 batch saves preparation exclusions, mission JSON, Nav2 result JSON, logs and

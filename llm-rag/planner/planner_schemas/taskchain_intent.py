@@ -6,6 +6,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from .intent import FloorId
+
 
 class SimpleTaskStop(BaseModel):
     """One ordered destination and its surface-form object clues."""
@@ -15,6 +17,7 @@ class SimpleTaskStop(BaseModel):
     order: int = Field(ge=1, le=5)
     destination: str = Field(min_length=1)
     objects: list[str]
+    floor_id: FloorId | None = None
 
     @field_validator("objects")
     @classmethod
