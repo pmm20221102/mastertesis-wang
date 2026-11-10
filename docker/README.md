@@ -22,10 +22,40 @@ On the client, keep an SSH tunnel open:
 For KIT, connect the KIT VPN first and use your own workstation account in
 the SSH command. Leave the tunnel terminal open while using the demo.
 
-Open http://127.0.0.1:8765 for planning and
-http://127.0.0.1:6080/vnc.html for the RViz2 desktop. Use the demo's navigation
-button after planning. The selected Room labels, maps and navigation results
-remain visible on the remote desktop.
+Open http://127.0.0.1:6080/environment.html to check readiness.
+Then follow these steps:
+
+1. Open http://127.0.0.1:8765 and keep Human-reviewed RAG (v5) selected.
+2. Enter an instruction, click Plan Route, and confirm a candidate if asked.
+3. When planning succeeds, click Run Navigation in RViz2.
+4. On the environment page, click Open RViz2 desktop. Alternatively, open
+   http://127.0.0.1:6080/vnc.html directly.
+5. Click Connect on the remote desktop page to see RViz2. Keep the SSH tunnel
+   open while watching and interacting with the simulation.
+
+RViz2 runs inside the workstation container. The browser desktop displays its
+window on the client. The navigation button starts the workstation process;
+viewing it requires the remote desktop connection above.
+
+### Windows PowerShell client
+
+After starting the containers on the workstation, open a PowerShell window
+and keep this native Windows SSH command running:
+
+    ssh -N -o ExitOnForwardFailure=yes -L 28765:127.0.0.1:8765 -L 26080:127.0.0.1:6080 USER@WORKSTATION
+
+In another PowerShell window, open the environment checks and Demo:
+
+    Start-Process "http://127.0.0.1:26080/environment.html"
+    Start-Process "http://127.0.0.1:28765/"
+
+Click Open RViz2 desktop on the environment page, then Connect. To open and
+connect automatically, use:
+
+    Start-Process "http://127.0.0.1:26080/vnc.html?autoconnect=true&resize=scale&host=127.0.0.1&port=26080&path=websockify&encrypt=false"
+
+The local ports 28765 and 26080 in this example forward to workstation ports
+8765 and 6080. Use the local port numbers in the Windows browser URLs.
 
 To stop services, run docker compose down. Named volumes retain downloaded
 models and session outputs. To inspect GPU use, run docker compose exec ollama ollama ps after a
