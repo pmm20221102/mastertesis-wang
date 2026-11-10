@@ -829,10 +829,20 @@ class NavigationController:
     @staticmethod
     def _result_message(result):
         status = result.get("status")
+        if status == "ambiguous":
+            pipeline = result.get("pipeline_result") or {}
+            intent = pipeline.get("intent") or {}
+            if intent.get("action") == "ask_clarification":
+                detail = intent.get("clarification") or intent.get("description") or pipeline.get("error")
+                message = "LLM1 requested clarification."
+                if detail:
+                    message += f" {detail}"
+                return message + " Please revise the instruction and click Plan Route again."
+            return ("The destination could not be uniquely resolved. "
+                    "Please provide a more specific description and click Plan Route again.")
         messages = {
             "planned": "Nav2 route planning succeeded.",
             "target_not_found": "RAG could not find a matching destination in the scene graph.",
-            "ambiguous": "Multiple destinations match. User selection is required.",
             "unsupported": "This navigation request is outside the supported capabilities.",
             "system_error": "The pipeline encountered a system error.",
             "nav2_plan_failed": "Nav2 route planning failed. See the result for details.",

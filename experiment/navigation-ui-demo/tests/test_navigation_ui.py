@@ -256,13 +256,14 @@ def test_successful_route_can_start_rviz_then_mission_runner(ui, controller, mon
         process = Mock(stdout=[])
         process.poll.return_value = 0
         process.wait.return_value = 0
-        if command[0] == "/usr/bin/python3":
+        if command[0] == "/usr/bin/python3" and "--output" in command:
             Path(command[command.index("--output") + 1]).write_text(json.dumps({"status": "completed"}))
         return process
     monkeypatch.setattr(ui.subprocess, "Popen", launch)
     controller.job_lock.acquire()
     controller._demo_worker()
-    assert [command[0] for command in commands] == ["rviz2", "/usr/bin/python3"]
+    assert [command[0] for command in commands] == ["/usr/bin/python3", "rviz2", "/usr/bin/python3"]
+    assert commands[0][1].endswith("map_labels.py")
     assert "--plan-only" not in commands[1]
     assert controller.state["status"] == "demo_complete"
     assert not controller.job_lock.locked()
@@ -281,3 +282,20 @@ def test_child_diagnostics_are_saved_without_polluting_progress(ui, controller):
 def test_nav2_failure_is_exposed_as_a_clean_result_error(ui):
     result = {"status": "nav2_plan_failed", "nav2_plan": {"error": "No feasible route"}}
     assert ui.NavigationController._summarize_result(result, "result.json")["error"] == "No feasible route"
+
+
+def test_clarification_without_candidates_does_not_claim_multiple_destinations(ui):
+    result = {"status": "ambiguous", "pipeline_result": {
+        "intent": {"action": "ask_clarification", "description": "where is healthmonitor"},
+        "error": "where is healthmonitor"}}
+    message = ui.NavigationController._result_message(result)
+    assert "LLM1 requested clarification" in message
+    assert "where is healthmonitor" in message
+    assert "Plan Route" in message
+    assert "Multiple destinations" not in message
+
+
+def test_unresolved_destination_without_candidates_requests_more_detail(ui):
+    message = ui.NavigationController._result_message({"status": "ambiguous"})
+    assert "more specific description" in message
+    assert "selection is required" not in message
