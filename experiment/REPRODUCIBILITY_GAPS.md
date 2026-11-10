@@ -1,5 +1,22 @@
 # Full Reproduction Gaps: Khronos to Nav2 Planning
 
+## Docker workstation follow-up
+
+The Docker setup was validated on imi-hanoi on 2026-11-10. The reviewed v5
+index loaded, Gemma E2B ran on the RTX A4500, and the metal-medical-table
+instruction completed LLM intent parsing, grounding, LLM2 chaining, Nav2
+planning and point-robot execution. The final container run reported
+succeeded in 42.632 seconds for navigation. RViz2 and Room labels were
+checked on the browser desktop through SSH forwarding. See
+[the Docker guide](../docker/README.md).
+
+These results use the bundled reviewed scene. The raw-data reconstruction,
+new-scene batch provenance and historical scoring-wrapper issues described
+below retain their respective scope. The first container attempt timed out
+on path-action acceptance with the default middleware. The packaged runtime
+uses Cyclone DDS, with which the subsequent planning and execution passed.
+
+
 This note describes what is still needed to reproduce the Hospital P1000 software pipeline **starting with the raw TartanGround data, running Khronos, and ending with a Nav2 plan**. It complements [`CODE_REPRODUCTION.md`](CODE_REPRODUCTION.md), whose runnable path starts from an already available Hospital DSG and review CSV. This is a software planning workflow: a successful plan does not demonstrate physical robot motion or physical safety.
 
 ## Target artifact flow
