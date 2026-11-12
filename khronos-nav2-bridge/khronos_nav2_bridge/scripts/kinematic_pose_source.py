@@ -9,7 +9,8 @@ class PoseState:
     """Planar kinematic state with bounded velocity and acceleration."""
 
     def __init__(self, max_v: float = 0.7, max_w: float = 1.0,
-                 max_accel: float = 1.0, timeout: float = 0.5):
+                 max_accel: float = 1.0, timeout: float = 0.5,
+                 apply_acceleration_limits: bool = True):
         self.x = 0.0
         self.y = 0.0
         self.yaw = 0.0
@@ -22,6 +23,7 @@ class PoseState:
         self.max_w = max_w
         self.max_accel = max_accel
         self.timeout = timeout
+        self.apply_acceleration_limits = apply_acceleration_limits
 
     def reset(self, x: float, y: float, yaw: float, now: float | None = None) -> None:
         """Reset pose with validation."""
@@ -55,12 +57,21 @@ class PoseState:
         tv = 0.0 if timed_out else self.target_v
         tw = 0.0 if timed_out else self.target_w
 
-        dv = self.max_accel * dt
-        self.v += max(-dv, min(dv, tv - self.v))
-        self.w += max(-dv, min(dv, tw - self.w))
+        if self.apply_acceleration_limits:
+            dv = self.max_accel * dt
+            self.v += max(-dv, min(dv, tv - self.v))
+            self.w += max(-dv, min(dv, tw - self.w))
+        else:
+            # Match the constant-Twist motion used by Nav2 collision prediction.
+            self.v, self.w = tv, tw
 
-        self.x += self.v * math.cos(self.yaw) * dt
-        self.y += self.v * math.sin(self.yaw) * dt
+        angle = self.yaw + self.w * dt
+        if not self.apply_acceleration_limits and abs(self.w) > 1e-9:
+            self.x += self.v / self.w * (math.sin(angle) - math.sin(self.yaw))
+            self.y += self.v / self.w * (math.cos(self.yaw) - math.cos(angle))
+        else:
+            self.x += self.v * math.cos(self.yaw) * dt
+            self.y += self.v * math.sin(self.yaw) * dt
         self.yaw = math.atan2(
             math.sin(self.yaw + self.w * dt),
             math.cos(self.yaw + self.w * dt),
@@ -89,8 +100,10 @@ def main():
             self.declare_parameter("initial_x", 0.0)
             self.declare_parameter("initial_y", 0.0)
             self.declare_parameter("initial_yaw", 0.0)
+            self.declare_parameter("apply_acceleration_limits", True)
 
-            self.state = PoseState()
+            self.state = PoseState(apply_acceleration_limits=bool(
+                self.get_parameter("apply_acceleration_limits").value))
             self.state.x = float(self.get_parameter("initial_x").value)
             self.state.y = float(self.get_parameter("initial_y").value)
             self.state.yaw = float(self.get_parameter("initial_yaw").value)

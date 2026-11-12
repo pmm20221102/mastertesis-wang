@@ -56,3 +56,16 @@ export PATH=/usr/bin:/opt/ros/jazzy/bin:/bin
 ~~~
 
 Map PNG/YAML files and their hashes are under `khronos_nav2_bridge/generated/hospital-p1000-khronos-only/`. Map-generation source is in `experiment/map-generation/`; the original Hospital DSG/mesh is not included. For detailed Hospital launch instructions, see `khronos_nav2_bridge/README_HOSPITAL.md`.
+
+## Demo motion model
+
+The RViz demo profile sets kinematic_pose_source.apply_acceleration_limits to
+false. The point-robot pose source then follows bounded Nav2 Twist commands
+directly and integrates constant turns as circular arcs. This matches the
+motion assumed by controller collision prediction and avoids adding a second
+velocity smoother at goal changes. The PoseState API and other profiles
+retain the default acceleration-limited mode.
+
+The bed-room then medical-screen-room regression completed both stops after
+this change. The desired demo speed remains 0.5 m/s and collision checking
+remains enabled. This is a software point-robot motion model.

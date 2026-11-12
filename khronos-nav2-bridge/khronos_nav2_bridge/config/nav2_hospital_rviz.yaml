@@ -107,3 +107,8 @@ lifecycle_manager_navigation:
     use_sim_time: false
     autostart: true
     node_names: [map_server, planner_server, controller_server, behavior_server, bt_navigator, waypoint_follower]
+
+# Point-robot visualization follows Nav2 Twist commands without a second smoother.
+kinematic_pose_source:
+  ros__parameters:
+    apply_acceleration_limits: false
