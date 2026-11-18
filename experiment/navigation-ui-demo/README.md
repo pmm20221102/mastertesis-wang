@@ -91,6 +91,11 @@ No Khronos build, sensor replay, new DSG, map generation, or RAG rebuild is need
 
 4. Open the local UI and keep **Human-reviewed RAG (v5)** selected. Enter an instruction such as `Take me to a room with a bed`, press **Plan Route**, and confirm any ambiguous destination. Check the intent, grounding, task chain, mission, and Nav2 stage outputs. Then press **Run Navigation in RViz2** to view and execute the point-robot simulation. Use **Stop Simulation** to stop GUI-owned processes.
 
+With the [workstation Docker setup](../../docker/README.md), **Run Navigation
+in RViz2** opens and connects to the RViz2 desktop in a browser tab.
+**View in RViz2** opens the desktop for the retained route. If the browser
+blocks the new tab, click **Open RViz2 desktop** in the Demo.
+
 ## Full workflow: a new Khronos output to visualized navigation
 
 For perception from raw sensors or bags, first follow [Khronos setup](../../khronos/README.md) and the input/mapper steps in the [reproduction guide](../CODE_REPRODUCTION.md). These require the external dataset and produce a new `dsg.json` and `mesh.ply`; the GUI does not perform perception. If you already have that pair, begin here. Run from the repository root with a dependency-complete `.venv`:

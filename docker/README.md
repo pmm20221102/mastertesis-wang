@@ -27,15 +27,16 @@ Then follow these steps:
 
 1. Open http://127.0.0.1:8765 and keep Human-reviewed RAG (v5) selected.
 2. Enter an instruction, click Plan Route, and confirm a candidate if asked.
-3. When planning succeeds, click Run Navigation in RViz2.
-4. On the environment page, click Open RViz2 desktop. Alternatively, open
-   http://127.0.0.1:6080/vnc.html directly.
-5. Click Connect on the remote desktop page to see RViz2. Keep the SSH tunnel
-   open while watching and interacting with the simulation.
+3. When planning succeeds, click **Run Navigation in RViz2**. The simulation
+   starts and the browser opens and connects to the RViz2 desktop in a new tab.
+
+Click **View in RViz2** to open a saved route in the desktop. If the browser
+blocks the new tab, click **Open RViz2 desktop** in the Demo. Keep the SSH
+tunnel open while using RViz2. For a custom local desktop port, set
+`HOSPITAL_RVIZ_WEB_PORT` in the Demo service environment before recreating it.
 
 RViz2 runs inside the workstation container. The browser desktop displays its
-window on the client. The navigation button starts the workstation process;
-viewing it requires the remote desktop connection above.
+window on the client. Both the Demo and browser desktop use the SSH forwards above.
 
 ### Linux Bash client
 
@@ -88,7 +89,6 @@ curl --fail --silent --output /dev/null --write-out 'Demo HTTP %{http_code}\\n' 
 curl --fail --silent --output /dev/null --write-out 'Desktop HTTP %{http_code}\\n' http://127.0.0.1:26080/vnc.html
 xdg-open 'http://127.0.0.1:26080/environment.html'
 xdg-open 'http://127.0.0.1:28765/'
-xdg-open 'http://127.0.0.1:26080/vnc.html?autoconnect=true&resize=scale&host=127.0.0.1&port=26080&path=websockify&encrypt=false'
 ~~~
 
 If the laptop shell has no desktop session, open these URLs manually in the
@@ -98,10 +98,9 @@ laptop browser. Keep Human-reviewed RAG (v5) selected and try this instruction:
 Take me to a room with a metal medical table.
 ~~~
 
-Click Plan Route, confirm a candidate if requested, then click Run Navigation
-in RViz2. The remote desktop URL above connects automatically. When opening
-the desktop through the environment page instead, click Open RViz2 desktop
-and then Connect.
+Click **Plan Route**, confirm a candidate if requested, then click
+**Run Navigation in RViz2**. The browser opens and connects to the desktop
+through port 26080. If a popup is blocked, click **Open RViz2 desktop**.
 
 After the demonstration, click Stop Simulation in the Demo. To stop the
 workstation containers, log in again, enter the deployment directory and run:
@@ -125,10 +124,9 @@ In another PowerShell window, open the environment checks and Demo:
     Start-Process "http://127.0.0.1:26080/environment.html"
     Start-Process "http://127.0.0.1:28765/"
 
-Click Open RViz2 desktop on the environment page, then Connect. To open and
-connect automatically, use:
-
-    Start-Process "http://127.0.0.1:26080/vnc.html?autoconnect=true&resize=scale&host=127.0.0.1&port=26080&path=websockify&encrypt=false"
+After planning in the Demo, click **Run Navigation in RViz2** to open
+and connect to the browser desktop. If the tab is blocked, click
+**Open RViz2 desktop** in the Demo.
 
 The local ports 28765 and 26080 in this example forward to workstation ports
 8765 and 6080. Use the local port numbers in the Windows browser URLs.
@@ -256,5 +254,3 @@ For the full-workflow-final generated profile, HC-001 ("Please take me into
 the room with the bed.") succeeded in 119.058 seconds. These durations are
 single navigation executions on their respective maps. The test instructions
 were supplied independently of the generated scene.
-
-**RViz2 from the Demo:** After planning, click **Run Navigation in RViz2** to start the simulation and open the browser desktop in a new tab. **View in RViz2** opens the same desktop for a saved route. If the browser blocks the tab, use **Open RViz2 desktop**. The documented 8765/6080 and 28765/26080 port pairs work by default. For other desktop forward ports, set `HOSPITAL_RVIZ_WEB_PORT` in the Demo service environment to the browser-facing port before recreating the service.
