@@ -28,6 +28,9 @@ if str(ROOT / "llm-rag" / "planner") not in sys.path:
 if str(NAV2_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(NAV2_SCRIPTS))
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from route_snapshot import RouteHistory
+
 import plan_nav2  # noqa: E402
 import yaml  # noqa: E402
 from floor_transition_core import validate_transition_bundle  # noqa: E402
@@ -158,49 +161,7 @@ def _read_yaml(path: Path) -> dict:
     return value
 
 
-HTML = r"""<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hospital Navigation Console</title>
-<style>
-:root{color-scheme:light;--ink:#17212b;--muted:#617080;--line:#dce3ea;--blue:#1463d5;--soft:#f4f7fb;--green:#16784a;--red:#ad2f35}
-*{box-sizing:border-box}body{margin:0;background:#edf2f7;color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:1500px;margin:28px auto;padding:0 18px}.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.header h1{font-size:24px;margin:0}.tag{border:1px solid #c6d4e3;border-radius:999px;padding:5px 12px;color:#31475e;background:white;font-size:13px}
-.grid{display:grid;grid-template-columns:minmax(250px,.95fr) minmax(360px,1.2fr) minmax(260px,.9fr);gap:14px}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 5px 18px #19324b0a}.panel h2{font-size:17px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}.notice{padding:11px 13px;border-radius:9px;background:#eff6ff;color:#174a82;margin:12px 0}.warning{background:#fff4e7;color:#874a00}.error{background:#fff0f0;color:#94252b}.success{background:#eaf7ef;color:#145d38}
-textarea,select{width:100%;border:1px solid #b8c5d2;border-radius:9px;padding:10px;font:inherit;background:white}select{margin:4px 0 8px}.profile-selector{margin:16px 0}.profile-selector label{display:block;font-weight:650;margin-bottom:4px}textarea{min-height:112px;resize:vertical;border:1px solid #b8c5d2;border-radius:9px;padding:12px;font:inherit}button{border:0;border-radius:9px;padding:10px 15px;background:var(--blue);color:white;font:600 14px system-ui;cursor:pointer}button.secondary{background:#e7edf4;color:#24384c}button:disabled{opacity:.5;cursor:default}.row{display:flex;gap:10px;align-items:center;margin-top:12px}.status{font-weight:700}.events{list-style:none;padding:0;margin:0;max-height:430px;overflow:auto}.events li{border-left:2px solid #bdd0e3;margin:0 0 0 5px;padding:0 0 14px 13px}.events time{color:#7a8794;font:12px ui-monospace,monospace;margin-right:8px}.events .log{font-size:12px;color:#647180;overflow-wrap:anywhere}.candidate-group{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}.option{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 0;cursor:pointer}.option:has(input:checked){border-color:var(--blue);background:#f1f6ff}.option input{margin-top:4px}.option strong{display:block}.stage-column{min-width:0}.stage-card{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}.stage-card h3{font-size:13px;margin:0 0 5px;color:#43566a}.stage-output{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7fa;border-radius:8px;padding:9px;font:12px/1.4 ui-monospace,monospace;max-height:165px;overflow:auto;color:#263748}.result{white-space:pre-wrap;background:#f5f7fa;border-radius:9px;padding:12px;font:13px ui-monospace,monospace;max-height:300px;overflow:auto}.footer{margin:16px 2px;color:var(--muted);font-size:12px}@media(max-width:1120px){.grid{grid-template-columns:minmax(240px,.8fr) minmax(350px,1.2fr)}.stage-column{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stage-card{min-width:0}}@media(max-width:760px){.grid{grid-template-columns:1fr}.stage-column{display:block}.header{align-items:flex-start;gap:10px;flex-direction:column}}
-</style></head><body><main>
-<header class="header"><h1>Hospital Navigation Console</h1><span class="tag">WSL · Point Robot Simulation · ROS_DOMAIN_ID 79</span></header>
-<div id="startup" class="notice" hidden></div>
-<div id="backend" class="notice"></div>
-<div class="grid"><section class="panel stage-column"><h2>Stage Outputs</h2><article class="stage-card"><h3>LLM1 Intent</h3><pre id="stage-intent" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RAG Grounding</h3><pre id="stage-rag" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Task Chain</h3><pre id="stage-mission" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Mission</h3><pre id="stage-mission-build" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>Nav2 Route</h3><pre id="stage-nav2" class="stage-output">Waiting for input</pre></article><article class="stage-card"><h3>RViz Simulation</h3><pre id="stage-execution" class="stage-output">Run after route planning succeeds</pre></article></section><section class="panel"><h2>Navigation Request</h2><div class="muted">Enter a natural-language destination. If multiple places match, choose one below. After planning succeeds, you can run the planar kinematic simulation in RViz2.</div>
-<div class="profile-selector"><label for="rag-profile">RAG index</label><select id="rag-profile" aria-label="RAG index"></select><div class="muted">New run profiles are detected automatically. Changing the RAG clears the previous plan and stage outputs.</div><div class="row"><button id="refresh-rags" class="secondary">Refresh RAG list</button><span id="rag-refresh-status" class="muted">Scans configured run folders every 15 seconds.</span></div></div>
-<textarea id="instruction" placeholder="e.g., Take me to a room with a bed"></textarea><div class="row"><button id="plan">Plan Route</button><span id="status" class="status">Ready</span></div>
-<div id="message" class="notice" hidden></div><div id="choices"></div><div id="result"></div>
-<div class="row"><button id="demo" hidden>Run Navigation in RViz2</button><button id="stop" class="secondary">Stop Simulation</button></div>
-</section><section class="panel"><h2>Progress</h2><ol id="events" class="events"></ol></section></div>
-<p class="footer">This demo uses an isolated ROS domain and a point-robot kinematic model. It does not control a physical robot or validate ANYmal hardware safety.</p>
-<script>
-const $=id=>document.getElementById(id);let timer=null,lastEventCount=0;
-function post(path,data={}){return fetch(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(async r=>{let v=await r.json();if(!r.ok)throw new Error(v.error||"request failed");return v})}
-let candidateGroupsKey=null;
-function showMessage(text,kind="notice"){const el=$("message");el.className=kind;el.textContent=text;el.hidden=!text}
-function renderChoices(groups){const root=$("choices");const nextKey=JSON.stringify(groups||[]);if(nextKey===candidateGroupsKey)return;candidateGroupsKey=nextKey;root.replaceChildren();if(!groups||!groups.length)return;
- for(const group of groups){const box=document.createElement("div");box.className="candidate-group";const h=document.createElement("h2");h.textContent=`Choose a destination for: ${group.reference_text}`;box.append(h);
-  for(const option of group.options){const label=document.createElement("label");label.className="option";const radio=document.createElement("input");radio.type="radio";radio.name=group.reference_key;radio.value=option.node_id;const body=document.createElement("span");const strong=document.createElement("strong");strong.textContent=option.title;const details=document.createElement("span");details.className="muted";let parts=[option.node_type,option.floor_id===null?"Floor unknown":`F${option.floor_id}`];if(option.evidence?.length)parts.push(`Contains: ${option.evidence.join(", ")}`);parts.push(`ID ${option.node_id}`);details.textContent=parts.join(" · ");body.append(strong,details);label.append(radio,body);box.append(label)}root.append(box)}
- const button=document.createElement("button");button.textContent="Confirm Selection and Continue";button.onclick=()=>{const selected={};for(const group of groups){const radio=root.querySelector(`input[name="${CSS.escape(group.reference_key)}"]:checked`);if(!radio){showMessage("Choose one place for each ambiguous destination.","warning");return}selected[group.reference_key]=radio.value}post("/api/select",{selections:selected}).then(()=>showMessage("Selection confirmed. Rechecking the destination and continuing the plan.")).catch(e=>showMessage(e.message,"error"))};root.append(button)}
-function renderStageOutputs(s){const o=s.stage_outputs||{},items=[["intent","stage-intent","Waiting for input"],["rag","stage-rag","Waiting for input"],["task_chain","stage-mission","Waiting for input"],["mission","stage-mission-build","Waiting for input"],["nav2","stage-nav2","Waiting for input"],["execution","stage-execution","Run after route planning succeeds"]];for(const [key,id,fallback] of items){const el=$(id);el.textContent=Object.prototype.hasOwnProperty.call(o,key)?JSON.stringify(o[key],null,2):fallback}}
-let ragProfileOptionsKey=null;
-function renderRagProfiles(s){const options=s.rag_profiles||[],key=JSON.stringify(options);const select=$("rag-profile");if(key!==ragProfileOptionsKey){ragProfileOptionsKey=key;select.replaceChildren();for(const profile of options){const option=document.createElement("option");option.value=profile.id;option.textContent=profile.label;select.append(option)}}if(s.selected_rag_profile_id)select.value=s.selected_rag_profile_id}
-function render(s){$("backend").textContent=s.task_chain_backend==="llm2"?"Task chain: LLM1 + RAG + LLM2 (full pipeline)":"Task chain: LLM1 + RAG + deterministic compiler (LLM2 bypassed)";renderStageOutputs(s);renderRagProfiles(s);const banner=$("startup");if(s.startup_error){banner.hidden=false;banner.className="notice error";banner.textContent=s.startup_error}else if(s.rag_build_id){banner.hidden=false;banner.className="notice";banner.textContent="RAG "+s.rag_build_id.slice(0,12)+" · "+s.rag_review_badge}$("status").textContent=s.stage_message||s.status||"Ready";$("plan").disabled=["running","demo_running"].includes(s.status);$("rag-profile").disabled=["running","demo_running"].includes(s.status);$("refresh-rags").disabled=["running","demo_running"].includes(s.status);$("demo").hidden=s.status!=="planned";$("demo").disabled=s.status==="demo_running";if(s.error)showMessage(s.error,"error");else if(s.status==="planned")showMessage(`Route planned: ${s.result?.path_length_m??"?"} m, ${s.result?.transition_count??0} floor transition(s). You can start the RViz2 simulation.`,"success");else if(s.status==="awaiting_selection")showMessage("Multiple places match. Choose a destination.","warning");else if(s.status==="target_not_found")showMessage("RAG could not ground this destination in the scene graph. Rephrase the request or add semantic labels to the graph.","warning");renderChoices(s.candidate_groups);
- const list=$("events");list.replaceChildren();for(const e of (s.events||[])){const li=document.createElement("li"),time=document.createElement("time"),span=document.createElement("span");time.textContent=e.time||"";span.textContent=e.message||e.stage||"";li.append(time,span);list.append(li)}if(s.demo_result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify({status:s.demo_result.status,reached_stops:s.demo_result.reached_stops,error:s.demo_result.error},null,2);$("result").replaceChildren(pre)}else if(s.result){const pre=document.createElement("pre");pre.className="result";pre.textContent=JSON.stringify(s.result,null,2);$("result").replaceChildren(pre)}list.scrollTop=list.scrollHeight}
-async function poll(){try{render(await (await fetch("/api/state")).json())}catch(e){}timer=setTimeout(poll,700)}
-$("instruction").addEventListener("input",()=>{candidateGroupsKey=null});
-$("rag-profile").onchange=()=>{const select=$("rag-profile");select.disabled=true;post("/api/rag-profile",{profile_id:select.value}).then(()=>{candidateGroupsKey=null;$("choices").replaceChildren();showMessage("RAG profile changed. Previous results and outputs were cleared.","success")}).catch(e=>showMessage(e.message,"error")).finally(()=>{select.disabled=false})};
-$("refresh-rags").onclick=()=>{const button=$("refresh-rags");button.disabled=true;$("rag-refresh-status").textContent="Scanning configured run folders...";post("/api/rag-profiles/refresh").then(result=>{$("rag-refresh-status").textContent=result.error||("Scan complete. "+result.discovered+" new profile(s) found.")}).catch(e=>{$("rag-refresh-status").textContent=e.message}).finally(()=>{button.disabled=false})};
-$("plan").onclick=()=>{const instruction=$("instruction").value.trim();if(!instruction){showMessage("Enter a navigation request.","warning");return}post("/api/plan",{instruction}).then(()=>showMessage("Request submitted. Analyzing intent and grounding destinations; Nav2 starts after mission preparation.")) .catch(e=>showMessage(e.message,"error"))};
-$("demo").onclick=()=>post("/api/demo").then(()=>showMessage("RViz2 is running the point-robot simulation.","success")).catch(e=>showMessage(e.message,"error"));
-$("stop").onclick=()=>post("/api/stop").then(()=>showMessage("Simulation stack stopped."));
-fetch("/api/state").then(r=>r.json()).then(s=>{if(s.startup_error)showMessage(s.startup_error,"error");render(s)}).finally(poll);
-</script></main></body></html>"""
+HTML = (Path(__file__).resolve().parent / "web" / "index.html").read_text(encoding="utf-8")
 
 
 class NavigationController:
@@ -228,9 +189,13 @@ class NavigationController:
         self.profile_scan_interval_s = 15.0
         self.job_lock = threading.Lock()
         self.stop_requested = False
+        self._stopping = False
+        self._demo_execution_id = None
+        self._demo_goal_ledger = None
         self.state = {"status": "idle", "events": [], "candidate_groups": [],
                       "stage_outputs": {}, "result": None,
-                      "demo_result": None, "error": None}
+                      "demo_result": None, "error": None, "stage_status": {},
+                      "final_summary": {}, "route_snapshot": None}
         self.last_result = None
         self.last_mission_path = None
         self.nav2_process = self.rviz_process = self.demo_process = self.labels_process = None
@@ -522,71 +487,182 @@ class NavigationController:
             self.state["stage_message"] = message
 
     @staticmethod
-    def _compact_stage_output(value):
-        if isinstance(value, dict):
-            compact = {}
-            for key, item in value.items():
-                item = NavigationController._compact_stage_output(item)
-                if item is None or item == "" or item == [] or item == {}:
-                    continue
-                compact[key] = item
-            return compact
-        if isinstance(value, list):
-            return [item for item in (
-                NavigationController._compact_stage_output(item) for item in value)
-                if item is not None and item != "" and item != [] and item != {}]
-        return value
+    def _compact_intent_payload(raw):
+        # Display whitelist follows SimpleTaskChainIntent/SimpleTaskStop. The
+        # parser validates the recorded payload; do not reconstruct lost text.
+        if not isinstance(raw, dict) or raw.get("action") not in {"navigate", "ask_clarification"}:
+            return None
+        stops = raw.get("stops")
+        if not isinstance(stops, list) or len(stops) > 5:
+            return None
+        projected = []
+        for index, stop in enumerate(stops):
+            if (not isinstance(stop, dict) or type(stop.get("order")) is not int
+                    or stop["order"] != index + 1
+                    or not isinstance(stop.get("destination"), str) or not stop["destination"].strip()
+                    or not isinstance(stop.get("objects"), list)
+                    or not all(isinstance(x, str) and x.strip() for x in stop["objects"])):
+                return None
+            floor = stop.get("floor_id")
+            if floor is not None and not (type(floor) is int and 0 <= floor <= 3
+                    or isinstance(floor, str) and re.fullmatch(r"[Ff]?[0-3]", floor)):
+                return None
+            projected.append({key: stop[key] for key in
+                              ("order", "destination", "objects", "floor_id") if key in stop})
+        if raw["action"] == "navigate" and (not stops or raw.get("clarification")):
+            return None
+        if raw["action"] == "ask_clarification" and (stops or not isinstance(raw.get("clarification"), str)
+                                                      or not raw["clarification"].strip()):
+            return None
+        output = {key: raw[key] for key in ("action", "clarification") if key in raw}
+        output["stops"] = projected
+        return output
+
+    @staticmethod
+    def _friendly_error(value):
+        """Read structured causes, not warning logs or stack traces."""
+        reasons, errors = [], []
+        def visit(item):
+            if isinstance(item, dict):
+                for key in ("reason", "error"):
+                    text = item.get(key)
+                    if isinstance(text, str) and text.strip():
+                        text = text.strip()
+                        if ("\n" not in text and len(text) < 400
+                                and not re.search(r"traceback|\[warn|\[error|File \"", text, re.I)):
+                            (reasons if key == "reason" else errors).append(text)
+                for key, child in item.items():
+                    if key not in {"raw", "raw_content", "thinking_text", "runner_stderr_tail",
+                                   "planning_attempts", "intent_parse_attempts", "error", "reason"}:
+                        visit(child)
+            elif isinstance(item, list):
+                for child in item:
+                    visit(child)
+        visit(value)
+        messages = list(dict.fromkeys(reasons or errors))[:3]
+        return " ".join(messages)[:360] or "This stage could not finish. Details are saved in the run artifact."
+
+    @staticmethod
+    def _final_summary(result):
+        pipeline = result.get("pipeline_result") or {}
+        plan_status = pipeline.get("status")
+        task_plan = pipeline.get("task_plan")
+        plan_ok = plan_status == "valid" and not pipeline.get("validation_errors")
+        if plan_ok:
+            plan = {"status": "succeeded", "message": "Task plan passed validation."}
+        elif plan_status == "ambiguous":
+            plan = {"status": "needs_input", "message": "A destination or clarification is needed before planning can continue."}
+        elif plan_status == "target_not_found":
+            plan = {"status": "not_run", "message": (
+                "No task plan was generated because no matching destination was found."
+                if not isinstance(task_plan, dict) else
+                "No executable task plan is available because no matching destination was found.")}
+        elif not isinstance(task_plan, dict):
+            plan = {"status": "not_run", "message": "No task plan was generated. " + NavigationController._friendly_error(pipeline)}
+        elif pipeline.get("validation_errors") or task_plan.get("status") == "system_error":
+            plan = {"status": "failed", "message": "Task plan did not pass validation."}
+        else:
+            plan = {"status": "not_run", "message": "The pipeline returned a boundary response rather than an executable task plan."}
+
+        mission = result.get("mission_preparation") or {}
+        navigation_plan = result.get("nav2_plan") or {}
+        route_status = navigation_plan.get("status")
+        if route_status == "planned" and result.get("status") == "planned":
+            route = {"status": "succeeded", "message": "A feasible route was selected; navigation has not been run."}
+        elif route_status in (None, "not_attempted", "not_run"):
+            message = "Route planning was not run."
+            if mission.get("status") not in (None, "ready", "not_attempted", "not_run"):
+                message += " Mission preparation did not complete. " + NavigationController._friendly_error(mission)
+            route = {"status": "not_run", "message": message}
+        else:
+            route = {"status": "failed", "message": NavigationController._friendly_error(navigation_plan)}
+        return {
+            "plan": plan,
+            "route": route,
+            "navigation": {"status": "not_run", "message": "Not run. Route planning does not establish arrival."},
+        }
+
+    @staticmethod
+    def _navigation_outcome(result, return_code, expected_stops):
+        reached = result.get("reached_stops") or []
+        ok = (return_code == 0 and result.get("status") == "succeeded"
+              and reached == list(range(expected_stops)))
+        return {"status": "succeeded" if ok else "failed", "reached_stops": reached,
+                "total_stops": expected_stops,
+                "message": ("All navigation stops and required transitions completed." if ok
+                            else NavigationController._friendly_error(result))}
+
+    def _stage(self, key, status, message):
+        with self.state_lock:
+            stages = self.state.setdefault("stage_status", {})
+            stages[key] = {"status": status, "message": message}
+            if status == "running":
+                self.state["active_stage"] = key
+            if status in {"failed", "needs_input", "cancelled"}:
+                keys = ["intent", "rag", "task_chain", "mission", "nav2", "execution"]
+                for downstream in keys[keys.index(key) + 1:]:
+                    stages[downstream] = {"status": "not_run", "message": "Not run after the preceding stage stopped."}
 
     def _record_progress(self, event):
         if getattr(self, "stop_requested", False):
             return
         stage = event.get("stage", "planner")
-        message = PROGRESS_MESSAGES.get(
-            stage, f"Processing: {stage.replace('_', ' ')}.")
         details = event.get("details") or {}
+        message = PROGRESS_MESSAGES.get(stage, "Processing the current stage.")
+        starts = {"intent_parsing": "intent", "rag_grounding": "rag", "planning": "task_chain",
+                  "validating_plan": "task_chain", "mission_preparation": "mission",
+                  "nav2_planning": "nav2", "nav2_starting": "nav2", "nav2_route_planning": "nav2"}
+        if stage in starts:
+            self._stage(starts[stage], "running", message)
         key, value = None, None
         if stage == "intent_parsed":
-            key, value = "intent", self._compact_stage_output(details.get("intent") or {})
+            self._stage("intent", "succeeded", "Intent parsed. Recorded compact output follows when available.")
+        elif stage == "intent_schema_ready":
+            key, value = "intent", self._compact_intent_payload(details.get("intent_schema"))
+            message = "Recorded compact intent is available." if value else "No compact model record is available; no payload was reconstructed."
+        elif stage == "task_draft_ready":
+            key, value = "task_draft", details.get("task_draft")
+            message = "Generated task-plan draft recorded (before binding/validation)."
         elif stage == "rag_grounded":
             key, value = "rag", details.get("grounding")
+            self._stage("rag", "succeeded", message)
         elif stage == "plan_ready":
-            key, value = "task_chain", {
-                "status": details.get("status"),
-                "task_plan": details.get("task_plan"),
-                "grounded_task": details.get("grounded_task"),
-            }
-        elif stage == "mission_ready":
+            key, value = "task_chain", details.get("task_plan")
+            self._stage(key, "succeeded", "Task plan passed validation.")
+        elif stage == "plan_invalid":
+            key, value = "task_chain", details.get("task_plan")
+            message = "The task plan did not pass validation."
+            self._stage(key, "failed", message)
+        elif stage in {"mission_ready", "mission_not_ready"}:
             mission_result = details.get("mission_result") or {}
             mission = mission_result.get("mission") or {}
-            key, value = "mission", {
-                "status": mission_result.get("status"),
-                "task_id": mission.get("task_id"),
-                "initial_floor": mission.get("initial_floor"),
+            key, value = "mission", {"status": mission_result.get("status"),
                 "stop_count": len(mission.get("stops") or []),
-                "stop_floors": [stop.get("floor_id") for stop in mission.get("stops") or []],
-            }
+                "stop_floors": [stop.get("floor_id") for stop in mission.get("stops") or []]}
+            ok = mission_result.get("status") == "ready"
+            message = "Navigation mission prepared." if ok else self._friendly_error(mission_result)
+            self._stage(key, "succeeded" if ok else "failed", message)
         elif stage == "plan_complete":
-            plan_result = details.get("plan_result") or {}
-            route = (plan_result.get("nav2_plan") or {}).get("route_selection") or {}
-            key, value = "nav2", {
-                "status": plan_result.get("status"),
+            result = details.get("plan_result") or {}
+            route = (result.get("nav2_plan") or {}).get("route_selection") or {}
+            key, value = "nav2", {"status": result.get("status"),
                 "path_length_m": route.get("total_path_length_m"),
-                "transition_count": route.get("transition_count"),
-                "execution_performed": plan_result.get("execution_performed", False),
-            }
+                "transition_count": route.get("transition_count"), "execution_performed": False}
+            ok = result.get("status") == "planned"
+            message = "A feasible route was selected." if ok else self._friendly_error(result)
+            self._stage(key, "succeeded" if ok else "failed", message)
         elif stage == "pipeline_stopped":
             pipeline = details.get("pipeline_result") or {}
-            key, value = "task_chain", {
-                "status": pipeline.get("status"), "error": pipeline.get("error"),
-                "validation_errors": pipeline.get("validation_errors"),
-            }
+            key = (self.state.get("active_stage") or "intent")
+            waiting = pipeline.get("status") == "ambiguous"
+            message = "Choose or clarify the destination to continue." if waiting else self._friendly_error(pipeline)
+            self._stage(key, "needs_input" if waiting else "failed", message)
+            key = None
         if key:
             with self.state_lock:
                 if getattr(self, "stop_requested", False):
                     return
-                outputs = dict(self.state.get("stage_outputs") or {})
-                outputs[key] = value
-                self.state["stage_outputs"] = outputs
+                self.state.setdefault("stage_outputs", {})[key] = value
         self._append_event(stage, message)
 
     def snapshot(self):
@@ -614,43 +690,60 @@ class NavigationController:
         return snapshot
 
     def select_rag_profile(self, profile_id):
-        if profile_id not in self.rag_profiles:
-            raise ValueError("Unknown RAG profile.")
-        if not self.job_lock.acquire(blocking=False):
-            raise RuntimeError("Wait for the current planning or simulation task to finish.")
-        try:
-            if profile_id == self.selected_rag_profile_id:
-                return
-            self._activate_rag_profile(profile_id)
-            self.stop_requested = False
-            self.last_result = None
-            self.last_mission_path = None
-            self._set_state(status="idle", events=[], candidate_groups=[],
-                            stage_outputs={}, result=None, demo_result=None, error=None)
-            label = self.rag_profiles[profile_id]["label"]
-            self._append_event("rag_profile_selected", f"Selected RAG profile: {label}.")
-        finally:
-            self.job_lock.release()
+        with self.state_lock:
+            if getattr(self, "_stopping", False):
+                raise RuntimeError("Stop is still in progress. Wait for confirmation.")
+            if profile_id not in self.rag_profiles:
+                raise ValueError("Unknown RAG profile.")
+            if not self.job_lock.acquire(blocking=False):
+                raise RuntimeError("Wait for the current planning or simulation task to finish.")
+            try:
+                if profile_id == self.selected_rag_profile_id:
+                    return
+                for name in ("labels_process", "rviz_process"):
+                    self._stop_process(name)
+                self._activate_rag_profile(profile_id)
+                self.stop_requested = False
+                self.last_result = None
+                self.last_mission_path = None
+                self._set_state(status="idle", events=[], candidate_groups=[],
+                                stage_outputs={}, stage_status={}, final_summary={}, route_snapshot=None,
+                                result=None, demo_result=None, error=None)
+                label = self.rag_profiles[profile_id]["label"]
+                self._append_event("rag_profile_selected", f"Selected RAG profile: {label}.")
+            finally:
+                self.job_lock.release()
 
     def start_plan(self, instruction, selections=None):
-        if self.startup_error:
-            raise RuntimeError(self.startup_error)
-        if not isinstance(instruction, str) or not instruction.strip():
-            raise ValueError("Enter a navigation request.")
-        if not self.job_lock.acquire(blocking=False):
-            raise RuntimeError("A navigation planning request is already in progress.")
-        self.stop_requested = False
-        if selections is None:
-            self.last_result = None
-            self.last_mission_path = None
-            self._set_state(status="running", session_id=uuid.uuid4().hex,
-                            instruction=instruction.strip(), events=[], candidate_groups=[],
-                            stage_outputs={}, result=None, demo_result=None, error=None)
-        else:
-            self._set_state(status="running", candidate_groups=[], result=None,
-                            demo_result=None, error=None)
-        threading.Thread(target=self._plan_worker,
-                         args=(instruction.strip(), selections), daemon=True).start()
+        with self.state_lock:
+            if getattr(self, "_stopping", False):
+                raise RuntimeError("Stop is still in progress. Wait for confirmation.")
+            if self.startup_error:
+                raise RuntimeError(self.startup_error)
+            if not isinstance(instruction, str) or not instruction.strip():
+                raise ValueError("Enter a navigation request.")
+            if not self.job_lock.acquire(blocking=False):
+                raise RuntimeError("A navigation planning request is already in progress.")
+            if self.state.get("status") == "stop_unconfirmed":
+                self.job_lock.release()
+                raise RuntimeError("Confirm the previous navigation stop before starting a new task.")
+            self.stop_requested = False
+            if selections is None:
+                for name in ("labels_process", "rviz_process"):
+                    self._stop_process(name)
+                self.last_result = None
+                self.last_mission_path = None
+                self._demo_execution_id = None
+                self._demo_goal_ledger = None
+                self._set_state(status="running", session_id=uuid.uuid4().hex,
+                                instruction=instruction.strip(), events=[], candidate_groups=[],
+                                stage_outputs={}, stage_status={}, final_summary={}, route_snapshot=None,
+                                active_stage=None, result=None, demo_result=None, error=None)
+            else:
+                self._set_state(status="running", candidate_groups=[], result=None,
+                                demo_result=None, error=None)
+            threading.Thread(target=self._plan_worker,
+                             args=(instruction.strip(), selections), daemon=True).start()
 
     def _set_state(self, **values):
         with self.state_lock:
@@ -679,9 +772,22 @@ class NavigationController:
         return state if {"unconfigured": "1", "inactive": "2", "active": "3",
                          "finalized": "4"}[state] == state_id else None
 
+    def _spawn_owned(self, attr, command, *, allow_stopped=False, **kwargs):
+        # Stop and process registration share this lock: no unchecked Popen gap.
+        with self.state_lock:
+            if getattr(self, "_stopping", False) or (self.stop_requested and not allow_stopped):
+                raise RuntimeError("The task was stopped before process startup.")
+            process = subprocess.Popen(command, **kwargs)
+            setattr(self, attr, process)
+            return process
+
     def _start_nav2(self):
-        if self.nav2_process and self.nav2_process.poll() is None:
-            return
+        if self.stop_requested:
+            raise RuntimeError("Planning was stopped before Nav2 startup.")
+        with self.state_lock:
+            if self.nav2_process and self.nav2_process.poll() is None:
+                return
+            self.nav2_process = None  # Dead handles confer no ownership of a later external stack.
         initial = self.defaults.get("initial_state", {})
         pose = initial.get("pose", {})
         floor_cfg = self.bundle.get("floors", {}).get("0", self.bundle.get("floors", {}).get(0, {}))
@@ -728,6 +834,10 @@ class NavigationController:
             if Path(active_map).resolve() != Path(map_yaml).resolve():
                 raise RuntimeError(
                     f"An active Nav2 stack is using a different map: {active_map}")
+            with self.state_lock:
+                if self.stop_requested:
+                    raise RuntimeError("Planning was stopped before external Nav2 reuse.")
+                self.nav2_process = None
             self._append_event(
                 "nav2_ready", "An active Nav2 stack is using the same map. Reusing it.")
             return
@@ -742,7 +852,7 @@ class NavigationController:
                    f"map:={map_yaml}", f"params_file:={self.params_path}",
                    f"start_x:={pose.get('x', 0.0)}", f"start_y:={pose.get('y', 0.0)}",
                    f"start_yaw:={pose.get('yaw', 0.0)}"]
-        self.nav2_process = subprocess.Popen(
+        self._spawn_owned("nav2_process",
             command, cwd=ROOT, env=self._ros_env(), stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT, text=True, bufsize=1, start_new_session=True)
         threading.Thread(target=self._read_logs,
@@ -789,6 +899,8 @@ class NavigationController:
 
     def _plan_worker(self, instruction, selections):
         try:
+            if self.stop_requested:
+                return
             self._append_event("planning_request", f"Starting LLM1 + RAG + {self.task_chain_backend} task-chain planning.")
             result = plan_nav2.run_instruction(
                 self._runtime_args(instruction),
@@ -801,13 +913,19 @@ class NavigationController:
             output_path.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n",
                                    encoding="utf-8")
             self.last_result = result
+            final = self._final_summary(result)
+            route_snapshot = RouteHistory.from_plan(
+                result, self.state["session_id"],
+                (result.get("provenance") or {}).get("map_bundle_id")).snapshot()
+            self._set_state(final_summary=final, route_snapshot=route_snapshot)
+            self._write_route_snapshot()
             pipeline = result.get("pipeline_result") or {}
             groups = build_candidate_groups(pipeline, self.canonical_graph or {})
             status = result.get("status", "system_error")
             summary = self._summarize_result(result, output_path)
             if status == "ambiguous" and groups:
                 self._set_state(status="awaiting_selection", result=summary,
-                                candidate_groups=groups, error=result.get("error"))
+                                candidate_groups=groups, error=summary.get("error"))
                 self._append_event("awaiting_selection", "Choose a destination to continue.",
                                    candidate_group_count=len(groups))
             else:
@@ -820,7 +938,11 @@ class NavigationController:
         except Exception as error:
             if self.stop_requested:
                 return
-            self._set_state(status="system_error", error=f"{type(error).__name__}: {error}")
+            message = self._friendly_error({"error": str(error)})
+            self._stage((self.state.get("active_stage") or "intent"), "failed", message)
+            final = self._final_summary({"status": "system_error", "pipeline_result": {
+                "status": "valid" if (self.state.get("stage_status", {}).get("task_chain") or {}).get("status") == "succeeded" else "system_error"}})
+            self._set_state(status="system_error", error=message, final_summary=final)
             self._append_event("system_error", str(error))
             self._stop_process("nav2_process")
         finally:
@@ -856,9 +978,8 @@ class NavigationController:
         mission = result.get("mission_preparation") or {}
         return {"status": result.get("status"),
                 "execution_performed": result.get("execution_performed", False),
-                "error": (result.get("error") or nav.get("error")
-                          or (result.get("pipeline_result") or {}).get("error")
-                          or mission.get("error")), "model": result.get("model"),
+                "error": (NavigationController._friendly_error(result)
+                          if result.get("status") != "planned" else None), "model": result.get("model"),
                 "task_chain_backend": result.get("task_chain_backend"),
                 "rag_build_id": (result.get("provenance") or {}).get("rag_build_id"),
                 "map_bundle_id": (result.get("provenance") or {}).get("map_bundle_id"),
@@ -866,15 +987,48 @@ class NavigationController:
                 "transition_count": route.get("transition_count"),
                 "mission_status": mission.get("status"), "output_path": str(output_path)}
 
+    def _start_visualization(self, *, allow_stopped=False):
+        session_id = self.state.get("session_id", "current")
+        self._write_route_snapshot()
+        if not self.labels_process or self.labels_process.poll() is not None:
+            with (self.output_dir / f"{session_id}-map-labels.log").open("w") as log:
+                self._spawn_owned("labels_process",
+                    ["/usr/bin/python3", str(Path(__file__).with_name("map_labels.py")),
+                     "--bundle", str(self.bundle_path), "--graph",
+                     str(self.rag_db.parent / "canonical_graph_v2.json"),
+                      "--route-snapshot", str(self._route_snapshot_path())],
+                    allow_stopped=allow_stopped, cwd=ROOT, env=self._ros_env(), stdout=log,
+                    stderr=subprocess.STDOUT, start_new_session=True)
+        if not self.rviz_process or self.rviz_process.poll() is not None:
+            self._spawn_owned("rviz_process",
+                ["rviz2", "-d", str(self.rviz_path)], allow_stopped=allow_stopped, cwd=ROOT,
+                env=self._ros_env(), stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL, start_new_session=True)
+
+    def start_route_view(self):
+        if self.job_lock.locked():
+            raise RuntimeError("Wait for the current task before reopening RViz.")
+        if not (self.state.get("route_snapshot") or {}).get("segments"):
+            raise RuntimeError("There is no retained selected route to display.")
+        self._start_visualization(allow_stopped=True)
+
     def start_demo(self):
-        if not self.last_result or self.last_result.get("status") != "planned":
-            raise RuntimeError("Start the RViz2 demo only after a route has been planned successfully.")
-        if not self.job_lock.acquire(blocking=False):
-            raise RuntimeError("Another task is already running.")
-        threading.Thread(target=self._demo_worker, daemon=True).start()
+        with self.state_lock:
+            if getattr(self, "_stopping", False):
+                raise RuntimeError("Stop is still in progress. Wait for confirmation.")
+            if self.state.get("status") == "stop_unconfirmed":
+                raise RuntimeError("Confirm the previous navigation stop before restarting execution.")
+            if not self.last_result or self.last_result.get("status") != "planned":
+                raise RuntimeError("Start the RViz2 demo only after a route has been planned successfully.")
+            if not self.job_lock.acquire(blocking=False):
+                raise RuntimeError("Another task is already running.")
+            self.stop_requested = False
+            threading.Thread(target=self._demo_worker, daemon=True).start()
 
     def _demo_worker(self):
         try:
+            if self.stop_requested:
+                return
             mission = (self.last_result.get("mission_preparation") or {}).get("mission")
             if not isinstance(mission, dict):
                 raise RuntimeError("The plan does not contain a navigation mission to demonstrate.")
@@ -883,26 +1037,28 @@ class NavigationController:
             result_path = self.output_dir / f"{session_id}-demo-result.json"
             mission_path.write_text(json.dumps(mission, indent=2, ensure_ascii=False) + "\n",
                                     encoding="utf-8")
-            if not self.labels_process or self.labels_process.poll() is not None:
-                with (self.output_dir / f"{session_id}-map-labels.log").open("w") as log:
-                    self.labels_process = subprocess.Popen(
-                        ["/usr/bin/python3", str(Path(__file__).with_name("map_labels.py")),
-                         "--bundle", str(self.bundle_path), "--graph",
-                         str(self.rag_db.parent / "canonical_graph_v2.json")],
-                        cwd=ROOT, env=self._ros_env(), stdout=log,
-                        stderr=subprocess.STDOUT, start_new_session=True)
-            if not self.rviz_process or self.rviz_process.poll() is not None:
-                self.rviz_process = subprocess.Popen(
-                    ["rviz2", "-d", str(self.rviz_path)], cwd=ROOT,
-                    env=self._ros_env(), stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL, start_new_session=True)
+            self._start_visualization()
             self._set_state(status="demo_running", demo_result=None)
+            self._stage("execution", "running", "Navigation is running.")
+            final = dict(self.state.get("final_summary") or {})
+            final["navigation"] = {"status": "running", "message": "Navigation is running."}
+            self._set_state(final_summary=final)
             self._append_event("rviz_started", "RViz2 is running the point-robot simulation.")
-            command = ["/usr/bin/python3", str(RUNNER_SCRIPT),
-                       "--mission", str(mission_path), "--bundle", str(self.bundle_path),
+            if self.stop_requested:
+                return
+            execution_id = uuid.uuid4().hex
+            ledger_path = self.output_dir / f"{execution_id}-goals.json"
+            with self.state_lock:
+                if self.stop_requested:
+                    return
+                self._demo_execution_id = execution_id
+                self._demo_goal_ledger = ledger_path
+            command = ["/usr/bin/python3", str(Path(__file__).with_name("navigation_runner.py")),
+                       "--runner", str(RUNNER_SCRIPT), "--ledger", str(ledger_path),
+                       "--execution-id", execution_id, "--", "--mission", str(mission_path), "--bundle", str(self.bundle_path),
                        "--output", str(result_path), "--robot-model",
                        str(self.defaults.get("robot_model", "point"))]
-            self.demo_process = subprocess.Popen(
+            self._spawn_owned("demo_process",
                 command, cwd=ROOT, env=self._ros_env(), stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, text=True, bufsize=1, start_new_session=True)
             threading.Thread(target=self._read_logs,
@@ -943,16 +1099,23 @@ class NavigationController:
                 "failure_stage": demo_result.get("failure_stage"),
                 "error": demo_result.get("error"),
             }
-            self._set_state(status="demo_complete" if return_code == 0 else "demo_failed",
-                            demo_result=demo_result,
-                            stage_outputs=outputs,
-                            error=None if return_code == 0 else demo_result.get("error"))
-            self._append_event("demo_complete", f"Simulation finished: {demo_result.get('status')}.",
-                               output_path=str(result_path))
+            outcome = self._navigation_outcome(demo_result, return_code, len(mission.get("stops") or []))
+            final = dict(self.state.get("final_summary") or {})
+            final["navigation"] = outcome
+            self._stage("execution", outcome["status"], outcome["message"])
+            self._set_state(status="demo_complete" if outcome["status"] == "succeeded" else "demo_failed",
+                            demo_result=demo_result, stage_outputs=outputs, final_summary=final,
+                            error=None if outcome["status"] == "succeeded" else outcome["message"])
+            self._append_event("demo_complete" if outcome["status"] == "succeeded" else "demo_failed",
+                               outcome["message"])
         except Exception as error:
             if self.stop_requested:
                 return
-            self._set_state(status="demo_failed", error=f"{type(error).__name__}: {error}")
+            message = self._friendly_error({"error": str(error)})
+            self._stage("execution", "failed", message)
+            final = dict(self.state.get("final_summary") or {})
+            final["navigation"] = {"status": "failed", "message": message}
+            self._set_state(status="demo_failed", error=message, final_summary=final)
             self._append_event("demo_error", str(error))
         finally:
             self.job_lock.release()
@@ -992,16 +1155,101 @@ class NavigationController:
             except Exception:
                 pass
 
+    def _route_snapshot_path(self):
+        return self.output_dir / (str(self.state.get("session_id") or "current") + "-route.json")
+
+    def _write_route_snapshot(self):
+        target = self._route_snapshot_path()
+        temporary = target.with_suffix(".tmp")
+        temporary.write_text(json.dumps(self.state.get("route_snapshot") or
+                                        {"segments": []}, ensure_ascii=False) + "\n", encoding="utf-8")
+        temporary.replace(target)
+
+    def clear_display(self):
+        if self.job_lock.locked():
+            raise RuntimeError("Stop the running task before clearing the display.")
+        if self.state.get("status") == "stop_unconfirmed":
+            raise RuntimeError("Navigation stop is unconfirmed. Resolve it before clearing.")
+        with self.state_lock:
+            if getattr(self, "_stopping", False):
+                raise RuntimeError("Stop is still in progress.")
+            self.stop_requested = False
+            self.state.update(status="idle", stage_outputs={}, stage_status={}, final_summary={},
+                              route_snapshot=None, result=None, demo_result=None, error=None,
+                              events=[], stage_message="Display cleared.")
+            self.last_result = None
+        self._write_route_snapshot()
+        for name in ("labels_process", "rviz_process"):
+            self._stop_process(name)
+
+    def _cancel_navigation(self):
+        # Only a stopped GUI runner's exact UUID ledger proves goal ownership.
+        process = self.demo_process
+        ledger_path = getattr(self, "_demo_goal_ledger", None)
+        execution_id = getattr(self, "_demo_execution_id", None)
+        if process is None or process.poll() is None or not ledger_path or not execution_id:
+            return {"confirmed": False}
+        try:
+            ledger = json.loads(Path(ledger_path).read_text(encoding="utf-8"))
+            if (ledger.get("execution_id") != execution_id or ledger.get("client_pid") != process.pid
+                    or ledger.get("action_name") != "/navigate_to_pose"):
+                return {"confirmed": False}
+            raw_ids = ledger.get("goal_ids")
+            if not isinstance(raw_ids, list) or not all(isinstance(goal, str) for goal in raw_ids):
+                return {"confirmed": False}
+            goal_ids = [uuid.UUID(goal).hex for goal in raw_ids]
+            if any(not uuid.UUID(goal).int for goal in goal_ids):
+                return {"confirmed": False}
+            if not goal_ids:
+                return {"confirmed": True}  # Recorded runner exited before sending any motion goal.
+            command = ["/usr/bin/python3", str(Path(__file__).with_name("navigation_cancel.py"))]
+            for goal in dict.fromkeys(goal_ids):
+                command.extend(["--goal-id", goal])
+            result = subprocess.run(command, env=self._ros_env(), capture_output=True,
+                                    text=True, timeout=18 + 3 * len(goal_ids))
+            if result.returncode != 0:
+                return {"confirmed": False}
+            return json.loads(result.stdout.strip().splitlines()[-1])
+        except (OSError, TypeError, ValueError, IndexError, subprocess.TimeoutExpired):
+            return {"confirmed": False}
+
     def stop(self):
         with self.state_lock:
-            self.stop_requested = True
-        for attr in ("demo_process", "rviz_process", "labels_process", "nav2_process"):
-            self._stop_process(attr)
-        self.last_result = None
-        self.last_mission_path = None
-        self._set_state(status="stopped", candidate_groups=[], stage_outputs={},
-                        result=None, demo_result=None, error=None)
-        self._append_event("stopped", "Nav2/RViz simulation processes stopped.")
+            if getattr(self, "_stopping", False):
+                raise RuntimeError("Stop is already in progress.")
+            self._stopping = True
+        try:
+            with self.state_lock:
+                self.stop_requested = True
+                owned_nav2 = self.nav2_process
+                owned_was_alive = owned_nav2 is not None and owned_nav2.poll() is None
+                active = self.demo_process is not None and self.demo_process.poll() is None
+                needs_cancel = active or self.state.get("status") == "stop_unconfirmed"
+            # Prevent this client from submitting a subsequent goal before reading its ledger.
+            if active:
+                self._stop_process("demo_process")
+            confirmed = not needs_cancel
+            if needs_cancel:
+                confirmed = self._cancel_navigation().get("confirmed") is True
+            for name in ("rviz_process", "labels_process", "nav2_process"):
+                self._stop_process(name)
+            if active and not confirmed and owned_was_alive:
+                confirmed = owned_nav2.poll() is not None
+            with self.state_lock:
+                final = dict(self.state.get("final_summary") or {})
+                if needs_cancel and (final.get("navigation") or {}).get("status") != "succeeded":
+                    final["navigation"] = {"status": "cancelled" if confirmed else "stop_unconfirmed",
+                        "message": "Navigation was stopped." if confirmed else
+                        "Navigation stop could not be confirmed. Do not start another task."}
+                self.state.update(status="stopped" if confirmed else "stop_unconfirmed",
+                                  candidate_groups=[], stage_outputs={}, demo_result=None,
+                                  final_summary=final,
+                                  error=None if confirmed else final["navigation"]["message"])
+            self._append_event("stopped", "Simulation stopped; selected route and final summary retained."
+                               if confirmed else "Navigation stop is unconfirmed.")
+        finally:
+            with self.state_lock:
+                self._stopping = False
 
 
 class NavigationUiHandler(BaseHTTPRequestHandler):
@@ -1020,6 +1268,9 @@ class NavigationUiHandler(BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
     def do_GET(self):
+        if urlparse(self.path).path == "/api/route":
+            self._json(200, self.controller.snapshot().get("route_snapshot") or {"segments": []})
+            return
         if urlparse(self.path).path == "/api/state":
             state = self.controller.snapshot()
             state["startup_error"] = self.controller.startup_error
@@ -1043,7 +1294,11 @@ class NavigationUiHandler(BaseHTTPRequestHandler):
                 self._json(413, {"error": "request too large"})
                 return
             data = json.loads(self.rfile.read(size).decode("utf-8")) if size else {}
-            if path == "/api/plan":
+            if path == "/api/clear":
+                self.controller.clear_display()
+            elif path == "/api/view-route":
+                self.controller.start_route_view()
+            elif path == "/api/plan":
                 self.controller.start_plan(data.get("instruction"))
             elif path == "/api/select":
                 state = self.controller.snapshot()

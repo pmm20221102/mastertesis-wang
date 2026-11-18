@@ -203,3 +203,26 @@ F2 the second floor and F3 the third floor. RAG filters room candidates by
 the Hospital floor planes and Room heights before destination selection.
 An unqualified later stop does not inherit the previous stop's floor.
 The archived 60-task results retain their original prompts and outputs.
+
+
+## Schema outputs, outcomes, and retained routes
+
+The static page is web/index.html. LLM1 displays the successful recorded compact parse with a whitelist matching SimpleTaskChainIntent, not a reconstructed internal TaskIntent. Missing recordings remain unavailable. Floor zero, explicit nulls and empty protocol arrays remain intact. Generated LLM2 drafts are labelled unvalidated; validated TaskPlan output is separate from grounded input context.
+
+Stage Results distinguish running, succeeded, failed, needs_input and not_run. Final Outcome separately reports plan validation, route feasibility and navigation completion. Navigation success requires a successful runner exit and a succeeded result with the complete ordered zero-based stop sequence. Warning logs and tracebacks remain in artifacts.
+
+Routes are copied from the selected route_selection.segment_results[].path, with floors and individual legs separate. Floor transitions are never connected as travel. Download Route exports the retained snapshot via GET /api/route. The GUI also saves <session>-route.json in its output directory. Completion and Stop retain route/final results. Clear Display, a new task or a RAG-context change clears the current display without deleting original plan/demo artifacts.
+
+The default RViz configuration adds a durable /hospital/retained_route MarkerArray. The existing map-label node reads the route snapshot and reuses verified active-floor identification from floor_mosaic_core. It displays the active floor in its original Nav2 map coordinates; all floors remain in the Web snapshot. Markers have no expiry and do not depend on /plan or /local_plan. View in RViz2 reopens a retained route without navigation. Custom RViz configurations need this additional topic. No independent odometry-history subsystem is added.
+
+Stop requests NavigateToPose cancellation and confirms terminal action status, then stops UI-owned processes. Confirmed shutdown of an owned Nav2 process is a fallback. A reused external Nav2 process is never killed. An unconfirmed stop is reported explicitly and blocks new execution. The GUI runner records its actual NavigateToPose UUIDs before transport. Stop ends that owned runner, verifies its execution ID and PID ledger, then cancels only those nonzero UUIDs and waits for their terminal states. Unknown ownership or a missing terminal result remains stop_unconfirmed; no cancel-all request is sent to a shared server. Stop still clears the left payloads.
+
+### Isolated recorded-state / fixture preview
+
+The preview does not import the live controller, ROS, model or database adapters. It serves the actual HTML, intercepts API calls, permits fixture Stop/Clear, and rejects live planning/execution. Its banner explicitly labels fixture states, including when geometry comes from a real archived route.
+
+    PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 experiment/navigation-ui-demo/preview_recorded.py --state /absolute/path/to/state.json --port 8876
+
+This does not occupy or stop the live console on 8765. The optional --export /path/to/preview.html produces a standalone artifact. Offline regression command:
+
+    PYTHONDONTWRITEBYTECODE=1 /usr/bin/python3 -m pytest -q -p no:cacheprovider experiment/navigation-ui-demo/tests

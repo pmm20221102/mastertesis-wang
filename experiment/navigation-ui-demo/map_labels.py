@@ -10,6 +10,8 @@ import rclpy
 from rclpy.node import Node
 from rclpy.qos import DurabilityPolicy, QoSProfile
 from visualization_msgs.msg import Marker, MarkerArray
+from geometry_msgs.msg import Point
+from route_snapshot import RouteHistory
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -18,9 +20,11 @@ from floor_mosaic_core import extract_room_labels, identify_floor_by_geometry, l
 
 
 class MapLabels(Node):
-    def __init__(self, bundle, graph):
+    def __init__(self, bundle, graph, route_snapshot=None):
         super().__init__("hospital_map_labels")
         self.frame = bundle["frame_id"]
+        self.route_snapshot_path = route_snapshot
+        self.active_floor = None
         self.floors = load_floor_grids(bundle)
         heights = {int(key): entry["floor_z_m"] for key, entry in bundle["floors"].items()}
         rooms = [
@@ -34,6 +38,8 @@ class MapLabels(Node):
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.publisher = self.create_publisher(MarkerArray, "/hospital/map_labels", qos)
         self.subscription = self.create_subscription(OccupancyGrid, "/map", self.on_map, qos)
+        self.route_pub = self.create_publisher(MarkerArray, "/hospital/retained_route", qos)
+        self.route_timer = self.create_timer(0.5, self.publish_route)
 
     def label(self, marker_id, text, x, y, size):
         marker = Marker()
@@ -60,6 +66,7 @@ class MapLabels(Node):
                     "resolution": info.resolution, "origin_x": origin.x, "origin_y": origin.y}
         floor = (identify_floor_by_geometry(geometry, self.floors)
                  if message.header.frame_id == self.frame else None)
+        self.active_floor = floor
         clear = Marker()
         clear.header.frame_id = self.frame
         clear.action = Marker.DELETEALL
@@ -74,15 +81,50 @@ class MapLabels(Node):
                 for index, room in enumerate(self.rooms, start=1) if room.floor_id == floor
             )
         self.publisher.publish(MarkerArray(markers=markers))
+        self.publish_route()
+
+
+    def publish_route(self):
+        # Reuse the active-floor identification above and Nav2 map coordinates.
+        # This separate topic is unaffected by map-label DELETEALL or live /plan.
+        snapshot = {}
+        if self.route_snapshot_path:
+            try:
+                snapshot = json.loads(Path(self.route_snapshot_path).read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                return  # A temporary read failure must not erase the retained route.
+        clear = Marker()
+        clear.header.frame_id = self.frame
+        clear.action = Marker.DELETEALL
+        markers = [clear]
+        for index, segment in enumerate(RouteHistory.segments_on_floor(snapshot, self.active_floor)):
+            marker = Marker()
+            marker.header.frame_id = self.frame
+            marker.header.stamp = self.get_clock().now().to_msg()
+            marker.ns = "selected_nav2_route"
+            marker.id = index
+            marker.type = Marker.LINE_STRIP
+            marker.action = Marker.ADD
+            marker.pose.orientation.w = 1.0
+            marker.scale.x = 0.10
+            marker.color.r, marker.color.g, marker.color.b, marker.color.a = 0.10, 0.50, 0.95, 1.0
+            marker.lifetime.sec = 0
+            for pose in segment["path"]:
+                point = Point()
+                point.x, point.y, point.z = float(pose["x"]), float(pose["y"]), 0.15
+                marker.points.append(point)
+            markers.append(marker)
+        self.route_pub.publish(MarkerArray(markers=markers))
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--graph", type=Path, required=True)
+    parser.add_argument("--route-snapshot", type=Path)
     args = parser.parse_args()
     rclpy.init()
-    node = MapLabels(yaml.safe_load(args.bundle.read_text()), json.loads(args.graph.read_text()))
+    node = MapLabels(yaml.safe_load(args.bundle.read_text()), json.loads(args.graph.read_text()), args.route_snapshot)
     try:
         rclpy.spin(node)
     except (KeyboardInterrupt, rclpy.executors.ExternalShutdownException):

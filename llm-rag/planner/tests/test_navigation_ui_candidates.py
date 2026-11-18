@@ -68,12 +68,15 @@ def test_progress_callback_stores_stage_output_and_progress_message():
     controller.state = {"events": [], "stage_outputs": {}}
 
     controller._record_progress({
-        "stage": "intent_parsed", "message": "Intent analysis complete.",
-        "details": {"intent": {"action": "navigate", "target": {"text": "chair"}}},
+        "stage": "intent_schema_ready", "message": "Recorded compact intent.",
+        "details": {"intent_schema": {"action": "navigate", "stops": [
+            {"order": 1, "destination": "room", "objects": ["chair"], "floor_id": 0}],
+            "clarification": None}},
     })
 
-    assert controller.state["stage_outputs"]["intent"]["target"]["text"] == "chair"
-    assert controller.state["events"][-1]["message"] == "Intent analysis complete."
+    assert controller.state["stage_outputs"]["intent"]["stops"][0]["objects"] == ["chair"]
+    assert controller.state["stage_outputs"]["intent"]["stops"][0]["floor_id"] == 0
+    assert controller.state["events"][-1]["message"] == "Recorded compact intent is available."
 
 
 def test_terminal_warnings_are_not_added_to_the_user_progress_timeline():

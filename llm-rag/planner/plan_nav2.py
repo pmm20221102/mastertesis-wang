@@ -341,6 +341,22 @@ def run_instruction(args, *, progress_callback: Callable[[dict], None] | None = 
         progress_callback=progress_callback,
     )
     pipeline_dict = pipeline.model_dump(mode="json") if hasattr(pipeline, "model_dump") else pipeline
+    # Display the recorded model contract; never invert the lossy TaskIntent adapter.
+    compact = next((attempt.get("raw_lmm_output")
+                    for attempt in reversed(pipeline_dict.get("intent_parse_attempts") or [])
+                    if attempt.get("parse_status") == "completed" and not attempt.get("error")
+                    and isinstance(attempt.get("raw_lmm_output"), dict)
+                    and "stops" in attempt["raw_lmm_output"]), None)
+    _emit_progress(progress_callback, "intent_schema_ready", "Recorded compact intent.",
+                   intent_schema=compact)
+    draft = next((attempt.get("raw") for attempt in reversed(
+        pipeline_dict.get("planning_attempts") or []) if attempt.get("raw")),
+        pipeline_dict.get("raw_plan_draft"))
+    if isinstance(draft, dict) and "task_chain" in draft:
+        _emit_progress(progress_callback, "task_draft_ready", "Recorded generated draft.",
+                       task_draft={key: draft[key] for key in (
+                           "status", "task_chain", "clarification_request", "target_not_found", "notes")
+                           if key in draft})
     if pipeline_dict.get("status") != "valid":
         _emit_progress(progress_callback, "pipeline_stopped",
                        f"流程暂停：{pipeline_dict.get('status')}。",
@@ -377,8 +393,6 @@ def run_instruction(args, *, progress_callback: Callable[[dict], None] | None = 
         floor_tolerance_m=float(defaults["floor_z_tolerance_m"]),
         canonical_graph=canonical_graph,
     )
-    _emit_progress(progress_callback, "mission_ready", "有序导航任务已准备。",
-                   mission_result=mission_result)
     metadata = {
         "model_name": model_name,
         "model_digest": model_digest,
@@ -403,6 +417,8 @@ def run_instruction(args, *, progress_callback: Callable[[dict], None] | None = 
         return build_plan_record(args.instruction, pipeline_dict, mission_result,
                                  {"status": "not_attempted"}, metadata)
 
+    _emit_progress(progress_callback, "mission_ready", "有序导航任务已准备。",
+                   mission_result=mission_result)
     _emit_progress(progress_callback, "nav2_planning", "Nav2 正在计算路线。")
     with tempfile.TemporaryDirectory(prefix="hospital-nav2-plan-") as temporary_dir:
         temporary = Path(temporary_dir)
