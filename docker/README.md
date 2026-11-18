@@ -256,3 +256,5 @@ For the full-workflow-final generated profile, HC-001 ("Please take me into
 the room with the bed.") succeeded in 119.058 seconds. These durations are
 single navigation executions on their respective maps. The test instructions
 were supplied independently of the generated scene.
+
+**RViz2 from the Demo:** After planning, click **Run Navigation in RViz2** to start the simulation and open the browser desktop in a new tab. **View in RViz2** opens the same desktop for a saved route. If the browser blocks the tab, use **Open RViz2 desktop**. The documented 8765/6080 and 28765/26080 port pairs work by default. For other desktop forward ports, set `HOSPITAL_RVIZ_WEB_PORT` in the Demo service environment to the browser-facing port before recreating the service.

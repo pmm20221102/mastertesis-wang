@@ -18,6 +18,7 @@ config = yaml.safe_load(p.read_text())
 config["ollama_host"] = os.environ.get("OLLAMA_HOST", "http://ollama:11434")
 p.write_text(yaml.safe_dump(config))
 PY
+export HOSPITAL_RVIZ_WEB_PORT="${HOSPITAL_RVIZ_WEB_PORT:-6080}"
 export HOSPITAL_RAG_PROFILE_CONFIG=/opt/thesis/experiment/navigation-ui-demo/rag_profiles.json
 export HOSPITAL_NAV2_PARAMS=/opt/thesis/khronos-nav2-bridge/khronos_nav2_bridge/config/nav2_hospital_rviz.yaml
 /opt/venv/bin/python docker/check_environment.py &

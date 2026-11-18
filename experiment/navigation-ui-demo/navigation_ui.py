@@ -1274,6 +1274,7 @@ class NavigationUiHandler(BaseHTTPRequestHandler):
         if urlparse(self.path).path == "/api/state":
             state = self.controller.snapshot()
             state["startup_error"] = self.controller.startup_error
+            state["rviz_desktop_port"] = os.environ.get("HOSPITAL_RVIZ_WEB_PORT")
             self._json(200, state)
             return
         if urlparse(self.path).path != "/":
